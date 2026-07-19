@@ -25,7 +25,7 @@ description: "欢迎来到终末地工业。
 version: 0.0.9-Beta
 
 #the minimum game build required to run this mod
-minGameVersion: 154
+minGameVersion: 159
 
 #this is a java mod
 java: true
