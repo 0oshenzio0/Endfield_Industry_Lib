@@ -4,6 +4,7 @@ import endfieldindustrylib.EFworld.blocks.AICBasicFacility.*;
 import endfieldindustrylib.EFworld.blocks.AICDepotAccess.ProtocolStash;
 import endfieldindustrylib.EFworld.blocks.AICPower.*;
 import endfieldindustrylib.EFworld.blocks.AICTransport.*;
+import endfieldindustrylib.EFworld.blocks.AICTurret.GunTower;
 
 public class EFblocks {
     public static void load() {
@@ -37,5 +38,7 @@ public class EFblocks {
         new ThermalBank("thermal-bank").load();                    //热能池
         //new XiraniteRelay("xiranite-relay").load();                    //息壤中继器
         //new XiranitePylon("xiranite-pylon").load();                    //息壤供电桩
+        // 战斗辅助
+        new GunTower("gun-tower").load();                              //铳械塔
     }
 }
