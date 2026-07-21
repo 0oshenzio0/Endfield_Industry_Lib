@@ -57,80 +57,77 @@ public class EFplanets {
             atmosphereRadOut = 1.15f;
         }};
 
-        // ========== 2. 创建卫星 "塔卫二"（可登陆 + 战役）==========
+        // ========== 2. 创建卫星 "塔卫二"（可登陆 + 战役 — 地球风格）==========
         new Planet("taelos-II", talos, 0.6f, 3) {{
             orbitTime = 60f * 300;
-            rotateTime = orbitTime;                 // 潮汐锁定
-            orbitSpacing = 8f;                      // 增大间距，更像地日比例
+            rotateTime = orbitTime;                     // 潮汐锁定
+            orbitSpacing = 8f;
             radius = 0.6f;
             minZoom = 0.5f;
             maxZoom = 4f;
 
-            // —— 外观 ——
-            meshLoader = () -> new HexMesh(this, 5);
-            cloudMeshLoader = () -> null;           // 无云（或可加 HexSkyMesh）
+            // —— 地表网格（使用 Valley4PlanetGenerator 的 getColor 实现地球着色）——
+            generator = new Valley4PlanetGenerator();
+            grid = PlanetGrid.create(2);
+            sectorSeed = 12345;
+            sectorApproxRadius = 1.8f;
 
-            // —— 可登陆要素 ——
-generator = new Valley4PlanetGenerator();
-grid = PlanetGrid.create(2);
-sectorSeed = 12345;
-sectorApproxRadius = 1.8f;
+            meshLoader = () -> new HexMesh(this, 6);
+            // —— 云层（白色蓬松云，地球风格）——
+            cloudMeshLoader = () -> new MultiMesh(
+                new HexSkyMesh(this, 8, 0.15f, 0.13f, 5, Color.white.cpy().a(0.75f), 2, 0.45f, 0.9f, 0.38f),
+                new HexSkyMesh(this, 2, 0.6f, 0.16f, 5, Color.white.cpy().a(0.65f), 2, 0.45f, 1f, 0.41f)
+            );
 
-// —— 外观 ——
-meshLoader = () -> new HexMesh(this, 5);
-cloudMeshLoader = () -> new MultiMesh(
-    new HexSkyMesh(this, 8, 0.15f, 0.13f, 5, Color.white.cpy().a(0.75f), 2, 0.45f, 0.9f, 0.38f),
-    new HexSkyMesh(this, 2, 0.6f, 0.16f, 5, Color.white.cpy().a(0.65f), 2, 0.45f, 1f, 0.41f)
-);
+            // —— 战役要素 ——
+            accessible = true;
+            alwaysUnlocked = true;
+            allowLaunchToNumbered = true;
+            startSector = 0;
+            allowCampaignRules = true;
+            allowLaunchSchematics = true;
+            allowLaunchLoadout = true;
+            allowSectorInvasion = true;
+            clearSectorOnLose = true;
+            defaultCore = Blocks.coreShard;
 
-// —— 战役要素 ——
-accessible = true;
-alwaysUnlocked = true;
-allowLaunchToNumbered = true; 
-startSector = 0;
-allowCampaignRules = true;
-allowLaunchSchematics = true;
-allowLaunchLoadout = true;
-allowSectorInvasion = true;
-clearSectorOnLose = true;
-defaultCore = Blocks.coreShard;    // 使用沙盒核心（地球风格）
+            // —— 生态：温带含氧地球化环境 ——
+            defaultEnv = Env.terrestrial | Env.oxygen | Env.groundWater;
+            defaultAttributes.set(Attribute.water, 0.5f);
 
-// —— 生态（温带/地球化）——
-defaultEnv = Env.terrestrial | Env.oxygen | Env.groundWater;
-defaultAttributes.set(Attribute.water, 0.5f);
+            // —— 战役规则 ——
+            ruleSetter = r -> {
+                r.waveTeam = Team.malis;
+                r.placeRangeCheck = false;
+                r.hideSpawns = false;
+                r.fog = true;
+                r.staticFog = true;
+                r.lighting = true;
+                r.coreDestroyClear = true;
+                r.onlyDepositCore = true;
+            };
 
-// 战役规则
-ruleSetter = r -> {
-    r.waveTeam = Team.malis;
-    r.placeRangeCheck = false;
-    r.hideSpawns = false;
-    r.fog = true;
-    r.staticFog = true;
-    r.lighting = true;              // 开启光照
-    r.coreDestroyClear = true;
-    r.onlyDepositCore = true;
-};
-solarSystem = talos; 
-// —— 大气（地球蓝色天空）——
+            // —— 大气：地球蓝色天空 + 白色云层 ——
+            hasAtmosphere = true;
+            atmosphereColor = Color.valueOf("4a90d9");      // 地球蓝天空
+            atmosphereRadIn = 0.02f;
+            atmosphereRadOut = 0.3f;
+            landCloudColor = Color.valueOf("ffffffaa");     // 白色半透云
 
-hasAtmosphere = true;
-atmosphereColor = Color.valueOf("6db8e8");   // 淡蓝天空
-atmosphereRadIn = 0.02f;
-atmosphereRadOut = 0.3f;
-landCloudColor = Color.valueOf("ffffff88");  // 白色半透云
+            // —— 光照 & 轨道 ——
+            tidalLock = true;
+            updateLighting = true;
+            solarSystem = talos;
+            lightSrcFrom = 0.0f;
+            lightSrcTo = 0.8f;
+            lightDstFrom = 0.2f;
+            lightDstTo = 1.0f;
 
-tidalLock = true;
-updateLighting = true;
-solarSystem = talos;
-lightSrcFrom = 0.0f;
-lightSrcTo = 0.8f;
-lightDstFrom = 0.2f;
-lightDstTo = 1.0f;
-
-visible = true;
-drawOrbit = true;
-iconColor = Color.valueOf("6db8e8");
-icon = "icon-taelos-II";
+            // —— 可见性 ——
+            visible = true;
+            drawOrbit = true;
+            iconColor = Color.valueOf("4a90d9");
+            icon = "icon-taelos-II";
         }};
     }
 }

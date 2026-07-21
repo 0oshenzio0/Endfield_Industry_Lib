@@ -264,7 +264,64 @@ public class Valley4PlanetGenerator extends PlanetGenerator {
 
     @Override
     public void getColor(Vec3 position, Color out) {
-        out.set(Color.valueOf("5cb85c"));
+        float h = getHeight(position);
+        // 纬度因子：0=赤道，1=两极
+        float latFactor = Math.abs(position.y);
+
+        // 添加小规模细节噪声让颜色更自然
+        float detailNoise = Simplex.noise3d(seed + 3, 3, 0.5f, 0.8f,
+            position.x * 2f, position.y * 2f, position.z * 2f) * 0.06f;
+
+        if (h < 0.42f + detailNoise * 0.5f) {
+            // —— 深海（深蓝）——
+            float depth = h / 0.42f;
+            out.set(Color.valueOf("0a2a5c")).lerp(Color.valueOf("1a4a7a"), depth);
+        } else if (h < 0.48f + detailNoise * 0.5f) {
+            // —— 浅海/近岸（青蓝）——
+            float t = (h - 0.42f) / 0.06f;
+            out.set(Color.valueOf("1a5a8a")).lerp(Color.valueOf("3a8ab8"), t);
+        } else if (h < 0.52f + detailNoise) {
+            // —— 海滩/沙岸（沙黄色）——
+            out.set(Color.valueOf("c8b480"));
+        } else if (h < 0.72f + detailNoise * 0.3f) {
+            // —— 低地/平原（绿色，随纬度变化）——
+            float t = (h - 0.52f) / 0.20f;
+            Color green;
+            if (latFactor > 0.65f) {
+                // 寒带：深绿/针叶林
+                green = Color.valueOf("3a6a2a");
+            } else if (latFactor > 0.35f) {
+                // 温带：翠绿
+                green = Color.valueOf("5cb85c");
+            } else {
+                // 热带：茂盛鲜绿
+                green = Color.valueOf("6aaa3a");
+            }
+            // 随高度从绿渐变到黄褐
+            out.set(green).lerp(Color.valueOf("9a8a4a"), t * 0.4f);
+        } else if (h < 0.85f + detailNoise * 0.3f) {
+            // —— 高地/丘陵（黄褐→棕）——
+            float t = (h - 0.72f) / 0.13f;
+            out.set(Color.valueOf("8a7a4a")).lerp(Color.valueOf("7a6a4a"), t);
+        } else if (h < 0.94f) {
+            // —— 山脉（棕灰）——
+            out.set(Color.valueOf("8a8a7a")).lerp(Color.valueOf("9a9a8a"),
+                (h - 0.85f) / 0.09f);
+        } else {
+            // —— 雪顶（白色，两极更常见）——
+            float snowThreshold = latFactor > 0.5f ? 0.88f : 0.94f;
+            if (h > snowThreshold) {
+                out.set(Color.valueOf("e8e8f0"));
+            } else {
+                out.set(Color.valueOf("9a9a8a"));
+            }
+        }
+
+        // 微弱的极地冰盖叠加（高纬度地区泛白）
+        if (latFactor > 0.7f && h < 0.5f) {
+            float iceBlend = (latFactor - 0.7f) / 0.3f * 0.5f;
+            out.lerp(Color.valueOf("c8d8e8"), iceBlend);
+        }
     }
 
     @Override
@@ -315,9 +372,9 @@ public class Valley4PlanetGenerator extends PlanetGenerator {
 
                 switch (biome.name) {
                     case "山地": {
-                        if (rand.chance(0.03)) {
+                        if (rand.chance(0.015)) {
                             tile.setBlock(Blocks.stoneWall);
-                        } else if (rand.chance(0.05)) {
+                        } else if (rand.chance(0.04)) {
                             tile.setBlock(Blocks.boulder);
                         } else if (rand.chance(0.015)) {
                             // TODO: 沙叶（sand leaf）— 只在山地生长
@@ -326,9 +383,9 @@ public class Valley4PlanetGenerator extends PlanetGenerator {
                         break;
                     }
                     case "山谷": {
-                        if (rand.chance(0.025)) {
+                        if (rand.chance(0.015)) {
                             tile.setBlock(Blocks.stoneWall);
-                        } else if (rand.chance(0.04)) {
+                        } else if (rand.chance(0.03)) {
                             tile.setBlock(Blocks.boulder);
                         }
                         break;
@@ -473,7 +530,7 @@ public class Valley4PlanetGenerator extends PlanetGenerator {
 
                     float wx = x * 0.3f, wy = y * 0.3f;
                     float val = wallNoise.fbm(wx, wy + 20f, 0f, 3, 0.7f, 2f);
-                    if (val > 0.25f) {
+                    if (val > 0.40f) {
                         wallSeed[y][x] = true;
                     }
                 }
@@ -495,7 +552,7 @@ public class Valley4PlanetGenerator extends PlanetGenerator {
                         if (nx >= 0 && nx < width && ny >= 0 && ny < height && wallSeed[ny][nx]) count++;
                     }
                 }
-                if (count >= 2) {
+                if (count >= 3) {
                     tiles.getn(x, y).setBlock(Blocks.stoneWall);
                 }
             }
@@ -554,7 +611,7 @@ public class Valley4PlanetGenerator extends PlanetGenerator {
                         }
                     }
                 }
-                if (hasNearbyWall && scatterRng.nextFloat() < 0.3f) {
+                if (hasNearbyWall && scatterRng.nextFloat() < 0.15f) {
                     tiles.getn(x, y).setBlock(Blocks.stoneWall);
                 }
             }
@@ -568,9 +625,9 @@ public class Valley4PlanetGenerator extends PlanetGenerator {
                     if (b == null || (!b.name.equals("山地") && !b.name.equals("山谷") && !b.name.equals("荒地"))) continue;
 
                     float r = scatterRng.nextFloat();
-                    if (r < 0.01f) {
+                    if (r < 0.005f) {
                         tiles.getn(x, y).setBlock(Blocks.stoneWall);
-                    } else if (r < 0.03f) {
+                    } else if (r < 0.02f) {
                         tiles.getn(x, y).setBlock(Blocks.boulder);
                     }
                 }
