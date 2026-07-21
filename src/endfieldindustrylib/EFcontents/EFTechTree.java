@@ -1,8 +1,7 @@
 package endfieldindustrylib.EFcontents;
 
-import mindustry.content.Blocks;
 import mindustry.content.TechTree;
-import mindustry.game.Objectives.*;
+import mindustry.ctype.UnlockableContent;
 import mindustry.type.ItemStack;
 import mindustry.type.Planet;
 
@@ -13,164 +12,111 @@ import static mindustry.content.TechTree.*;
 /**
  * 塔卫二 (taelos-II) 科技树。
  * 注册所有物品和方块到该星球。
+ *
+ * 科技树分三大分支：
+ *   - 集成工业系统（Automated Industry Complex）
+ *   - 地区（Regions）
+ *   - 物品（Items）
+ *
+ * 所有节点可直接点击解锁，无需消耗资源。
+ * 使用 freeNode 方法自动清除方块建造需求带来的 Research 目标。
  */
 public class EFTechTree {
 
+    /** 创建无消耗、无条件的研究节点，清除方块建造依赖自动添加的 Research 目标 */
+    private static TechNode freeNode(UnlockableContent content, Runnable children) {
+        TechNode n = node(content, new ItemStack[0], children);
+        n.objectives.clear();
+        return n;
+    }
+
     public static void load(Planet planet) {
-        planet.techTree = nodeRoot("taelos-II", transportBelt, () -> {
+        planet.techTree = nodeRoot("taelos-II", protocolCore, () -> {
             // ===================================================================
-            // 1. 物流运输
+            // 分支一：集成工业系统
             // ===================================================================
-            node(transportBelt, () -> {
-                node(itemControlPort, () -> {});
-                node(splitter, () -> {});
-                node(beltBridge, () -> {});
-                node(converger, () -> {});
-                node(protocolStash, () -> {});
+            freeNode(automatedIndustryComplex, () -> {
+                freeNode(basicIndustryPlan, () -> {
+                    // ———— 基础工业一期 → 二期 → 三期 ————
+                    freeNode(basicIndustryPhase1, () -> {
+                        freeNode(basicIndustryPhase2, () -> {
+                            freeNode(basicIndustryPhase3, () -> {});
+                        });
+                    });
+
+                    // ———— 基础矿物采掘 → 中级矿物采掘 → 高级矿物采掘 ————
+                    freeNode(basicMineralMining, () -> {
+                        freeNode(intermediateMineralMining, () -> {
+                            freeNode(advancedMineralMining, () -> {});
+                        });
+                    });
+
+                    // ———— 基础运输 → 传送带分流 → 传送带跨接 → 传送带汇流 ————
+                    freeNode(transportBelt, () -> {
+                        freeNode(splitter, () -> {
+                            freeNode(beltBridge, () -> {
+                                freeNode(converger, () -> {});
+                            });
+                        });
+                    });
+
+                    // ———— 物品准入口 ————
+                    freeNode(itemControlPort, () -> {});
+
+                    // ———— 基础精炼 → 基础粉碎 ————
+                    freeNode(refiningUnit, () -> {
+                        freeNode(shreddingUnit, () -> {});
+                    });
+
+                    // ———— 零件制造 → 物品塑形 → 封装工艺 → 研磨工艺 ————
+                    freeNode(fittingUnit, () -> {
+                        freeNode(mouldingUnit, () -> {
+                            freeNode(packagingUnit, () -> {
+                                freeNode(grindingUnit, () -> {});
+                            });
+                        });
+                    });
+
+                    // ———— 基础供电 → 电力传输 → 基础发电 ————
+                    freeNode(electricPylon, () -> {
+                        freeNode(relayTower, () -> {
+                            freeNode(thermalBank, () -> {});
+                        });
+                    });
+
+                    // ———— 户外储物技术 ————
+                    freeNode(protocolStash, () -> {});
+
+                    // ———— 培植工艺 ————
+                    freeNode(plantingUnit, () -> {});
+
+                    // ———— 采种机 ————
+                    freeNode(seedPickingUnit, () -> {});
+                });
             });
 
             // ===================================================================
-            // 2. 基础生产
+            // 分支二：地区
             // ===================================================================
-            // ———— 矿物 ————
-            nodeProduce(originiumOre, () -> {
-                nodeProduce(amethystOre, () -> {});
-                nodeProduce(ferriumOre, () -> {});
-
-                // ———— 精炼炉（将矿石加工为材料）————
-                node(refiningUnit, () -> {
-                    // 精炼炉产出物
-                    nodeProduce(ferrium, () -> {});
-                    nodeProduce(amethystFiber, () -> {});
-                    nodeProduce(origocrust, () -> {});
-                    nodeProduce(carbon, () -> {});
-
-                    // ———— 粉碎机（将材料粉碎为粉末）————
-                    node(shreddingUnit, () -> {
-                        nodeProduce(ferriumPowder, () -> {});
-                        nodeProduce(amethystPowder, () -> {});
-                        nodeProduce(originiumPowder, () -> {});
-                        nodeProduce(carbonPowder, () -> {});
-                        nodeProduce(origocrustPowder, () -> {});
-                        nodeProduce(buckflowerPowder, () -> {});
-                        nodeProduce(citromePowder, () -> {});
-                        nodeProduce(sandleafPowder, () -> {});
-                        nodeProduce(aketinePowder, () -> {});
-                        nodeProduce(jincaoPowder, () -> {});
-                        nodeProduce(yazhenPowder, () -> {});
-
-                        // ———— 配件机（将材料加工为零件）————
-                        node(fittingUnit, () -> {
-                            nodeProduce(ferriumPart, () -> {
-                                // ———— 研磨机（通过零件+砂叶粉进一步研磨）————
-                                node(grindingUnit, () -> {
-                                    nodeProduce(denseFerriumPowder, () -> {});
-                                    nodeProduce(crystonPowder, () -> {});
-                                    nodeProduce(denseOriginiumPowder, () -> {});
-                                    nodeProduce(denseCarbonPowder, () -> {});
-                                    nodeProduce(denseOrigocrustPowder, () -> {});
-                                    nodeProduce(groundBuckflowerPowder, () -> {});
-                                    nodeProduce(groundCitromePowder, () -> {});
-                                });
-                            });
-                            nodeProduce(amethystPart, () -> {
-                                // ———— 封装机（零件组装）————
-                                node(packagingUnit, () -> {
-                                    nodeProduce(industrialExplosive, () -> {});
-                                    nodeProduce(lcValleyBattery, () -> {
-                                        nodeProduce(scValleyBattery, () -> {
-                                            nodeProduce(hcValleyBattery, () -> {
-                                                nodeProduce(lcWulingBattery, () -> {});
-                                            });
-                                        });
-                                    });
-                                });
-                            });
-                            nodeProduce(steelPart, () -> {});
-                            nodeProduce(crystonPart, () -> {});
-                        });
-
-                        // ———— 塑形机（将材料塑形为瓶子）————
-                        node(mouldingUnit, () -> {
-                            nodeProduce(ferriumBottle, () -> {});
-                            nodeProduce(amethystBottle, () -> {});
-                            nodeProduce(steelBottle, () -> {});
-                            nodeProduce(crystonBottle, () -> {});
-                        });
+            freeNode(regionHub, () -> {
+                freeNode(quarry, () -> {});
+                freeNode(originiumResearchLab, () -> {
+                    freeNode(veinSourceArea, () -> {
+                        freeNode(energyHighland, () -> {});
                     });
                 });
             });
 
-            // ———— 植物 ————
-            nodeProduce(wood, () -> {});
-            nodeProduce(buckflower, () -> {
-                nodeProduce(firebuckle, () -> {});
-                // ———— 采种机 ————
-                node(seedPickingUnit, () -> {
-                    nodeProduce(buckflowerSeed, () -> {});
-                    nodeProduce(citromeSeed, () -> {});
-                    nodeProduce(aketineSeed, () -> {});
-                    nodeProduce(sandleafSeed, () -> {});
-                    nodeProduce(tartpepperSeed, () -> {});
-                    nodeProduce(reedRyeSeed, () -> {});
-                    nodeProduce(redjadeGinsengSeed, () -> {});
-                    nodeProduce(amberRiceSeed, () -> {});
-
-                    // ———— 种植机 ————
-                    node(plantingUnit, () -> {
-                        nodeProduce(citrome, () -> {
-                            nodeProduce(umbraline, () -> {});
-                        });
-                        nodeProduce(aketine, () -> {});
-                        nodeProduce(sandleaf, () -> {});
-                    });
-                });
-            });
-            nodeProduce(jincao, () -> {
-                nodeProduce(fluffedJincao, () -> {});
-            });
-            nodeProduce(yazhen, () -> {
-                nodeProduce(thornyYazhen, () -> {});
-            });
-            nodeProduce(tartpepper, () -> {});
-            nodeProduce(reedRye, () -> {});
-            nodeProduce(redjadeGinseng, () -> {});
-            nodeProduce(amberRice, () -> {});
-
             // ===================================================================
-            // 3. 工业产物（精炼炉进阶产物）
+            // 分支三：物品
             // ===================================================================
-            nodeProduce(stabilizedCarbon, () -> {});
-            nodeProduce(packedOrigocrust, () -> {});
-            nodeProduce(crystonFiber, () -> {});
-            nodeProduce(steel, () -> {
-                nodeProduce(xiranite, () -> {});
-            });
-            nodeProduce(amethystFiber, () -> {
-                nodeProduce(crystonFiber, () -> {});
-            });
-            nodeProduce(ferrium, () -> {
-                nodeProduce(steel, () -> {});
-            });
-
-            // ===================================================================
-            // 4. 装备原件（暂未启用）
-            // ===================================================================
-            // nodeProduce(amethystComponent, () -> {});
-            // nodeProduce(ferriumComponent, () -> {});
-            // nodeProduce(crystonComponent, () -> {});
-            // nodeProduce(xiraniteComponent, () -> {});
-
-            // ===================================================================
-            // 5. 电力供应
-            // ===================================================================
-            node(electricPylon, () -> {
-                node(relayTower, () -> {});
-                node(thermalBank, () -> {});
-            });
+            freeNode(itemsCategory, () -> {});
         });
 
-        // 为根节点设置 planet 引用，确保 Planet.init() 能关联到此科技树
+        // 为根节点设置 planet 引用
         planet.techTree.planet = planet;
+
+        // 将所有物品注册到该星球
+        EFitems.registerToPlanet(planet);
     }
 }

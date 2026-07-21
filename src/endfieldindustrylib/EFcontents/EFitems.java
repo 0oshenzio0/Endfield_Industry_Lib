@@ -1,9 +1,13 @@
 package endfieldindustrylib.EFcontents;
 
 import arc.graphics.Color;
+import arc.struct.Seq;
 import mindustry.type.Item;
+import mindustry.type.Planet;
 
 public class EFitems {
+    /** 所有注册物品列表，用于批量注册到星球 */
+    public static Seq<Item> allItems = new Seq<>();
     public static Item
             // 矿物
             originiumOre, amethystOre, ferriumOre,
@@ -30,6 +34,13 @@ public class EFitems {
             originiumPowder, origocrustPowder, denseOriginiumPowder, denseOrigocrustPowder,
             amethystPowder, crystonPowder,
             ferriumPowder, denseFerriumPowder,
+            // === 科技树标记物品 ===
+            protocolCore,
+            automatedIndustryComplex, basicIndustryPlan,
+            basicIndustryPhase1, basicIndustryPhase2, basicIndustryPhase3,
+            basicMineralMining, intermediateMineralMining, advancedMineralMining,
+            regionHub, originiumResearchLab, veinSourceArea, energyHighland, quarry,
+            itemsCategory,
             // 工业产物
             carbon, stabilizedCarbon,
             origocrust, packedOrigocrust,
@@ -142,5 +153,130 @@ public class EFitems {
 
         // 消耗品
         industrialExplosive = new Item("industrial-explosive") {{color = Color.valueOf("ff9300");cost = 1;}};
+
+        // ===== 科技树标记物品（隐藏） =====
+        protocolCore = new Item("protocol-core") {{
+            color = Color.valueOf("a0a0a0");
+            cost = 1;
+            hidden = true;
+        }};
+        automatedIndustryComplex = new Item("automated-industry-complex") {{
+            color = Color.valueOf("7ec8e3");
+            cost = 1;
+            hidden = true;
+        }};
+        basicIndustryPlan = new Item("basic-industry-plan") {{
+            color = Color.valueOf("5ab0d8");
+            cost = 1;
+            hidden = true;
+        }};
+        basicIndustryPhase1 = new Item("basic-industry-phase1") {{
+            color = Color.valueOf("91d5e8");
+            cost = 1;
+            hidden = true;
+        }};
+        basicIndustryPhase2 = new Item("basic-industry-phase2") {{
+            color = Color.valueOf("b5e2f0");
+            cost = 1;
+            hidden = true;
+        }};
+        basicIndustryPhase3 = new Item("basic-industry-phase3") {{
+            color = Color.valueOf("d4f0f7");
+            cost = 1;
+            hidden = true;
+        }};
+        regionHub = new Item("region-hub") {{
+            color = Color.valueOf("d4b48c");
+            cost = 1;
+            hidden = true;
+        }};
+        originiumResearchLab = new Item("originium-research-lab") {{
+            color = Color.valueOf("c66322");
+            cost = 1;
+            hidden = true;
+        }};
+        veinSourceArea = new Item("vein-source-area") {{
+            color = Color.valueOf("4f7ebf");
+            cost = 1;
+            hidden = true;
+        }};
+        energyHighland = new Item("energy-highland") {{
+            color = Color.valueOf("f1c40f");
+            cost = 1;
+            hidden = true;
+        }};
+        quarry = new Item("quarry") {{
+            color = Color.valueOf("b5977a");
+            cost = 1;
+            hidden = true;
+        }};
+        itemsCategory = new Item("items-category") {{
+            color = Color.valueOf("2ecc71");
+            cost = 1;
+            hidden = true;
+        }};
+        basicMineralMining = new Item("basic-mineral-mining") {{
+            color = Color.valueOf("c66322");
+            cost = 1;
+            hidden = true;
+        }};
+        intermediateMineralMining = new Item("intermediate-mineral-mining") {{
+            color = Color.valueOf("a55fc4");
+            cost = 1;
+            hidden = true;
+        }};
+        advancedMineralMining = new Item("advanced-mineral-mining") {{
+            color = Color.valueOf("4f7ebf");
+            cost = 1;
+            hidden = true;
+        }};
+
+        // ===== 收集所有物品到列表（用于批量注册） =====
+        allItems.addAll(
+            // 矿物
+            originiumOre, amethystOre, ferriumOre,
+            // 植物原料
+            wood,
+            buckflower, firebuckle, buckflowerSeed,
+            citrome, umbraline, citromeSeed,
+            aketine, aketineSeed,
+            sandleaf, sandleafSeed,
+            tartpepper, tartpepperSeed,
+            reedRye, reedRyeSeed,
+            jincao, fluffedJincao, jincaoSeed,
+            yazhen, thornyYazhen, yazhenSeed,
+            redjadeGinseng, redjadeGinsengSeed,
+            amberRice, amberRiceSeed,
+            // 粉末
+            buckflowerPowder, firebucklePowder, groundBuckflowerPowder,
+            citromePowder, citromix, groundCitromePowder,
+            aketinePowder, sandleafPowder,
+            jincaoPowder, fluffedJincaoPowder,
+            yazhenPowder, thornyYazhenPowder,
+            carbonPowder, denseCarbonPowder,
+            originiumPowder, origocrustPowder, denseOriginiumPowder, denseOrigocrustPowder,
+            amethystPowder, crystonPowder,
+            ferriumPowder, denseFerriumPowder,
+            // 工业产物
+            carbon, stabilizedCarbon,
+            origocrust, packedOrigocrust,
+            amethystFiber, crystonFiber,
+            ferrium, steel, xiranite,
+            // 电池
+            lcValleyBattery, scValleyBattery, hcValleyBattery, lcWulingBattery,
+            // 零件
+            amethystPart, ferriumPart, steelPart, crystonPart,
+            // 瓶子
+            amethystBottle, crystonBottle, ferriumBottle, steelBottle,
+            // 消耗品
+            industrialExplosive
+        );
+    }
+
+    /** 将所有物品注册到指定星球（添加到 shownPlanets） */
+    public static void registerToPlanet(Planet planet) {
+        for (Item item : allItems) {
+            item.shownPlanets.add(planet);
+        }
     }
 }
