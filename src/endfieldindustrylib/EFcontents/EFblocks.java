@@ -20,36 +20,89 @@ import endfieldindustrylib.EFworld.blocks.AICTransport.Splitter;
 import endfieldindustrylib.EFworld.blocks.AICTransport.TransportBelt;
 
 public class EFblocks {
+    // ===== 物流运输 =====
+    public static TransportBelt transportBelt;
+    public static ItemControlPort itemControlPort;
+    public static Splitter splitter;
+    public static BeltBridge beltBridge;
+    public static Converger converger;
+    public static ProtocolStash protocolStash;
+    // ===== 基础生产 =====
+    public static SeedPickingUnit seedPickingUnit;
+    public static PlantingUnit plantingUnit;
+    public static RefiningUnit refiningUnit;
+    public static ShreddingUnit shreddingUnit;
+    public static FittingUnit fittingUnit;
+    public static MouldingUnit mouldingUnit;
+    // ===== 合成制造 =====
+    public static PackagingUnit packagingUnit;
+    public static GrindingUnit grindingUnit;
+    //public static GearingUnit gearingUnit;        //装备原件机
+    //public static FillingUnit fillingUnit;        //灌装机
+    //public static SeparatingUnit separatingUnit;        //拆解机
+    //public static ReactorCrucible reactorCrucible;        //反应池
+    //public static ForgeoftheSky forgeoftheSky;        //天有洪炉
+    // ===== 电力供应 =====
+    public static RelayTower relayTower;
+    public static ElectricPylon electricPylon;
+    public static ThermalBank thermalBank;
+    //public static XiraniteRelay xiraniteRelay;        //息壤中继器
+    //public static XiranitePylon xiranitePylon;        //息壤供电桩
+
     public static void load() {
         // 注册矩形多块工厂所需的子方块
         RectGenericAICBasicFacility.registerChildBlock();
         // 物流运输
-        new TransportBelt("transport-belt").load();              // 传送带
-        new ItemControlPort("item-control-port").load();         // 物品准入口
-        new Splitter("splitter").load();                         // 分流器
-        new BeltBridge("belt-bridge").load();                    // 物流桥
-        new Converger("converger").load();                       // 汇流器
-        new ProtocolStash("protocol-stash").load();              // 协议储存箱
+        transportBelt = new TransportBelt("transport-belt");              // 传送带
+        transportBelt.load();
+        itemControlPort = new ItemControlPort("item-control-port");       // 物品准入口
+        itemControlPort.load();
+        splitter = new Splitter("splitter");                              // 分流器
+        splitter.load();
+        beltBridge = new BeltBridge("belt-bridge");                       // 物流桥
+        beltBridge.load();
+        converger = new Converger("converger");                           // 汇流器
+        converger.load();
+        protocolStash = new ProtocolStash("protocol-stash");              // 协议储存箱
+        protocolStash.load();
         // 基础生产
-        new SeedPickingUnit("seed-picking-unit").load();          //采种机
-        new PlantingUnit("planting-unit").load();                 //种植机
-        new RefiningUnit("refining-unit").load();                 //精炼炉
-        new ShreddingUnit("shredding-unit").load();               //粉碎机
-        new FittingUnit("fitting-unit").load();                   //配件机
-        new MouldingUnit("moulding-unit").load();                 //塑形机
+        seedPickingUnit = new SeedPickingUnit("seed-picking-unit");       // 采种机
+        seedPickingUnit.load();
+        plantingUnit = new PlantingUnit("planting-unit");                 // 种植机
+        plantingUnit.load();
+        refiningUnit = new RefiningUnit("refining-unit");                 // 精炼炉
+        refiningUnit.load();
+        shreddingUnit = new ShreddingUnit("shredding-unit");              // 粉碎机
+        shreddingUnit.load();
+        fittingUnit = new FittingUnit("fitting-unit");                    // 配件机
+        fittingUnit.load();
+        mouldingUnit = new MouldingUnit("moulding-unit");                 // 塑形机
+        mouldingUnit.load();
         // 合成制造
-        //new GearingUnit("gearing-unit", 4, 6).load();                       //装备原件机
-        //new FillingUnit("filling-unit", 4, 6).load();                       //灌装机
-        new PackagingUnit("packaging-unit", 4, 6).load();           //封装机
-        new GrindingUnit("grinding-unit", 4, 6).load();                     //研磨机
-        //new SeparatingUnit("separating-unit", 4, 6).load();                 //拆解机
-        //new ReactorCrucible("reactor-crucible", 4, 6).load();               //反应池
-        //new ForgeoftheSky("forge-of-the-sky").load();                 //天有洪炉
-        //电力供应
-        new RelayTower("relay-tower").load();                      //中继器
-        new ElectricPylon("electric-pylon").load();                //供电桩
-        new ThermalBank("thermal-bank").load();                    //热能池
-        //new XiraniteRelay("xiranite-relay").load();                    //息壤中继器
-        //new XiranitePylon("xiranite-pylon").load();                    //息壤供电桩
+        //gearingUnit = new GearingUnit("gearing-unit", 4, 6);        //装备原件机
+        //gearingUnit.load();
+        //fillingUnit = new FillingUnit("filling-unit", 4, 6);        //灌装机
+        //fillingUnit.load();
+        packagingUnit = new PackagingUnit("packaging-unit", 4, 6);        // 封装机
+        packagingUnit.load();
+        grindingUnit = new GrindingUnit("grinding-unit", 4, 6);           // 研磨机
+        grindingUnit.load();
+        //separatingUnit = new SeparatingUnit("separating-unit", 4, 6);        //拆解机
+        //separatingUnit.load();
+        //reactorCrucible = new ReactorCrucible("reactor-crucible", 4, 6);        //反应池
+        //reactorCrucible.load();
+        //forgeoftheSky = new ForgeoftheSky("forge-of-the-sky");        //天有洪炉
+        //forgeoftheSky.load();
+        // 电力供应
+        relayTower = new RelayTower("relay-tower");                       // 中继器
+        relayTower.load();
+        electricPylon = new ElectricPylon("electric-pylon");              // 供电桩
+        electricPylon.load();
+        thermalBank = new ThermalBank("thermal-bank");                    // 热能池
+        thermalBank.load();
+        //xiraniteRelay = new XiraniteRelay("xiranite-relay");        //息壤中继器
+        //xiraniteRelay.load();
+        //xiranitePylon = new XiranitePylon("xiranite-pylon");        //息壤供电桩
+        //xiranitePylon.load();
     }
 }
