@@ -13,6 +13,8 @@ import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Env;
 
 public class EFplanets {
+    public static Planet taelosII;
+
     public static void loadContents() {
         // ========== 1. 创建气态巨行星 "塔罗斯" ==========
         Planet talos = new Planet("talos", sun, 3f, 4) {{
@@ -56,7 +58,7 @@ public class EFplanets {
         }};
 
         // ========== 2. 创建卫星 "塔卫二"（可登陆 + 战役）==========
-        new Planet("taelos-II", talos, 0.6f, 3) {{
+        taelosII = new Planet("taelos-II", talos, 0.6f, 3) {{
             orbitTime = 60f * 300;
             rotateTime = orbitTime;                 // 潮汐锁定
             orbitSpacing = 8f;                      // 增大间距，更像地日比例
