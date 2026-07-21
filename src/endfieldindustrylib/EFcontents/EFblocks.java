@@ -1,9 +1,23 @@
 package endfieldindustrylib.EFcontents;
 
-import endfieldindustrylib.EFworld.blocks.AICBasicFacility.*;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.FittingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.GrindingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.MouldingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.PackagingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.PlantingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.RectGenericAICBasicFacility;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.RefiningUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.SeedPickingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.ShreddingUnit;
 import endfieldindustrylib.EFworld.blocks.AICDepotAccess.ProtocolStash;
-import endfieldindustrylib.EFworld.blocks.AICPower.*;
-import endfieldindustrylib.EFworld.blocks.AICTransport.*;
+import endfieldindustrylib.EFworld.blocks.AICPower.ElectricPylon;
+import endfieldindustrylib.EFworld.blocks.AICPower.RelayTower;
+import endfieldindustrylib.EFworld.blocks.AICPower.ThermalBank;
+import endfieldindustrylib.EFworld.blocks.AICTransport.BeltBridge;
+import endfieldindustrylib.EFworld.blocks.AICTransport.Converger;
+import endfieldindustrylib.EFworld.blocks.AICTransport.ItemControlPort;
+import endfieldindustrylib.EFworld.blocks.AICTransport.Splitter;
+import endfieldindustrylib.EFworld.blocks.AICTransport.TransportBelt;
 
 public class EFblocks {
     // ===== 物流运输 =====
