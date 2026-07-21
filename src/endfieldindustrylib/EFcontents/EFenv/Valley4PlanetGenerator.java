@@ -1,5 +1,8 @@
 package endfieldindustrylib.EFcontents.EFenv;
 
+import static java.lang.Math.random;
+import java.util.Random;
+
 import arc.graphics.Color;
 import arc.math.Angles;
 import arc.math.Mathf;
@@ -12,38 +15,251 @@ import mindustry.maps.generators.PlanetGenerator;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.TileGen;
+import mindustry.world.blocks.environment.Floor;
 
-/** 四号谷地枢纽区 — 修正版：高原、草地、墙体均衡 */
+/** 四号谷地枢纽区 — 群系系统版 */
 public class Valley4PlanetGenerator extends PlanetGenerator {
 
-    float heightScl = 1.0f;
-    float heightPow = 2.0f;
-    float heightMult = 2.2f;
+    // ==================== 群系定义（内部类）====================
 
+    /** 单个群系定义 */
+    public static class Biome {
+        public final String name;
+        public final float areaScale;            // 面积大小（越小斑块越大）
+        public final float heightAmplitude;      // 地形起伏高度
+        public final float heightFrequency;      // 地形起伏频率
+        public final String group;               // 关联群系组
+        public final int priority;               // 生成优先级（高值覆盖低值）
+        public final Block[] floor;              // 地面方块（低→高）
+        public final float presence;             // 出现阈值 [0,1]
 
-    Block[] terrain = {
-        Blocks.sand,               // 0.000 - 0.125
-        Blocks.sand,              // 0.125 - 0.250
-        Blocks.grass,              // 0.250 - 0.375
-        Blocks.grass,              // 0.375 - 0.500
-        Blocks.grass,
-        Blocks.grass,               // 0.500 - 0.625
-        Blocks.grass,
-        Blocks.grass,
-        Blocks.grass, 
-        Blocks.sand,
-        Blocks.stone,
-        Blocks.stone,              // 0.875 - 1.000 （高峰）
-    };
+        public Biome(String name, float areaScale, float heightAmplitude,
+                     float heightFrequency, String group, int priority,
+                     Block[] floor, float presence) {
+            this.name = name;
+            this.areaScale = areaScale;
+            this.heightAmplitude = heightAmplitude;
+            this.heightFrequency = heightFrequency;
+            this.group = group;
+            this.priority = priority;
+            this.floor = floor;
+            this.presence = presence;
+        }
+
+        public Block getFloor(float h) {
+            int idx = Mathf.clamp((int)(h * floor.length), 0, floor.length - 1);
+            return floor[idx];
+        }
+
+        @Override
+        public String toString() { return name; }
+    }
+
+    // ==================== 自定义 3D 噪声 ====================
+
+    public static class CustomNoise {
+        private final int[] perm;
+        public CustomNoise(int seed) {
+            Random rng = new Random(seed);
+            int[] p = new int[256];
+            for (int i = 0; i < 256; i++) p[i] = i;
+            for (int i = 255; i > 0; i--) {
+                int j = rng.nextInt(i + 1);
+                int tmp = p[i]; p[i] = p[j]; p[j] = tmp;
+            }
+            perm = new int[512];
+            for (int i = 0; i < 512; i++) perm[i] = p[i & 255];
+        }
+
+        private int hash3(int x, int y, int z) {
+            return perm[perm[perm[x & 255] + (y & 255)] + (z & 255)] & 255;
+        }
+
+        private float smoothstep(float t) { return t * t * (3f - 2f * t); }
+        private float lerp(float a, float b, float t) { return a + t * (b - a); }
+
+        public float noise3d(float x, float y, float z) {
+            int ix = (int)Math.floor(x), iy = (int)Math.floor(y), iz = (int)Math.floor(z);
+            float fx = x - ix, fy = y - iy, fz = z - iz;
+            float sx = smoothstep(fx), sy = smoothstep(fy), sz = smoothstep(fz);
+
+            float n000 = (hash3(ix,  iy,  iz)   / 127.5f) - 1f;
+            float n100 = (hash3(ix+1, iy,  iz)   / 127.5f) - 1f;
+            float n010 = (hash3(ix,  iy+1, iz)   / 127.5f) - 1f;
+            float n110 = (hash3(ix+1, iy+1, iz)   / 127.5f) - 1f;
+            float n001 = (hash3(ix,  iy,  iz+1) / 127.5f) - 1f;
+            float n101 = (hash3(ix+1, iy,  iz+1) / 127.5f) - 1f;
+            float n011 = (hash3(ix,  iy+1, iz+1) / 127.5f) - 1f;
+            float n111 = (hash3(ix+1, iy+1, iz+1) / 127.5f) - 1f;
+
+            float nx0 = lerp(lerp(n000, n100, sx), lerp(n010, n110, sx), sy);
+            float nx1 = lerp(lerp(n001, n101, sx), lerp(n011, n111, sx), sy);
+            return lerp(nx0, nx1, sz);
+        }
+
+        public float fbm(float x, float y, float z, int octaves, float persistence, float lacunarity) {
+            float value = 0f, amplitude = 1f, maxValue = 0f, frequency = 1f;
+            for (int i = 0; i < octaves; i++) {
+                value += noise3d(x * frequency, y * frequency, z * frequency) * amplitude;
+                maxValue += amplitude;
+                amplitude *= persistence;
+                frequency *= lacunarity;
+            }
+            return value / maxValue;
+        }
+    }
+
+    // ==================== 群系系统 ====================
+
+    public static class BiomeSystem {
+        public final Biome[] biomes;
+        public final CustomNoise noise;
+        public final int width, height;
+        public final Biome[][] biomeMap;
+        public final float[][] heightMap;
+
+        public BiomeSystem(Biome[] biomes, int width, int height, int seed) {
+            this.biomes = biomes;
+            this.width = width;
+            this.height = height;
+            this.noise = new CustomNoise(seed);
+            this.biomeMap = new Biome[height][width];
+            this.heightMap = new float[height][width];
+        }
+
+        /** 生成群系地图，只生成指定的群系（null=全部） */
+        public void generateMap(Biome... onlyThese) {
+            Biome[] active = (onlyThese == null || onlyThese.length == 0) ? biomes : onlyThese;
+            Biome fallback = findLowestPriority(active);
+
+            // 第一步：计算每个格子的群系
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    float wx = x * 0.3f, wy = y * 0.3f;
+                    Biome best = null;
+                    float bestScore = -999f;
+
+                    for (Biome b : active) {
+                        float suitability = noise.fbm(
+                            wx / b.areaScale, wy / b.areaScale, 0f,
+                            3, 0.5f, 2f
+                        );
+                        if (suitability < b.presence) continue;
+                        float score = suitability + b.priority * 0.1f;
+                        if (score > bestScore) { bestScore = score; best = b; }
+                    }
+                    biomeMap[y][x] = (best != null) ? best : fallback;
+                }
+            }
+
+            // 第二步：平滑过滤孤立散点
+            for (int pass = 0; pass < 3; pass++) {
+                Biome[][] smoothed = new Biome[height][width];
+                for (int y = 0; y < height; y++) {
+                    for (int x = 0; x < width; x++) {
+                        java.util.HashMap<Biome, Integer> cnt = new java.util.HashMap<>();
+                        int total = 0;
+                        for (int dy = -2; dy <= 2; dy++) {
+                            for (int dx = -2; dx <= 2; dx++) {
+                                int nx = x + dx, ny = y + dy;
+                                if (nx < 0 || nx >= width || ny < 0 || ny >= height) continue;
+                                cnt.put(biomeMap[ny][nx], cnt.getOrDefault(biomeMap[ny][nx], 0) + 1);
+                                total++;
+                            }
+                        }
+                        Biome best = biomeMap[y][x];
+                        int bestC = 0;
+                        for (java.util.Map.Entry<Biome, Integer> e : cnt.entrySet()) {
+                            if (e.getValue() > bestC) { bestC = e.getValue(); best = e.getKey(); }
+                        }
+                        if (best != biomeMap[y][x]) {
+                            smoothed[y][x] = best;
+                        } else {
+                            smoothed[y][x] = biomeMap[y][x];
+                        }
+                    }
+                }
+                for (int y = 0; y < height; y++) {
+                    System.arraycopy(smoothed[y], 0, biomeMap[y], 0, width);
+                }
+            }
+
+            // 第三步：生成每个群系内部的地形高度
+            generateHeights();
+        }
+
+        private void generateHeights() {
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    Biome b = biomeMap[y][x];
+                    float wx = x * 0.3f, wy = y * 0.3f;
+
+                    float raw = noise.fbm(
+                        wx * b.heightFrequency, wy * b.heightFrequency, 0f,
+                        5, 0.6f, 2f
+                    );
+
+                    float h = (raw + 1f) / 2f * b.heightAmplitude;
+                    heightMap[y][x] = Mathf.clamp(h, 0f, 1f);
+                }
+            }
+        }
+
+        public Block getFloorAt(int x, int y) {
+            if (x < 0 || x >= width || y < 0 || y >= height) return Blocks.air;
+            return biomeMap[y][x].getFloor(heightMap[y][x]);
+        }
+
+        public Biome getBiomeAt(int x, int y) {
+            if (x < 0 || x >= width || y < 0 || y >= height) return null;
+            return biomeMap[y][x];
+        }
+
+        private Biome findLowestPriority(Biome[] arr) {
+            Biome best = arr[0];
+            for (Biome b : arr) {
+                if (b.priority < best.priority) best = b;
+            }
+            return best;
+        }
+    }
+
+    // ==================== 预设群系 ====================
+
+    private static Biome[] createDefaultBiomes() {
+        return new Biome[] {
+            new Biome("平原",    16f, 0.15f, 0.3f, "flat", 0,
+                new Block[]{Blocks.grass, Blocks.grass, Blocks.grass, Blocks.grass, Blocks.stone}, 0f),
+            new Biome("稀疏平原", 12f, 0.2f,  0.4f, "flat", 1,
+                new Block[]{Blocks.sand, Blocks.grass, Blocks.grass, Blocks.grass, Blocks.stone}, 0f),
+            new Biome("沙地",     8f,  0.1f,  0.5f, "flat", 2,
+                new Block[]{Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.stone}, 0.25f),
+            new Biome("荒地",    10f,  0.3f,  0.6f, "rough", 3,
+                new Block[]{Blocks.stone, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.stone}, 0.15f),
+            new Biome("山谷",     6f,  0.4f,  1.0f, "valley", 4,
+                new Block[]{Blocks.sand, Blocks.grass, Blocks.stone, Blocks.stone, Blocks.stone}, 0.35f),
+            new Biome("山地",    10f,  0.8f,  0.8f, "high", 5,
+                new Block[]{Blocks.stone, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.stone}, 0f),
+            new Biome("河滩",     4f,  0.05f, 0.2f, "water", 8,
+                new Block[]{Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand}, 0.45f),
+            new Biome("河流",     4f,  0f,    0f,   "water", 9,
+                new Block[]{Blocks.water, Blocks.water, Blocks.water, Blocks.water, Blocks.water}, 0.80f),
+        };
+    }
+
+    // ==================== 生成器字段 ====================
+
+    float heightMult = 1.0f;
+    private BiomeSystem biomeSystem;
 
     {
-        baseSeed = 6;
+        baseSeed = (int) (random() * 999999);
         defaultLoadout = Loadouts.basicShard;
     }
 
     @Override
     public float getHeight(Vec3 position) {
-        return Mathf.pow(rawHeight(position), heightPow) * heightMult;
+        return (rawHeight(position) + 1f) / 2f * heightMult;
     }
 
     @Override
@@ -57,27 +273,15 @@ public class Valley4PlanetGenerator extends PlanetGenerator {
     }
 
     float rawHeight(Vec3 position) {
-        float main = Simplex.noise3d(seed, 7, 0.6f, 1f / heightScl, position.x, position.y, position.z);
-        float detail = Simplex.noise3d(seed + 1, 4, 0.5f, 1f / 0.3f, position.x + 100f, position.y, position.z + 50f);
+        float main = Simplex.noise3d(seed, 7, 0.6f, 1f / 0.3f, position.x, position.y, position.z);
+        float detail = Simplex.noise3d(seed + 1, 4, 0.5f, 1f / 0.08f, position.x + 100f, position.y, position.z + 50f);
         return main * 0.75f + detail * 0.25f;
-    }
-
-    Block getBlock(Vec3 position) {
-        // 关键修复：除以 1.8 保留陡峭高峰，振幅约 ±1.3，经 clamp 后仍能产生石头和沙地
-        float raw = rawHeight(position);
-        float scaled = raw /1.8f;
-        float h = Mathf.clamp(scaled * 0.5f + 0.5f, 0f, 1f);
-        return terrain[Mathf.clamp((int) (h * terrain.length), 0, terrain.length - 1)];
     }
 
     @Override
     public void genTile(Vec3 position, TileGen tile) {
-        tile.floor = getBlock(position);
+        tile.floor = Blocks.grass;
         tile.block = Blocks.air;
-
-        if (tile.floor == Blocks.grass && rand.chance(0.03)) {
-            tile.block = Blocks.shrubs;
-        }
     }
 
     int[] findSpawn(int cx, int cy, int range) {
@@ -96,109 +300,322 @@ public class Valley4PlanetGenerator extends PlanetGenerator {
         return new int[]{cx, cy};
     }
 
+    Block floorAt(int x, int y) {
+        return tiles.in(x, y) ? tiles.getn(x, y).floor() : Blocks.air;
+    }
+
+    /** ===== 群系生态细节装饰系统 ===== */
+    private void decorateBiomes() {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Tile tile = tiles.getn(x, y);
+                if (tile.block() != Blocks.air) continue;
+                Biome biome = biomeSystem.getBiomeAt(x, y);
+                if (biome == null) continue;
+
+                switch (biome.name) {
+                    case "山地": {
+                        if (rand.chance(0.03)) {
+                            tile.setBlock(Blocks.stoneWall);
+                        } else if (rand.chance(0.05)) {
+                            tile.setBlock(Blocks.boulder);
+                        } else if (rand.chance(0.015)) {
+                            // TODO: 沙叶（sand leaf）— 只在山地生长
+                            tile.setBlock(Blocks.shrubs);
+                        }
+                        break;
+                    }
+                    case "山谷": {
+                        if (rand.chance(0.025)) {
+                            tile.setBlock(Blocks.stoneWall);
+                        } else if (rand.chance(0.04)) {
+                            tile.setBlock(Blocks.boulder);
+                        }
+                        break;
+                    }
+                    case "平原": {
+                        if (rand.chance(0.005)) {
+                            tile.setBlock(Blocks.boulder);
+                        }
+                        break;
+                    }
+                    case "稀疏平原": {
+                        if (rand.chance(0.008)) {
+                            tile.setBlock(Blocks.boulder);
+                        }
+                        break;
+                    }
+                    case "沙地": {
+                        break;
+                    }
+                    case "荒地": {
+                        if (rand.chance(0.01)) {
+                            tile.setBlock(Blocks.boulder);
+                        }
+                        break;
+                    }
+                    case "河滩": {
+                        if (rand.chance(0.003)) {
+                            tile.setBlock(Blocks.boulder);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     protected void generate() {
         int cx = width / 2, cy = height / 2;
         int spawnX = cx + rand.random(-width / 6, width / 6);
         int spawnY = cy + rand.random(-height / 6, height / 6);
 
-        // ===== 河流（~55% 概率）=====
-        boolean hasRiver = noise(cx, cy, 1, 1f, 200f, 1f) > 0.45f;
+        // ===== 第一步：初始化群系系统 =====
+        Biome[] allBiomes = createDefaultBiomes();
+        biomeSystem = new BiomeSystem(allBiomes, width, height, seed + 100);
+        biomeSystem.generateMap();
+
+        // ===== 第二步：铺设地形 =====
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Tile tile = tiles.getn(x, y);
+                tile.setFloor((Floor) biomeSystem.getFloorAt(x, y));
+            }
+        }
+
+        // ===== 河流（概率路径生成，仅一条蜿蜒河流）=====
+        boolean hasRiver = rand.chance(0.55f);
         if (hasRiver) {
-            pass((x, y) -> {
-                float rn = noise(x + 200, y + 300, 5, 0.6f, 120f, 1f);
-                float riverDist = Math.abs(rn - 0.5f) * 2f;
-                if (riverDist < 0.04f) {
-                    floor = Blocks.water;
-                    block = Blocks.air;
-                    ore = Blocks.air;
-                } else if (riverDist < 0.08f) {
-                    if (floor != Blocks.water) {
-                        floor = Blocks.sand;
-                        block = Blocks.air;
+            CustomNoise riverPathNoise = new CustomNoise(seed + 200);
+            int maxSteps = (int)(Math.max(width, height) * 1.8f);
+
+            // 随机选择起始边和起始点
+            int edge = rand.random(3);
+            float sx, sy;
+            float startAngle;
+            switch (edge) {
+                case 0: sx = rand.random(width); sy = 0; startAngle = 90f; break;
+                case 1: sx = rand.random(width); sy = height - 1; startAngle = -90f; break;
+                case 2: sx = 0; sy = rand.random(height); startAngle = 0f; break;
+                default: sx = width - 1; sy = rand.random(height); startAngle = 180f; break;
+            }
+
+            boolean crossesMap = rand.chance(0.5f);
+
+            float px = sx, py = sy;
+            float angle = startAngle + (rand.nextFloat() - 0.5f) * 60f;
+            boolean[][] riverPath = new boolean[height][width];
+            int steps = 0;
+
+            for (int i = 0; i < maxSteps; i++) {
+                int ix = Mathf.clamp(Math.round(px), 0, width - 1);
+                int iy = Mathf.clamp(Math.round(py), 0, height - 1);
+                riverPath[iy][ix] = true;
+
+                float noiseVal = riverPathNoise.fbm(px * 0.06f, py * 0.06f, 0f, 3, 0.5f, 2f);
+                angle += noiseVal * 40f;
+
+                if (crossesMap) {
+                    boolean reached = false;
+                    switch (edge) {
+                        case 0: if (py >= height - 1) reached = true; break;
+                        case 1: if (py <= 0) reached = true; break;
+                        case 2: if (px >= width - 1) reached = true; break;
+                        case 3: if (px <= 0) reached = true; break;
+                    }
+                    if (reached) break;
+                } else {
+                    steps++;
+                    if (rand.chance(steps / (float)maxSteps * 0.35f)) break;
+                }
+
+                px += Mathf.cos(angle);
+                py += Mathf.sin(angle);
+            }
+
+            // 应用河流
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (riverPath[y][x]) {
+                        tiles.getn(x, y).setFloor((Floor) Blocks.water);
+                        tiles.getn(x, y).setBlock(Blocks.air);
+                    } else {
+                        boolean nearRiver = false;
+                        for (int dy = -1; dy <= 1 && !nearRiver; dy++) {
+                            for (int dx = -1; dx <= 1 && !nearRiver; dx++) {
+                                int nx = x + dx, ny = y + dy;
+                                if (nx >= 0 && nx < width && ny >= 0 && ny < height && riverPath[ny][nx]) {
+                                    nearRiver = true;
+                                }
+                            }
+                        }
+                        if (nearRiver && tiles.getn(x, y).floor() != Blocks.water) {
+                            tiles.getn(x, y).setFloor((Floor) Blocks.sand);
+                        }
                     }
                 }
-            });
+            }
         }
 
-        cells(2);
+        cells(5);
 
-        // ===== 山地边缘破碎（stone→sand 过渡）=====
-        pass((x, y) -> {
-            if (floor == Blocks.stone) {
-                if (noise(x + 300, y + 400, 4, 0.6f, 25f, 1f) < 0.35f) {
-                    floor = Blocks.sand;
-                }
-            }
-        });
-
-        // ===== 连续墙体（条件宽松，高峰密集区）=====
+        // ===== 连续墙体（只限山地/山谷/荒地 — 放宽条件版）=====
+        CustomNoise wallNoise = new CustomNoise(seed + 500);
         boolean[][] wallSeed = new boolean[width][height];
-        for (Tile tile : tiles) {
-            int x = tile.x, y = tile.y;
-            if (floorAt(x, y) == Blocks.stone && noise(x, y + 100, 3, 0.7f, 18f, 1f) > 0.55f) {
-                wallSeed[x][y] = true;
-            }
-        }
-        for (Tile tile : tiles) {
-            int x = tile.x, y = tile.y;
-            if (floorAt(x, y) != Blocks.stone) continue;
-            int count = 0;
-            for (int dx = -1; dx <= 1; dx++) {
-                for (int dy = -1; dy <= 1; dy++) {
-                    if (dx == 0 && dy == 0) continue;
-                    int nx = x + dx, ny = y + dy;
-                    if (tiles.in(nx, ny) && wallSeed[nx][ny]) count++;
+        java.util.Random scatterRng = new java.util.Random(seed + 800);
+        // 第一步：大量标记种子点
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (floorAt(x, y) == Blocks.stone) {
+                    Biome b = biomeSystem.getBiomeAt(x, y);
+                    if (b == null || (!b.name.equals("山地") && !b.name.equals("山谷") && !b.name.equals("荒地"))) continue;
+
+                    float wx = x * 0.3f, wy = y * 0.3f;
+                    float val = wallNoise.fbm(wx, wy + 20f, 0f, 3, 0.7f, 2f);
+                    if (val > 0.25f) {
+                        wallSeed[y][x] = true;
+                    }
                 }
-            }
-            if (count >= 2 && wallSeed[x][y]) {
-                tiles.getn(x, y).setBlock(Blocks.stoneWall);
             }
         }
 
-        // ===== 额外散落墙体与巨石（增加山地细节）=====
-        pass((x, y) -> {
-            if (floor == Blocks.stone && block == Blocks.air) {
-                if (rand.chance(0.004)) {
-                    block = Blocks.stoneWall;      // 散落墙
-                } else if (rand.chance(0.0125)) {
-                    block = Blocks.boulder;        // 散落巨石
+        // 第二步：只要附近有 >= 2 个种子点就放墙
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (floorAt(x, y) != Blocks.stone) continue;
+                Biome b = biomeSystem.getBiomeAt(x, y);
+                if (b == null || (!b.name.equals("山地") && !b.name.equals("山谷") && !b.name.equals("荒地"))) continue;
+
+                int count = 0;
+                for (int dy = -1; dy <= 1; dy++) {
+                    for (int dx = -1; dx <= 1; dx++) {
+                        if (dx == 0 && dy == 0) continue;
+                        int nx = x + dx, ny = y + dy;
+                        if (nx >= 0 && nx < width && ny >= 0 && ny < height && wallSeed[ny][nx]) count++;
+                    }
+                }
+                if (count >= 2) {
+                    tiles.getn(x, y).setBlock(Blocks.stoneWall);
                 }
             }
-        });
+        }
+
+        // 第三步：墙体扩张（4 轮）
+        for (int expand = 0; expand < 4; expand++) {
+            boolean[][] expandWall = new boolean[height][width];
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (tiles.getn(x, y).block() == Blocks.stoneWall) {
+                        expandWall[y][x] = true;
+                        continue;
+                    }
+                    if (floorAt(x, y) != Blocks.stone) continue;
+                    Biome b = biomeSystem.getBiomeAt(x, y);
+                    if (b == null || (!b.name.equals("山地") && !b.name.equals("山谷") && !b.name.equals("荒地"))) continue;
+
+                    int count = 0;
+                    for (int dy = -1; dy <= 1; dy++) {
+                        for (int dx = -1; dx <= 1; dx++) {
+                            if (dx == 0 && dy == 0) continue;
+                            int nx = x + dx, ny = y + dy;
+                            if (nx >= 0 && nx < width && ny >= 0 && ny < height
+                                && tiles.getn(nx, ny).block() == Blocks.stoneWall) count++;
+                        }
+                    }
+                    if (count >= 1) expandWall[y][x] = true;
+                }
+            }
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (expandWall[y][x]) {
+                        tiles.getn(x, y).setBlock(Blocks.stoneWall);
+                    }
+                }
+            }
+        }
+
+        // 第四步：补充填充
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (floorAt(x, y) != Blocks.stone) continue;
+                if (tiles.getn(x, y).block() == Blocks.stoneWall) continue;
+                Biome b = biomeSystem.getBiomeAt(x, y);
+                if (b == null || (!b.name.equals("山地") && !b.name.equals("山谷") && !b.name.equals("荒地"))) continue;
+
+                boolean hasNearbyWall = false;
+                for (int dy = -1; dy <= 1 && !hasNearbyWall; dy++) {
+                    for (int dx = -1; dx <= 1 && !hasNearbyWall; dx++) {
+                        if (dx == 0 && dy == 0) continue;
+                        int nx = x + dx, ny = y + dy;
+                        if (nx >= 0 && nx < width && ny >= 0 && ny < height
+                            && tiles.getn(nx, ny).block() == Blocks.stoneWall) {
+                            hasNearbyWall = true;
+                        }
+                    }
+                }
+                if (hasNearbyWall && scatterRng.nextFloat() < 0.3f) {
+                    tiles.getn(x, y).setBlock(Blocks.stoneWall);
+                }
+            }
+        }
+
+        // ===== 散落墙体与巨石（只限山地/山谷/荒地）=====
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (floorAt(x, y) == Blocks.stone && tiles.getn(x, y).block() == Blocks.air) {
+                    Biome b = biomeSystem.getBiomeAt(x, y);
+                    if (b == null || (!b.name.equals("山地") && !b.name.equals("山谷") && !b.name.equals("荒地"))) continue;
+
+                    float r = scatterRng.nextFloat();
+                    if (r < 0.01f) {
+                        tiles.getn(x, y).setBlock(Blocks.stoneWall);
+                    } else if (r < 0.03f) {
+                        tiles.getn(x, y).setBlock(Blocks.boulder);
+                    }
+                }
+            }
+        }
 
         blend(Blocks.stone, Blocks.sand, 3);
-
-        // ===== 植被细节 =====
-        //pass((x, y) -> {
-        //    if (block == Blocks.air) {
-                //if (floor == Blocks.grass && rand.chance(0.06)) {
-                //    block = Blocks.shrubs;
-               // }
-                // 给沙地偶尔加点枯草（装饰）
-                //if (floor == Blocks.sand && rand.chance(0.02)) {
-                //    block = Blocks.shrubs;
-                //}
-        //    }
-        //});
-
         trimDark();
-
-        // ===== 强制清理：grass 和 sand 上不允许有任何墙/非装饰方块（防止“绿色墙体”）=====
-        //for (Tile tile : tiles) {
-        //    Block f = tile.floor();
-        //    Block b = tile.block();
-        //    if ((f == Blocks.grass || f == Blocks.sand) && b != Blocks.air && b != Blocks.shrubs) {
-       //         tile.setBlock(Blocks.air);
-       //     }
-       // }
-
         distort(10f, 12f);
 
         // ===== 核心 =====
         int[] spawn = findSpawn(spawnX, spawnY, 25);
         spawnX = spawn[0];
         spawnY = spawn[1];
+
+        // ===== 核心周围强制为平原/稀疏平原 =====
+        int forceRadius = 18;
+        for (int y = Math.max(0, spawnY - forceRadius); y <= Math.min(height - 1, spawnY + forceRadius); y++) {
+            for (int x = Math.max(0, spawnX - forceRadius); x <= Math.min(width - 1, spawnX + forceRadius); x++) {
+                float dist = Mathf.dst(x, y, spawnX, spawnY);
+                if (dist <= forceRadius) {
+                    Biome target;
+                    if (dist < forceRadius * 0.4f) {
+                        target = biomeSystem.biomes[0];
+                    } else if (rand.chance(0.5f)) {
+                        target = biomeSystem.biomes[0];
+                    } else {
+                        target = biomeSystem.biomes[1];
+                    }
+                    biomeSystem.biomeMap[y][x] = target;
+                    float wx = x * 0.3f, wy = y * 0.3f;
+                    float raw = biomeSystem.noise.fbm(
+                        wx * target.heightFrequency, wy * target.heightFrequency, 0f, 5, 0.6f, 2f
+                    );
+                    biomeSystem.heightMap[y][x] = Mathf.clamp((raw + 1f) / 2f * target.heightAmplitude, 0f, 1f);
+                    tiles.getn(x, y).setFloor((Floor) biomeSystem.getFloorAt(x, y));
+
+                    if (dist < forceRadius * 0.3f) {
+                        tiles.getn(x, y).setBlock(Blocks.air);
+                    }
+                }
+            }
+        }
+
+        // ===== 核心放置 =====
         inverseFloodFill(tiles.getn(spawnX, spawnY));
         erase(spawnX, spawnY, 15);
         Schematics.placeLaunchLoadout(spawnX, spawnY);
@@ -217,7 +634,7 @@ public class Valley4PlanetGenerator extends PlanetGenerator {
             }
         }
 
-        // ===== 矿物（占位） =====
+        // ===== 矿物 =====
         pass((x, y) -> {
             if (block == Blocks.air && !nearWall(x, y)) {
                 if (noise(x + 150, y + 200, 4, 0.7f, 50f, 1f) > 0.72f) {
@@ -228,9 +645,5 @@ public class Valley4PlanetGenerator extends PlanetGenerator {
                 }
             }
         });
-    }
-
-    Block floorAt(int x, int y) {
-        return tiles.in(x, y) ? tiles.getn(x, y).floor() : Blocks.air;
     }
 }

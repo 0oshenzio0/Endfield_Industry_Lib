@@ -86,6 +86,7 @@ cloudMeshLoader = () -> new MultiMesh(
 // —— 战役要素 ——
 accessible = true;
 alwaysUnlocked = true;
+allowLaunchToNumbered = true; 
 startSector = 0;
 allowCampaignRules = true;
 allowLaunchSchematics = true;
