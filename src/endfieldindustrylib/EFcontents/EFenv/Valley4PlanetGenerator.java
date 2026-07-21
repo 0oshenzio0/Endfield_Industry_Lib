@@ -12,6 +12,7 @@ import mindustry.content.Blocks;
 import mindustry.content.Loadouts;
 import mindustry.game.Schematics;
 import mindustry.maps.generators.PlanetGenerator;
+import mindustry.type.Sector;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.TileGen;
@@ -329,6 +330,18 @@ public class Valley4PlanetGenerator extends PlanetGenerator {
         return 5000f;
     }
 
+    /**地图尺寸为 800×800（最大尺寸） */
+    @Override
+    public int getSectorSize(Sector sector) {
+        return 600;
+    }
+
+    /** 覆写为空方法，去掉游戏源码 trimDark() 导致的错误黑色边界 */
+    @Override
+    public void trimDark() {
+        // 不做任何操作，避免产生黑色边缘墙壁
+    }
+
     float rawHeight(Vec3 position) {
         float main = Simplex.noise3d(seed, 7, 0.6f, 1f / 0.3f, position.x, position.y, position.z);
         float detail = Simplex.noise3d(seed + 1, 4, 0.5f, 1f / 0.08f, position.x + 100f, position.y, position.z + 50f);
@@ -635,7 +648,6 @@ public class Valley4PlanetGenerator extends PlanetGenerator {
         }
 
         blend(Blocks.stone, Blocks.sand, 3);
-        trimDark();
         distort(10f, 12f);
 
         // ===== 核心 =====
