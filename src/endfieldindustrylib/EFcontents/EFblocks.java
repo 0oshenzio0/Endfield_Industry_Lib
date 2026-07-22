@@ -1,6 +1,14 @@
 package endfieldindustrylib.EFcontents;
 
-import endfieldindustrylib.EFworld.blocks.AICBasicFacility.*;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.FittingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.GrindingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.MouldingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.PackagingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.PlantingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.RectGenericAICBasicFacility;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.RefiningUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.SeedPickingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.ShreddingUnit;
 import endfieldindustrylib.EFworld.blocks.AICDepotAccess.ProtocolStash;
 import endfieldindustrylib.EFworld.blocks.AICPower.*;
 import endfieldindustrylib.EFworld.blocks.AICTransport.*;
