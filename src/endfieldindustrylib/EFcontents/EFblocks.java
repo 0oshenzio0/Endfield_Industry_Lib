@@ -13,6 +13,8 @@ import endfieldindustrylib.EFworld.blocks.AICDepotAccess.ProtocolStash;
 import endfieldindustrylib.EFworld.blocks.AICPower.ElectricPylon;
 import endfieldindustrylib.EFworld.blocks.AICPower.RelayTower;
 import endfieldindustrylib.EFworld.blocks.AICPower.ThermalBank;
+import endfieldindustrylib.EFworld.blocks.AICErosion.ErosionCore;
+import endfieldindustrylib.EFworld.blocks.AICErosion.ErosionWall;
 import endfieldindustrylib.EFworld.blocks.AICTransport.BeltBridge;
 import endfieldindustrylib.EFworld.blocks.AICTransport.Converger;
 import endfieldindustrylib.EFworld.blocks.AICTransport.ItemControlPort;
@@ -48,6 +50,9 @@ public class EFblocks {
     public static ThermalBank thermalBank;
     //public static XiraniteRelay xiraniteRelay;        //息壤中继器
     //public static XiranitePylon xiranitePylon;        //息壤供电桩
+    // ===== 侵蚀结构（战役专属） =====
+    public static ErosionCore erosionCore;
+    public static ErosionWall erosionWall;
 
     public static void load() {
         // 注册矩形多块工厂所需的子方块
@@ -104,5 +109,10 @@ public class EFblocks {
         //xiraniteRelay.load();
         //xiranitePylon = new XiranitePylon("xiranite-pylon");        //息壤供电桩
         //xiranitePylon.load();
+        // 侵蚀结构（战役专属）
+        erosionCore = new ErosionCore("erosion-core");
+        erosionCore.load();
+        erosionWall = new ErosionWall("erosion-wall");
+        erosionWall.load();
     }
 }

@@ -1,6 +1,5 @@
 package endfieldindustrylib.EFcontents;
 
-import mindustry.content.TechTree;
 import mindustry.ctype.UnlockableContent;
 import mindustry.type.ItemStack;
 import mindustry.type.Planet;
@@ -96,13 +95,21 @@ public class EFTechTree {
             });
 
             // ===================================================================
-            // 分支二：地区
+            // 分支二：地区（战役关卡链）
             // ===================================================================
             freeNode(regionHub, () -> {
                 freeNode(quarry, () -> {});
+                freeNode(regionHubII, () -> {});
                 freeNode(originiumResearchLab, () -> {
+                    freeNode(originiumResearchLabII, () -> {});
                     freeNode(veinSourceArea, () -> {
-                        freeNode(energyHighland, () -> {});
+                        freeNode(erosionCore, () -> {
+                            freeNode(erosionWall, () -> {});
+                        });
+                        freeNode(veinSourceAreaII, () -> {});
+                        freeNode(energyHighland, () -> {
+                            freeNode(energyHighlandII, () -> {});
+                        });
                     });
                 });
             });
@@ -114,7 +121,10 @@ public class EFTechTree {
         });
 
         // 为根节点设置 planet 引用
-        planet.techTree.planet = planet;
+        var rootNode = planet.techTree;
+        if (rootNode != null) {
+            rootNode.planet = planet;
+        }
 
         // 将所有物品注册到该星球
         EFitems.registerToPlanet(planet);

@@ -40,6 +40,7 @@ public class EFitems {
             basicIndustryPhase1, basicIndustryPhase2, basicIndustryPhase3,
             basicMineralMining, intermediateMineralMining, advancedMineralMining,
             regionHub, originiumResearchLab, veinSourceArea, energyHighland, quarry,
+            regionHubII, originiumResearchLabII, veinSourceAreaII, energyHighlandII,
             itemsCategory,
             // 工业产物
             carbon, stabilizedCarbon,
@@ -205,6 +206,26 @@ public class EFitems {
             cost = 1;
             hidden = true;
         }};
+        regionHubII = new Item("region-hub-ii") {{
+            color = Color.valueOf("c9a87c");
+            cost = 1;
+            hidden = true;
+        }};
+        originiumResearchLabII = new Item("originium-research-lab-ii") {{
+            color = Color.valueOf("b85c1e");
+            cost = 1;
+            hidden = true;
+        }};
+        veinSourceAreaII = new Item("vein-source-area-ii") {{
+            color = Color.valueOf("3b6cb0");
+            cost = 1;
+            hidden = true;
+        }};
+        energyHighlandII = new Item("energy-highland-ii") {{
+            color = Color.valueOf("d4ac0d");
+            cost = 1;
+            hidden = true;
+        }};
         quarry = new Item("quarry") {{
             color = Color.valueOf("b5977a");
             cost = 1;
@@ -257,6 +278,7 @@ public class EFitems {
             originiumPowder, origocrustPowder, denseOriginiumPowder, denseOrigocrustPowder,
             amethystPowder, crystonPowder,
             ferriumPowder, denseFerriumPowder,
+            regionHubII, originiumResearchLabII, veinSourceAreaII, energyHighlandII,
             // 工业产物
             carbon, stabilizedCarbon,
             origocrust, packedOrigocrust,
