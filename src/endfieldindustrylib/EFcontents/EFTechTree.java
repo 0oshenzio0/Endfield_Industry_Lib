@@ -75,7 +75,7 @@ public class EFTechTree {
         EFblocks.registerToPlanet(planet);
 
         // ==== 4. 构建显示用科技树 ====
-        planet.techTree = nodeRoot("taelos-II", protocolCore, () -> {
+        planet.techTree = nodeRoot("taelos-II", planet, () -> {
             freeNode(automatedIndustryComplex, () -> {
                 freeNode(basicIndustryPlan, () -> {
                     freeNode(basicIndustryPhase1, () -> {
