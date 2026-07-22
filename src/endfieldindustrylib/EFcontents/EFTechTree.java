@@ -1,6 +1,6 @@
 package endfieldindustrylib.EFcontents;
 
-import mindustry.content.TechTree;
+import mindustry.content.TechTree.TechNode;
 import mindustry.ctype.UnlockableContent;
 import mindustry.type.ItemStack;
 import mindustry.type.Planet;
@@ -11,93 +11,116 @@ import static mindustry.content.TechTree.*;
 
 /**
  * 塔卫二 (taelos-II) 科技树。
- * 注册所有物品和方块到该星球。
- *
- * 科技树分三大分支：
- *   - 集成工业系统（Automated Industry Complex）
- *   - 地区（Regions）
- *   - 物品（Items）
- *
- * 所有节点可直接点击解锁，无需消耗资源。
- * 使用 freeNode 方法自动清除方块建造需求带来的 Research 目标。
+ * 使用 TechTreeNode 自定义节点，支持：
+ * - 节点名称和描述（bundle 文件配置）
+ * - 节点花费（研究消耗）
+ * - 解锁关联的多个内容（unlockables）
  */
 public class EFTechTree {
 
-    /** 创建无消耗、无条件的研究节点，清除方块建造依赖自动添加的 Research 目标 */
     private static TechNode freeNode(UnlockableContent content, Runnable children) {
         TechNode n = node(content, new ItemStack[0], children);
         n.objectives.clear();
         return n;
     }
 
+    private static TechNode orphanNode(UnlockableContent content, ItemStack[] requirements) {
+        TechNode n = new TechNode(null, content, requirements);
+        n.objectives.clear();
+        return n;
+    }
+
     public static void load(Planet planet) {
-        planet.techTree = nodeRoot("taelos-II", protocolCore, () -> {
-            // ===================================================================
-            // 分支一：集成工业系统
-            // ===================================================================
+        // ==== 1. 为所有方块创建孤立科技节点 ====
+        // 消耗 1 个隐藏研究凭证，只能通过 TechTreeNode.onUnlock → quietUnlock 解锁
+        ItemStack[] gateCost = ItemStack.with(EFitems.researchGate, 1);
+        orphanNode(transportBelt, gateCost);
+        orphanNode(itemControlPort, gateCost);
+        orphanNode(splitter, gateCost);
+        orphanNode(beltBridge, gateCost);
+        orphanNode(converger, gateCost);
+        orphanNode(refiningUnit, gateCost);
+        orphanNode(mouldingUnit, gateCost);
+        orphanNode(shreddingUnit, gateCost);
+        orphanNode(fittingUnit, gateCost);
+        orphanNode(packagingUnit, gateCost);
+        orphanNode(electricPylon, gateCost);
+        orphanNode(relayTower, gateCost);
+        orphanNode(thermalBank, gateCost);
+        orphanNode(protocolStash, gateCost);
+        orphanNode(seedPickingUnit, gateCost);
+        orphanNode(plantingUnit, gateCost);
+        orphanNode(grindingUnit, gateCost);
+
+        // ==== 2. 配置每个科技树节点解锁的内容 ====
+        basicTransport.unlockables.add(transportBelt);
+        itemAccessPort.unlockables.add(itemControlPort);
+        beltSplitting.unlockables.add(splitter);
+        beltBridging.unlockables.add(beltBridge);
+        beltConverging.unlockables.add(converger);
+        basicRefining.unlockables.add(refiningUnit);
+        itemMoulding.unlockables.add(mouldingUnit);
+        basicShredding.unlockables.add(shreddingUnit);
+        partsManufacturing.unlockables.add(fittingUnit);
+        packagingTech.unlockables.add(packagingUnit);
+        basicPower.unlockables.add(electricPylon);
+        powerTransmission.unlockables.add(relayTower);
+        powerGeneration.unlockables.add(thermalBank);
+        outdoorStorage.unlockables.add(protocolStash);
+        grindingTech.unlockables.add(grindingUnit);
+        // 培植工艺一次性解锁采种机和种植机
+        cultivationTechnology.unlockables.addAll(seedPickingUnit, plantingUnit);
+
+        // ==== 3. 将所有方块注册到星球 ====
+        EFblocks.registerToPlanet(planet);
+
+        // ==== 4. 构建显示用科技树 ====
+        planet.techTree = nodeRoot("taelos-II", planet, () -> {
             freeNode(automatedIndustryComplex, () -> {
                 freeNode(basicIndustryPlan, () -> {
-                    // ———— 基础工业一期 → 二期 → 三期 ————
                     freeNode(basicIndustryPhase1, () -> {
                         freeNode(basicIndustryPhase2, () -> {
                             freeNode(basicIndustryPhase3, () -> {});
                         });
                     });
-
-                    // ———— 基础矿物采掘 → 中级矿物采掘 → 高级矿物采掘 ————
                     freeNode(basicMineralMining, () -> {
                         freeNode(intermediateMineralMining, () -> {
                             freeNode(advancedMineralMining, () -> {});
                         });
                     });
-
-                    // ———— 基础运输 → 传送带分流 → 传送带跨接 → 传送带汇流 ————
-                    freeNode(transportBelt, () -> {
-                        freeNode(splitter, () -> {
-                            freeNode(beltBridge, () -> {
-                                freeNode(converger, () -> {});
+                    freeNode(basicTransport, () -> {
+                        freeNode(itemAccessPort, () -> {
+                            freeNode(beltSplitting, () -> {
+                                freeNode(beltBridging, () -> {
+                                    freeNode(beltConverging, () -> {});
+                                });
                             });
                         });
                     });
-
-                    // ———— 物品准入口 ————
-                    freeNode(itemControlPort, () -> {});
-
-                    // ———— 基础精炼 → 基础粉碎 ————
-                    freeNode(refiningUnit, () -> {
-                        freeNode(shreddingUnit, () -> {});
-                    });
-
-                    // ———— 零件制造 → 物品塑形 → 封装工艺 → 研磨工艺 ————
-                    freeNode(fittingUnit, () -> {
-                        freeNode(mouldingUnit, () -> {
-                            freeNode(packagingUnit, () -> {
-                                freeNode(grindingUnit, () -> {});
+                    freeNode(basicRefining, () -> {
+                        freeNode(itemMoulding, () -> {
+                            freeNode(filler, () -> {
+                                freeNode(cultivationTechnology, () -> {
+                                    freeNode(grindingTech, () -> {});
+                                });
                             });
                         });
                     });
-
-                    // ———— 基础供电 → 电力传输 → 基础发电 ————
-                    freeNode(electricPylon, () -> {
-                        freeNode(relayTower, () -> {
-                            freeNode(thermalBank, () -> {});
+                    freeNode(basicShredding, () -> {
+                        freeNode(partsManufacturing, () -> {
+                            freeNode(packagingTech, () -> {});
                         });
                     });
-
-                    // ———— 户外储物技术 ————
-                    freeNode(protocolStash, () -> {});
-
-                    // ———— 培植工艺 ————
-                    freeNode(plantingUnit, () -> {});
-
-                    // ———— 采种机 ————
-                    freeNode(seedPickingUnit, () -> {});
+                    freeNode(basicPower, () -> {
+                        freeNode(powerTransmission, () -> {
+                            freeNode(powerGeneration, () -> {
+                                freeNode(warehouseAccess, () -> {});
+                            });
+                        });
+                    });
+                    freeNode(outdoorStorage, () -> {});
                 });
             });
-
-            // ===================================================================
-            // 分支二：地区
-            // ===================================================================
             freeNode(regionHub, () -> {
                 freeNode(quarry, () -> {});
                 freeNode(originiumResearchLab, () -> {
@@ -106,17 +129,10 @@ public class EFTechTree {
                     });
                 });
             });
-
-            // ===================================================================
-            // 分支三：物品
-            // ===================================================================
             freeNode(itemsCategory, () -> {});
         });
 
-        // 为根节点设置 planet 引用
         planet.techTree.planet = planet;
-
-        // 将所有物品注册到该星球
         EFitems.registerToPlanet(planet);
     }
 }

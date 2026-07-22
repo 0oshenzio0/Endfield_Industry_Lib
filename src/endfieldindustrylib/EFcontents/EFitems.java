@@ -5,6 +5,8 @@ import arc.struct.Seq;
 import mindustry.type.Item;
 import mindustry.type.Planet;
 
+import endfieldindustrylib.EFcontents.TechTreeNode;
+
 public class EFitems {
     /** 所有注册物品列表，用于批量注册到星球 */
     public static Seq<Item> allItems = new Seq<>();
@@ -33,14 +35,21 @@ public class EFitems {
             carbonPowder, denseCarbonPowder,
             originiumPowder, origocrustPowder, denseOriginiumPowder, denseOrigocrustPowder,
             amethystPowder, crystonPowder,
-            ferriumPowder, denseFerriumPowder,
-            // === 科技树标记物品 ===
+            ferriumPowder, denseFerriumPowder;
+    // ===== 科技树自定义节点 =====
+    public static TechTreeNode
             protocolCore,
             automatedIndustryComplex, basicIndustryPlan,
             basicIndustryPhase1, basicIndustryPhase2, basicIndustryPhase3,
             basicMineralMining, intermediateMineralMining, advancedMineralMining,
+            basicTransport, itemAccessPort, beltSplitting, beltBridging, beltConverging,
+            basicRefining, itemMoulding, filler, cultivationTechnology, grindingTech,
+            basicShredding, partsManufacturing, packagingTech,
+            basicPower, powerTransmission, powerGeneration, warehouseAccess,
+            outdoorStorage,
             regionHub, originiumResearchLab, veinSourceArea, energyHighland, quarry,
-            itemsCategory,
+            itemsCategory;
+    public static Item
             // 工业产物
             carbon, stabilizedCarbon,
             origocrust, packedOrigocrust,
@@ -56,6 +65,8 @@ public class EFitems {
             amethystBottle, crystonBottle, ferriumBottle, steelBottle,
             // 消耗品
             industrialExplosive;
+    /** 隐藏的研究凭证，用于孤立科技节点的消耗 */
+    public static Item researchGate;
 
     public static void load() {
         // 矿物
@@ -154,82 +165,41 @@ public class EFitems {
         // 消耗品
         industrialExplosive = new Item("industrial-explosive") {{color = Color.valueOf("ff9300");cost = 1;}};
 
-        // ===== 科技树标记物品（隐藏） =====
-        protocolCore = new Item("protocol-core") {{
-            color = Color.valueOf("a0a0a0");
-            cost = 1;
-            hidden = true;
-        }};
-        automatedIndustryComplex = new Item("automated-industry-complex") {{
-            color = Color.valueOf("7ec8e3");
-            cost = 1;
-            hidden = true;
-        }};
-        basicIndustryPlan = new Item("basic-industry-plan") {{
-            color = Color.valueOf("5ab0d8");
-            cost = 1;
-            hidden = true;
-        }};
-        basicIndustryPhase1 = new Item("basic-industry-phase1") {{
-            color = Color.valueOf("91d5e8");
-            cost = 1;
-            hidden = true;
-        }};
-        basicIndustryPhase2 = new Item("basic-industry-phase2") {{
-            color = Color.valueOf("b5e2f0");
-            cost = 1;
-            hidden = true;
-        }};
-        basicIndustryPhase3 = new Item("basic-industry-phase3") {{
-            color = Color.valueOf("d4f0f7");
-            cost = 1;
-            hidden = true;
-        }};
-        regionHub = new Item("region-hub") {{
-            color = Color.valueOf("d4b48c");
-            cost = 1;
-            hidden = true;
-        }};
-        originiumResearchLab = new Item("originium-research-lab") {{
-            color = Color.valueOf("c66322");
-            cost = 1;
-            hidden = true;
-        }};
-        veinSourceArea = new Item("vein-source-area") {{
-            color = Color.valueOf("4f7ebf");
-            cost = 1;
-            hidden = true;
-        }};
-        energyHighland = new Item("energy-highland") {{
-            color = Color.valueOf("f1c40f");
-            cost = 1;
-            hidden = true;
-        }};
-        quarry = new Item("quarry") {{
-            color = Color.valueOf("b5977a");
-            cost = 1;
-            hidden = true;
-        }};
-        itemsCategory = new Item("items-category") {{
-            color = Color.valueOf("2ecc71");
-            cost = 1;
-            hidden = true;
-        }};
-        basicMineralMining = new Item("basic-mineral-mining") {{
-            color = Color.valueOf("c66322");
-            cost = 1;
-            hidden = true;
-        }};
-        intermediateMineralMining = new Item("intermediate-mineral-mining") {{
-            color = Color.valueOf("a55fc4");
-            cost = 1;
-            hidden = true;
-        }};
-        advancedMineralMining = new Item("advanced-mineral-mining") {{
-            color = Color.valueOf("4f7ebf");
-            cost = 1;
-            hidden = true;
-        }};
+        // ===== 科技树自定义节点 =====
+        protocolCore = new TechTreeNode("protocol-core") {{ color = Color.valueOf("a0a0a0"); }};
+        automatedIndustryComplex = new TechTreeNode("automated-industry-complex") {{ color = Color.valueOf("7ec8e3"); }};
+        basicIndustryPlan = new TechTreeNode("basic-industry-plan") {{ color = Color.valueOf("5ab0d8"); }};
+        basicIndustryPhase1 = new TechTreeNode("basic-industry-phase1") {{ color = Color.valueOf("91d5e8"); }};
+        basicIndustryPhase2 = new TechTreeNode("basic-industry-phase2") {{ color = Color.valueOf("b5e2f0"); }};
+        basicIndustryPhase3 = new TechTreeNode("basic-industry-phase3") {{ color = Color.valueOf("d4f0f7"); }};
+        regionHub = new TechTreeNode("region-hub") {{ color = Color.valueOf("d4b48c"); }};
+        originiumResearchLab = new TechTreeNode("originium-research-lab") {{ color = Color.valueOf("c66322"); }};
+        veinSourceArea = new TechTreeNode("vein-source-area") {{ color = Color.valueOf("4f7ebf"); }};
+        energyHighland = new TechTreeNode("energy-highland") {{ color = Color.valueOf("f1c40f"); }};
+        quarry = new TechTreeNode("quarry") {{ color = Color.valueOf("b5977a"); }};
+        itemsCategory = new TechTreeNode("items-category") {{ color = Color.valueOf("2ecc71"); }};
+        basicMineralMining = new TechTreeNode("basic-mineral-mining") {{ color = Color.valueOf("c66322"); }};
+        intermediateMineralMining = new TechTreeNode("intermediate-mineral-mining") {{ color = Color.valueOf("a55fc4"); }};
+        advancedMineralMining = new TechTreeNode("advanced-mineral-mining") {{ color = Color.valueOf("4f7ebf"); }};
+        filler = new TechTreeNode("filler") {{ color = Color.valueOf("95a5a6"); }};
+        cultivationTechnology = new TechTreeNode("cultivation-technology") {{ color = Color.valueOf("27ae60"); }};
+        warehouseAccess = new TechTreeNode("warehouse-access") {{ color = Color.valueOf("7f8c8d"); }};
+        basicTransport = new TechTreeNode("basic-transport") {{ color = Color.valueOf("7f8c8d"); }};
+        itemAccessPort = new TechTreeNode("item-access-port") {{ color = Color.valueOf("95a5a6"); }};
+        beltSplitting = new TechTreeNode("belt-splitting") {{ color = Color.valueOf("aab7b8"); }};
+        beltBridging = new TechTreeNode("belt-bridging") {{ color = Color.valueOf("bdc3c7"); }};
+        beltConverging = new TechTreeNode("belt-converging") {{ color = Color.valueOf("d5dbdb"); }};
+        basicRefining = new TechTreeNode("basic-refining") {{ color = Color.valueOf("c0392b"); }};
+        itemMoulding = new TechTreeNode("item-moulding") {{ color = Color.valueOf("e74c3c"); }};
+        grindingTech = new TechTreeNode("grinding-tech") {{ color = Color.valueOf("ff9300"); }};
+        basicShredding = new TechTreeNode("basic-shredding") {{ color = Color.valueOf("8e44ad"); }};
+        partsManufacturing = new TechTreeNode("parts-manufacturing") {{ color = Color.valueOf("9b59b6"); }};
+        packagingTech = new TechTreeNode("packaging-tech") {{ color = Color.valueOf("a569bd"); }};
+        basicPower = new TechTreeNode("basic-power") {{ color = Color.valueOf("f39c12"); }};
+        powerTransmission = new TechTreeNode("power-transmission") {{ color = Color.valueOf("e67e22"); }};
+        powerGeneration = new TechTreeNode("power-generation") {{ color = Color.valueOf("d35400"); }};
+        outdoorStorage = new TechTreeNode("outdoor-storage") {{ color = Color.valueOf("2c3e50"); }};
+        researchGate = new Item("research-gate") {{ hidden = true; cost = 0; color = Color.clear; }};
 
         // ===== 收集所有物品到列表（用于批量注册） =====
         allItems.addAll(

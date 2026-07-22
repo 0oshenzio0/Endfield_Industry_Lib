@@ -1,11 +1,19 @@
 package endfieldindustrylib.EFcontents;
 
-import endfieldindustrylib.EFworld.blocks.AICBasicFacility.*;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.FittingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.GrindingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.MouldingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.PackagingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.PlantingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.RectGenericAICBasicFacility;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.RefiningUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.SeedPickingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.ShreddingUnit;
 import endfieldindustrylib.EFworld.blocks.AICDepotAccess.ProtocolStash;
 import endfieldindustrylib.EFworld.blocks.AICPower.*;
 import endfieldindustrylib.EFworld.blocks.AICTransport.*;
-import endfieldindustrylib.EFworld.blocks.AICTurret.GunTower;
-import endfieldindustrylib.EFworld.blocks.AICTurret.GrenadeTower;
+import endfieldindustrylib.EFworld.blocks.AICTurret.*;
+import mindustry.type.Planet;
 
 public class EFblocks {
     // ===== 物流运输 =====
@@ -95,5 +103,26 @@ public class EFblocks {
         // 战斗辅助
         new GunTower("gun-tower").load();                              //铳械塔
         new GrenadeTower("grenade-tower").load();    
+    }
+
+    /** 将所有方块注册到指定星球 */
+    public static void registerToPlanet(Planet planet) {
+        transportBelt.shownPlanets.add(planet);
+        itemControlPort.shownPlanets.add(planet);
+        splitter.shownPlanets.add(planet);
+        beltBridge.shownPlanets.add(planet);
+        converger.shownPlanets.add(planet);
+        protocolStash.shownPlanets.add(planet);
+        seedPickingUnit.shownPlanets.add(planet);
+        plantingUnit.shownPlanets.add(planet);
+        refiningUnit.shownPlanets.add(planet);
+        shreddingUnit.shownPlanets.add(planet);
+        fittingUnit.shownPlanets.add(planet);
+        mouldingUnit.shownPlanets.add(planet);
+        packagingUnit.shownPlanets.add(planet);
+        grindingUnit.shownPlanets.add(planet);
+        electricPylon.shownPlanets.add(planet);
+        relayTower.shownPlanets.add(planet);
+        thermalBank.shownPlanets.add(planet);
     }
 }
