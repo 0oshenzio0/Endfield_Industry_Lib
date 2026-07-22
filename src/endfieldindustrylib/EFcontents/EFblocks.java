@@ -115,4 +115,25 @@ public class EFblocks {
         erosionWall = new ErosionWall("erosion-wall");
         erosionWall.load();
     }
+
+    /** 将所有方块注册到指定星球 */
+    public static void registerToPlanet(Planet planet) {
+        transportBelt.shownPlanets.add(planet);
+        itemControlPort.shownPlanets.add(planet);
+        splitter.shownPlanets.add(planet);
+        beltBridge.shownPlanets.add(planet);
+        converger.shownPlanets.add(planet);
+        protocolStash.shownPlanets.add(planet);
+        seedPickingUnit.shownPlanets.add(planet);
+        plantingUnit.shownPlanets.add(planet);
+        refiningUnit.shownPlanets.add(planet);
+        shreddingUnit.shownPlanets.add(planet);
+        fittingUnit.shownPlanets.add(planet);
+        mouldingUnit.shownPlanets.add(planet);
+        packagingUnit.shownPlanets.add(planet);
+        grindingUnit.shownPlanets.add(planet);
+        electricPylon.shownPlanets.add(planet);
+        relayTower.shownPlanets.add(planet);
+        thermalBank.shownPlanets.add(planet);
+    }
 }
