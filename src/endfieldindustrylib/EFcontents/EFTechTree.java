@@ -51,47 +51,46 @@ public class EFTechTree {
                         });
                     });
 
-                    // ———— 基础运输 → 传送带分流 → 传送带跨接 → 传送带汇流 ————
-                    freeNode(transportBelt, () -> {
-                        freeNode(splitter, () -> {
-                            freeNode(beltBridge, () -> {
-                                freeNode(converger, () -> {});
+                    // ———— 基础运输 → 物品准入口 → 传送带分流 → 传送带跨接 → 传送带汇流 ————
+                    freeNode(basicTransport, () -> {
+                        freeNode(itemAccessPort, () -> {
+                            freeNode(beltSplitting, () -> {
+                                freeNode(beltBridging, () -> {
+                                    freeNode(beltConverging, () -> {});
+                                });
                             });
                         });
                     });
 
-                    // ———— 物品准入口 ————
-                    freeNode(itemControlPort, () -> {});
-
-                    // ———— 基础精炼 → 基础粉碎 ————
-                    freeNode(refiningUnit, () -> {
-                        freeNode(shreddingUnit, () -> {});
-                    });
-
-                    // ———— 零件制造 → 物品塑形 → 封装工艺 → 研磨工艺 ————
-                    freeNode(fittingUnit, () -> {
-                        freeNode(mouldingUnit, () -> {
-                            freeNode(packagingUnit, () -> {
-                                freeNode(grindingUnit, () -> {});
+                    // ———— 基础精炼 → 物品塑形 → 灌装机 → 培植工艺 → 研磨工艺 ————
+                    freeNode(basicRefining, () -> {
+                        freeNode(itemMoulding, () -> {
+                            freeNode(filler, () -> {
+                                freeNode(cultivationTechnology, () -> {
+                                    freeNode(grindingTech, () -> {});
+                                });
                             });
                         });
                     });
 
-                    // ———— 基础供电 → 电力传输 → 基础发电 ————
-                    freeNode(electricPylon, () -> {
-                        freeNode(relayTower, () -> {
-                            freeNode(thermalBank, () -> {});
+                    // ———— 基础粉碎 → 零件制造 → 封装工艺 ————
+                    freeNode(basicShredding, () -> {
+                        freeNode(partsManufacturing, () -> {
+                            freeNode(packagingTech, () -> {});
+                        });
+                    });
+
+                    // ———— 基础供电 → 电力传输 → 基础发电 → 仓库存取线 ————
+                    freeNode(basicPower, () -> {
+                        freeNode(powerTransmission, () -> {
+                            freeNode(powerGeneration, () -> {
+                                freeNode(warehouseAccess, () -> {});
+                            });
                         });
                     });
 
                     // ———— 户外储物技术 ————
-                    freeNode(protocolStash, () -> {});
-
-                    // ———— 培植工艺 ————
-                    freeNode(plantingUnit, () -> {});
-
-                    // ———— 采种机 ————
-                    freeNode(seedPickingUnit, () -> {});
+                    freeNode(outdoorStorage, () -> {});
                 });
             });
 
@@ -116,7 +115,8 @@ public class EFTechTree {
         // 为根节点设置 planet 引用
         planet.techTree.planet = planet;
 
-        // 将所有物品注册到该星球
+        // 将所有物品和方块注册到该星球（无科技树节点的方块也可用）
         EFitems.registerToPlanet(planet);
+        EFblocks.registerToPlanet(planet);
     }
 }

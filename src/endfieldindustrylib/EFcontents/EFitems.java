@@ -39,6 +39,11 @@ public class EFitems {
             automatedIndustryComplex, basicIndustryPlan,
             basicIndustryPhase1, basicIndustryPhase2, basicIndustryPhase3,
             basicMineralMining, intermediateMineralMining, advancedMineralMining,
+            basicTransport, itemAccessPort, beltSplitting, beltBridging, beltConverging,
+            basicRefining, itemMoulding, filler, cultivationTechnology, grindingTech,
+            basicShredding, partsManufacturing, packagingTech,
+            basicPower, powerTransmission, powerGeneration, warehouseAccess,
+            outdoorStorage,
             regionHub, originiumResearchLab, veinSourceArea, energyHighland, quarry,
             itemsCategory,
             // 工业产物
@@ -210,6 +215,21 @@ public class EFitems {
             cost = 1;
             hidden = true;
         }};
+        filler = new Item("filler") {{
+            color = Color.valueOf("95a5a6");
+            cost = 1;
+            hidden = true;
+        }};
+        cultivationTechnology = new Item("cultivation-technology") {{
+            color = Color.valueOf("27ae60");
+            cost = 1;
+            hidden = true;
+        }};
+        warehouseAccess = new Item("warehouse-access") {{
+            color = Color.valueOf("7f8c8d");
+            cost = 1;
+            hidden = true;
+        }};
         itemsCategory = new Item("items-category") {{
             color = Color.valueOf("2ecc71");
             cost = 1;
@@ -230,6 +250,21 @@ public class EFitems {
             cost = 1;
             hidden = true;
         }};
+        basicTransport = new Item("basic-transport") {{color = Color.valueOf("7f8c8d");cost = 1;hidden = true;}};
+        itemAccessPort = new Item("item-access-port") {{color = Color.valueOf("95a5a6");cost = 1;hidden = true;}};
+        beltSplitting = new Item("belt-splitting") {{color = Color.valueOf("aab7b8");cost = 1;hidden = true;}};
+        beltBridging = new Item("belt-bridging") {{color = Color.valueOf("bdc3c7");cost = 1;hidden = true;}};
+        beltConverging = new Item("belt-converging") {{color = Color.valueOf("d5dbdb");cost = 1;hidden = true;}};
+        basicRefining = new Item("basic-refining") {{color = Color.valueOf("c0392b");cost = 1;hidden = true;}};
+        itemMoulding = new Item("item-moulding") {{color = Color.valueOf("e74c3c");cost = 1;hidden = true;}};
+        grindingTech = new Item("grinding-tech") {{color = Color.valueOf("ff9300");cost = 1;hidden = true;}};
+        basicShredding = new Item("basic-shredding") {{color = Color.valueOf("8e44ad");cost = 1;hidden = true;}};
+        partsManufacturing = new Item("parts-manufacturing") {{color = Color.valueOf("9b59b6");cost = 1;hidden = true;}};
+        packagingTech = new Item("packaging-tech") {{color = Color.valueOf("a569bd");cost = 1;hidden = true;}};
+        basicPower = new Item("basic-power") {{color = Color.valueOf("f39c12");cost = 1;hidden = true;}};
+        powerTransmission = new Item("power-transmission") {{color = Color.valueOf("e67e22");cost = 1;hidden = true;}};
+        powerGeneration = new Item("power-generation") {{color = Color.valueOf("d35400");cost = 1;hidden = true;}};
+        outdoorStorage = new Item("outdoor-storage") {{color = Color.valueOf("2c3e50");cost = 1;hidden = true;}};
 
         // ===== 收集所有物品到列表（用于批量注册） =====
         allItems.addAll(
