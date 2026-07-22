@@ -1,7 +1,8 @@
 package endfieldindustrylib.EFworld.blocks.AICBasicFacility;
 
 import endfieldindustrylib.EFcontents.EFitems;
-import mindustry.type.*;
+import mindustry.type.Category;
+import mindustry.type.ItemStack;
 
 public class ShreddingUnit extends GenericAICBasicFacility {
 
@@ -45,16 +46,16 @@ public class ShreddingUnit extends GenericAICBasicFacility {
                 new ItemStack[]{ new ItemStack(EFitems.origocrustPowder, 1) },
                 120f
             ),
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.buckflower, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.buckflowerPowder, 2) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.citrome, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.citromePowder, 2) },
-                120f
-            ),
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.buckflower, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.buckflowerPowder, 2) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.citrome, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.citromePowder, 2) },
+            //    120f
+            //),
             new Recipe(
                 new ItemStack[]{ new ItemStack(EFitems.sandleaf, 1) },
                 new ItemStack[]{ new ItemStack(EFitems.sandleafPowder, 3) },
@@ -65,16 +66,16 @@ public class ShreddingUnit extends GenericAICBasicFacility {
                 new ItemStack[]{ new ItemStack(EFitems.aketinePowder, 2) },
                 120f
             ),
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.jincao, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.jincaoPowder, 2) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.yazhen, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.yazhenPowder, 2) },
-                120f
-            )
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.jincao, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.jincaoPowder, 2) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.yazhen, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.yazhenPowder, 2) },
+            //    120f
+            //)
         };
 
     }

@@ -1,7 +1,8 @@
 package endfieldindustrylib.EFworld.blocks.AICBasicFacility;
 
 import endfieldindustrylib.EFcontents.EFitems;
-import mindustry.type.*;
+import mindustry.type.Category;
+import mindustry.type.ItemStack;
 
 public class PlantingUnit extends GenericAICBasicFacility {
 
@@ -20,16 +21,16 @@ public class PlantingUnit extends GenericAICBasicFacility {
         outputSlotDefs = new SlotDef[]{ new SlotDef(null) };
 
         recipes = new Recipe[]{
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.buckflowerSeed, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.buckflower, 1) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.citromeSeed, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.citrome, 1) },
-                120f
-            ),
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.buckflowerSeed, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.buckflower, 1) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.citromeSeed, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.citrome, 1) },
+            //    120f
+            //),
             new Recipe(
                 new ItemStack[]{ new ItemStack(EFitems.sandleafSeed, 1) },
                 new ItemStack[]{ new ItemStack(EFitems.sandleaf, 1) },

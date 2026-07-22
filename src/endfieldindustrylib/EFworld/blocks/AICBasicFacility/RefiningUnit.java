@@ -1,7 +1,8 @@
 package endfieldindustrylib.EFworld.blocks.AICBasicFacility;
 
 import endfieldindustrylib.EFcontents.EFitems;
-import mindustry.type.*;
+import mindustry.type.Category;
+import mindustry.type.ItemStack;
 
 public class RefiningUnit extends GenericAICBasicFacility {
 
@@ -61,11 +62,11 @@ public class RefiningUnit extends GenericAICBasicFacility {
                 new ItemStack[] { new ItemStack(EFitems.denseOrigocrustPowder, 1) },
                 120f
             ),
-            new Recipe(
-                new ItemStack[] { new ItemStack(EFitems.buckflower, 1) },
-                new ItemStack[] { new ItemStack(EFitems.carbon, 1) },
-                120f
-            ),
+            //new Recipe(
+            //    new ItemStack[] { new ItemStack(EFitems.buckflower, 1) },
+            //    new ItemStack[] { new ItemStack(EFitems.carbon, 1) },
+            //    120f
+            //),
 
             // 隐藏配方（需先加工一次解锁）
             new Recipe(
@@ -88,66 +89,66 @@ public class RefiningUnit extends GenericAICBasicFacility {
                 new ItemStack[] { new ItemStack(EFitems.origocrustPowder, 1) },
                 120f
             ),
-            new Recipe(
-                new ItemStack[] { new ItemStack(EFitems.citrome, 1) },
-                new ItemStack[] { new ItemStack(EFitems.carbon, 1) },
-                120f
-            ),
+            //new Recipe(
+            //    new ItemStack[] { new ItemStack(EFitems.citrome, 1) },
+            //    new ItemStack[] { new ItemStack(EFitems.carbon, 1) },
+            //    120f
+            //),
             new Recipe(
                 new ItemStack[] { new ItemStack(EFitems.sandleaf, 1) },
                 new ItemStack[] { new ItemStack(EFitems.carbon, 1) },
                 120f
             ),
-            new Recipe(
-                new ItemStack[] { new ItemStack(EFitems.jincao, 1) },
-                new ItemStack[] { new ItemStack(EFitems.carbon, 2) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[] { new ItemStack(EFitems.yazhen, 1) },
-                new ItemStack[] { new ItemStack(EFitems.carbon, 2) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[] { new ItemStack(EFitems.wood, 1) },
-                new ItemStack[] { new ItemStack(EFitems.carbon, 1) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[] { new ItemStack(EFitems.buckflowerPowder, 1) },
-                new ItemStack[] { new ItemStack(EFitems.carbonPowder, 1) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[] { new ItemStack(EFitems.citromePowder, 1) },
-                new ItemStack[] { new ItemStack(EFitems.carbonPowder, 1) },
-                120f
-            ),
+            //new Recipe(
+            //    new ItemStack[] { new ItemStack(EFitems.jincao, 1) },
+            //    new ItemStack[] { new ItemStack(EFitems.carbon, 2) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[] { new ItemStack(EFitems.yazhen, 1) },
+            //    new ItemStack[] { new ItemStack(EFitems.carbon, 2) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[] { new ItemStack(EFitems.wood, 1) },
+            //    new ItemStack[] { new ItemStack(EFitems.carbon, 1) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[] { new ItemStack(EFitems.buckflowerPowder, 1) },
+            //    new ItemStack[] { new ItemStack(EFitems.carbonPowder, 1) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[] { new ItemStack(EFitems.citromePowder, 1) },
+            //    new ItemStack[] { new ItemStack(EFitems.carbonPowder, 1) },
+            //    120f
+            //),
             new Recipe(
                 new ItemStack[] { new ItemStack(EFitems.sandleafPowder, 3) },
                 new ItemStack[] { new ItemStack(EFitems.carbonPowder, 2) },
                 120f
             ),
-            new Recipe(
-                new ItemStack[] { new ItemStack(EFitems.jincaoPowder, 1) },
-                new ItemStack[] { new ItemStack(EFitems.carbonPowder, 2) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[] { new ItemStack(EFitems.yazhenPowder, 1) },
-                new ItemStack[] { new ItemStack(EFitems.carbonPowder, 2) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[] { new ItemStack(EFitems.groundBuckflowerPowder, 1) },
-                new ItemStack[] { new ItemStack(EFitems.denseCarbonPowder, 1) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[] { new ItemStack(EFitems.groundCitromePowder, 1) },
-                new ItemStack[] { new ItemStack(EFitems.denseCarbonPowder, 1) },
-                120f
-            )
+            //new Recipe(
+            //    new ItemStack[] { new ItemStack(EFitems.jincaoPowder, 1) },
+            //    new ItemStack[] { new ItemStack(EFitems.carbonPowder, 2) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[] { new ItemStack(EFitems.yazhenPowder, 1) },
+            //    new ItemStack[] { new ItemStack(EFitems.carbonPowder, 2) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[] { new ItemStack(EFitems.groundBuckflowerPowder, 1) },
+            //    new ItemStack[] { new ItemStack(EFitems.denseCarbonPowder, 1) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[] { new ItemStack(EFitems.groundCitromePowder, 1) },
+            //    new ItemStack[] { new ItemStack(EFitems.denseCarbonPowder, 1) },
+            //    120f
+            //)
         };
     }
     

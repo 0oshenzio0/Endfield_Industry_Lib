@@ -14,24 +14,24 @@ public class EFitems {
             // 矿物
             originiumOre, amethystOre, ferriumOre,
             // 植物
-            wood,
-            buckflower, firebuckle, buckflowerSeed,
-            citrome, umbraline, citromeSeed,
+            //wood,
+            //buckflower, firebuckle, buckflowerSeed,
+            //citrome, umbraline, citromeSeed,
             aketine, aketineSeed,
             sandleaf, sandleafSeed,
-            tartpepper, tartpepperSeed,
-            reedRye, reedRyeSeed,
-            jincao, fluffedJincao, jincaoSeed,
-            yazhen, thornyYazhen, yazhenSeed,
-            redjadeGinseng, redjadeGinsengSeed,
-            amberRice, amberRiceSeed,
+            //tartpepper, tartpepperSeed,
+            //reedRye, reedRyeSeed,
+            //jincao, fluffedJincao, jincaoSeed,
+            //yazhen, thornyYazhen, yazhenSeed,
+            //redjadeGinseng, redjadeGinsengSeed,
+            //amberRice, amberRiceSeed,
             // 粉末
-            buckflowerPowder, firebucklePowder, groundBuckflowerPowder,
-            citromePowder, citromix, groundCitromePowder,
+            //buckflowerPowder, firebucklePowder, groundBuckflowerPowder,
+            //citromePowder, citromix, groundCitromePowder,
             aketinePowder,
             sandleafPowder,
-            jincaoPowder, fluffedJincaoPowder,
-            yazhenPowder, thornyYazhenPowder,
+            //jincaoPowder, fluffedJincaoPowder,
+            //yazhenPowder, thornyYazhenPowder,
             carbonPowder, denseCarbonPowder,
             originiumPowder, origocrustPowder, denseOriginiumPowder, denseOrigocrustPowder,
             amethystPowder, crystonPowder,
@@ -60,9 +60,9 @@ public class EFitems {
             // 零件
             amethystPart, ferriumPart, steelPart, crystonPart,
             // 装备原件
-            amethystComponent, ferriumComponent, crystonComponent, xiraniteComponent,
+            //amethystComponent, ferriumComponent, crystonComponent, xiraniteComponent,
             // 瓶子
-            amethystBottle, crystonBottle, ferriumBottle, steelBottle,
+            //amethystBottle, crystonBottle, ferriumBottle, steelBottle,
             // 消耗品
             industrialExplosive;
     /** 隐藏的研究凭证，用于孤立科技节点的消耗 */
@@ -75,6 +75,7 @@ public class EFitems {
         ferriumOre = new Item("ferrium-ore") {{color = Color.valueOf("4f7ebf");hardness = 3;cost = 1;}};
 
         // 植物
+        /*
         wood = new Item("wood") {{cost = 1;}};
         buckflower = new Item("buckflower") {{color = Color.valueOf("d4a5a5");cost = 1;}};
         firebuckle = new Item("firebuckle") {{color = Color.valueOf("e67e22");cost = 1;}};
@@ -82,10 +83,12 @@ public class EFitems {
         citrome = new Item("citrome") {{color = Color.valueOf("f1c40f");cost = 1;}};
         umbraline = new Item("umbraline") {{color = Color.valueOf("2c3e50");cost = 1;}};
         citromeSeed = new Item("citrome-seed") {{color = Color.valueOf("7d3c98");cost = 1;}};
+        */
         aketine = new Item("aketine") {{color = Color.valueOf("27ae60");cost = 1;}};
         aketineSeed = new Item("aketine-seed") {{color = Color.valueOf("1e8449");cost = 1;}};
         sandleaf = new Item("sandleaf") {{color = Color.valueOf("f4d03f");cost = 1;}};
         sandleafSeed = new Item("sandleaf-seed") {{color = Color.valueOf("b7950b");cost = 1;}};
+        /*
         tartpepper = new Item("tartpepper") {{color = Color.valueOf("e74c3c");cost = 1;}};
         tartpepperSeed = new Item("tartpepper-seed") {{color = Color.valueOf("c0392b");cost = 1;}};
         reedRye = new Item("reed-rye") {{color = Color.valueOf("95a5a6");cost = 1;}};
@@ -100,20 +103,21 @@ public class EFitems {
         redjadeGinsengSeed = new Item("redjade-ginseng-seed") {{color = Color.valueOf("b5345e");cost = 1;}};
         amberRice = new Item("amber-rice") {{color = Color.valueOf("f6e58d");cost = 1;}};
         amberRiceSeed = new Item("amber-rice-seed") {{color = Color.valueOf("f1c40f");cost = 1;}};
+        */
 
         // 粉末
-        buckflowerPowder = new Item("buckflower-powder") {{color = Color.valueOf("e8c4c4");cost = 1;}};
-        firebucklePowder = new Item("firebuckle-powder") {{color = Color.valueOf("f5b041");cost = 1;}};
-        groundBuckflowerPowder = new Item("ground-buckflower-powder") {{color = Color.valueOf("d7b19d");cost = 1;}};
-        citromePowder = new Item("citrome-powder") {{color = Color.valueOf("f7dc6f");cost = 1;}};
-        citromix = new Item("citromix") {{color = Color.valueOf("f39c12");cost = 1;}};
-        groundCitromePowder = new Item("ground-citrome-powder") {{color = Color.valueOf("d4ac0d");cost = 1;}};
+        //buckflowerPowder = new Item("buckflower-powder") {{color = Color.valueOf("e8c4c4");cost = 1;}};
+        //firebucklePowder = new Item("firebuckle-powder") {{color = Color.valueOf("f5b041");cost = 1;}};
+        //groundBuckflowerPowder = new Item("ground-buckflower-powder") {{color = Color.valueOf("d7b19d");cost = 1;}};
+        //citromePowder = new Item("citrome-powder") {{color = Color.valueOf("f7dc6f");cost = 1;}};
+        //citromix = new Item("citromix") {{color = Color.valueOf("f39c12");cost = 1;}};
+        //groundCitromePowder = new Item("ground-citrome-powder") {{color = Color.valueOf("d4ac0d");cost = 1;}};
         aketinePowder = new Item("aketine-powder") {{color = Color.valueOf("82e0aa");cost = 1;}};
         sandleafPowder = new Item("sandleaf-powder") {{color = Color.valueOf("f7dc6f");cost = 1;}};
-        jincaoPowder = new Item("jincao-powder") {{color = Color.valueOf("a9dfbf");cost = 1;}};
-        fluffedJincaoPowder = new Item("fluffed-jincao-powder") {{color = Color.valueOf("f8c471");cost = 1;}};
-        yazhenPowder = new Item("yazhen-powder") {{color = Color.valueOf("a3e4d7");cost = 1;}};
-        thornyYazhenPowder = new Item("thorny-yazhen-powder") {{color = Color.valueOf("76d7c4");cost = 1;}};
+        //jincaoPowder = new Item("jincao-powder") {{color = Color.valueOf("a9dfbf");cost = 1;}};
+        //fluffedJincaoPowder = new Item("fluffed-jincao-powder") {{color = Color.valueOf("f8c471");cost = 1;}};
+        //yazhenPowder = new Item("yazhen-powder") {{color = Color.valueOf("a3e4d7");cost = 1;}};
+        //thornyYazhenPowder = new Item("thorny-yazhen-powder") {{color = Color.valueOf("76d7c4");cost = 1;}};
         carbonPowder = new Item("carbon-powder") {{color = Color.valueOf("5d6d7e");cost = 1;}};
         denseCarbonPowder = new Item("dense-carbon-powder") {{color = Color.valueOf("2e4053");cost = 1;}};
         originiumPowder = new Item("originium-powder") {{color = Color.valueOf("b03a2e");cost = 1;}};
@@ -151,16 +155,16 @@ public class EFitems {
         crystonPart = new Item("cryston-part") {{color = Color.valueOf("8e44ad");cost = 1;}};
 
         // 装备原件
-        amethystComponent = new Item("amethyst-component") {{color = Color.valueOf("9b59b6");cost = 1;}};
-        ferriumComponent = new Item("ferrium-component") {{color = Color.valueOf("3498db");cost = 1;}};
-        crystonComponent = new Item("cryston-component") {{color = Color.valueOf("8e44ad");cost = 1;}};
-        xiraniteComponent = new Item("xiranite-component") {{color = Color.valueOf("d4ac0d");cost = 1;}};
+        //amethystComponent = new Item("amethyst-component") {{color = Color.valueOf("9b59b6");cost = 1;}};
+        //ferriumComponent = new Item("ferrium-component") {{color = Color.valueOf("3498db");cost = 1;}};
+        //crystonComponent = new Item("cryston-component") {{color = Color.valueOf("8e44ad");cost = 1;}};
+        //xiraniteComponent = new Item("xiranite-component") {{color = Color.valueOf("d4ac0d");cost = 1;}};
 
         // 瓶子
-        amethystBottle = new Item("amethyst-bottle") {{color = Color.valueOf("c39bd3");cost = 1;}};
-        crystonBottle = new Item("cryston-bottle") {{color = Color.valueOf("a569bd");cost = 1;}};
-        ferriumBottle = new Item("ferrium-bottle") {{color = Color.valueOf("85c1e2");cost = 1;}};
-        steelBottle = new Item("steel-bottle") {{color = Color.valueOf("85c1e2");cost = 1;}};
+        //amethystBottle = new Item("amethyst-bottle") {{color = Color.valueOf("c39bd3");cost = 1;}};
+        //crystonBottle = new Item("cryston-bottle") {{color = Color.valueOf("a569bd");cost = 1;}};
+        //ferriumBottle = new Item("ferrium-bottle") {{color = Color.valueOf("85c1e2");cost = 1;}};
+        //steelBottle = new Item("steel-bottle") {{color = Color.valueOf("85c1e2");cost = 1;}};
 
         // 消耗品
         industrialExplosive = new Item("industrial-explosive") {{color = Color.valueOf("ff9300");cost = 1;}};
@@ -206,23 +210,23 @@ public class EFitems {
             // 矿物
             originiumOre, amethystOre, ferriumOre,
             // 植物原料
-            wood,
-            buckflower, firebuckle, buckflowerSeed,
-            citrome, umbraline, citromeSeed,
+            //wood,
+            //buckflower, firebuckle, buckflowerSeed,
+            //citrome, umbraline, citromeSeed,
             aketine, aketineSeed,
             sandleaf, sandleafSeed,
-            tartpepper, tartpepperSeed,
-            reedRye, reedRyeSeed,
-            jincao, fluffedJincao, jincaoSeed,
-            yazhen, thornyYazhen, yazhenSeed,
-            redjadeGinseng, redjadeGinsengSeed,
-            amberRice, amberRiceSeed,
+            //tartpepper, tartpepperSeed,
+            //reedRye, reedRyeSeed,
+            //jincao, fluffedJincao, jincaoSeed,
+            //yazhen, thornyYazhen, yazhenSeed,
+            //redjadeGinseng, redjadeGinsengSeed,
+            //amberRice, amberRiceSeed,
             // 粉末
-            buckflowerPowder, firebucklePowder, groundBuckflowerPowder,
-            citromePowder, citromix, groundCitromePowder,
+            //buckflowerPowder, firebucklePowder, groundBuckflowerPowder,
+            //citromePowder, citromix, groundCitromePowder,
             aketinePowder, sandleafPowder,
-            jincaoPowder, fluffedJincaoPowder,
-            yazhenPowder, thornyYazhenPowder,
+            //jincaoPowder, fluffedJincaoPowder,
+            //yazhenPowder, thornyYazhenPowder,
             carbonPowder, denseCarbonPowder,
             originiumPowder, origocrustPowder, denseOriginiumPowder, denseOrigocrustPowder,
             amethystPowder, crystonPowder,
@@ -237,7 +241,7 @@ public class EFitems {
             // 零件
             amethystPart, ferriumPart, steelPart, crystonPart,
             // 瓶子
-            amethystBottle, crystonBottle, ferriumBottle, steelBottle,
+            //amethystBottle, crystonBottle, ferriumBottle, steelBottle,
             // 消耗品
             industrialExplosive
         );
