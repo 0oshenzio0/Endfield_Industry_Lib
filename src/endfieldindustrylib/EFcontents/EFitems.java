@@ -28,7 +28,7 @@ public class EFitems {
             //citromePowder, citromix, groundCitromePowder,
             aketinePowder,
             sandleafPowder,
-            fluffedJincaoPowder,
+            //jincaoPowder, fluffedJincaoPowder,
             //yazhenPowder, thornyYazhenPowder,
             carbonPowder, denseCarbonPowder,
             originiumPowder, origocrustPowder, denseOriginiumPowder, denseOrigocrustPowder,
@@ -64,17 +64,20 @@ public class EFitems {
         ferriumOre = new Item("ferrium-ore") {{color = Color.valueOf("4f7ebf");hardness = 3;cost = 1;}};
 
         // 植物
-        aketine = new Item("aketine") {{color = Color.valueOf("27ae60");cost = 1;}};
-        aketineSeed = new Item("aketine-seed") {{color = Color.valueOf("1e8449");cost = 1;}};
-        sandleaf = new Item("sandleaf") {{color = Color.valueOf("f4d03f");cost = 1;}};
-        sandleafSeed = new Item("sandleaf-seed") {{color = Color.valueOf("b7950b");cost = 1;}};
-/*      wood = new Item("wood") {{cost = 1;}};
+        /*
+        wood = new Item("wood") {{cost = 1;}};
         buckflower = new Item("buckflower") {{color = Color.valueOf("d4a5a5");cost = 1;}};
         firebuckle = new Item("firebuckle") {{color = Color.valueOf("e67e22");cost = 1;}};
         buckflowerSeed = new Item("buckflower-seed") {{color = Color.valueOf("b87333");cost = 1;}};
         citrome = new Item("citrome") {{color = Color.valueOf("f1c40f");cost = 1;}};
         umbraline = new Item("umbraline") {{color = Color.valueOf("2c3e50");cost = 1;}};
         citromeSeed = new Item("citrome-seed") {{color = Color.valueOf("7d3c98");cost = 1;}};
+        */
+        aketine = new Item("aketine") {{color = Color.valueOf("27ae60");cost = 1;}};
+        aketineSeed = new Item("aketine-seed") {{color = Color.valueOf("1e8449");cost = 1;}};
+        sandleaf = new Item("sandleaf") {{color = Color.valueOf("f4d03f");cost = 1;}};
+        sandleafSeed = new Item("sandleaf-seed") {{color = Color.valueOf("b7950b");cost = 1;}};
+        /*
         tartpepper = new Item("tartpepper") {{color = Color.valueOf("e74c3c");cost = 1;}};
         tartpepperSeed = new Item("tartpepper-seed") {{color = Color.valueOf("c0392b");cost = 1;}};
         reedRye = new Item("reed-rye") {{color = Color.valueOf("95a5a6");cost = 1;}};
@@ -89,7 +92,8 @@ public class EFitems {
         redjadeGinsengSeed = new Item("redjade-ginseng-seed") {{color = Color.valueOf("b5345e");cost = 1;}};
         amberRice = new Item("amber-rice") {{color = Color.valueOf("f6e58d");cost = 1;}};
         amberRiceSeed = new Item("amber-rice-seed") {{color = Color.valueOf("f1c40f");cost = 1;}};
-*/
+        */
+
         // 粉末
         //buckflowerPowder = new Item("buckflower-powder") {{color = Color.valueOf("e8c4c4");cost = 1;}};
         //firebucklePowder = new Item("firebuckle-powder") {{color = Color.valueOf("f5b041");cost = 1;}};
@@ -100,7 +104,7 @@ public class EFitems {
         aketinePowder = new Item("aketine-powder") {{color = Color.valueOf("82e0aa");cost = 1;}};
         sandleafPowder = new Item("sandleaf-powder") {{color = Color.valueOf("f7dc6f");cost = 1;}};
         //jincaoPowder = new Item("jincao-powder") {{color = Color.valueOf("a9dfbf");cost = 1;}};
-        fluffedJincaoPowder = new Item("fluffed-jincao-powder") {{color = Color.valueOf("f8c471");cost = 1;}};
+        //fluffedJincaoPowder = new Item("fluffed-jincao-powder") {{color = Color.valueOf("f8c471");cost = 1;}};
         //yazhenPowder = new Item("yazhen-powder") {{color = Color.valueOf("a3e4d7");cost = 1;}};
         //thornyYazhenPowder = new Item("thorny-yazhen-powder") {{color = Color.valueOf("76d7c4");cost = 1;}};
         carbonPowder = new Item("carbon-powder") {{color = Color.valueOf("5d6d7e");cost = 1;}};
@@ -251,7 +255,7 @@ public class EFitems {
             //buckflowerPowder, firebucklePowder, groundBuckflowerPowder,
             //citromePowder, citromix, groundCitromePowder,
             aketinePowder, sandleafPowder,
-            fluffedJincaoPowder,
+            //jincaoPowder, fluffedJincaoPowder,
             //yazhenPowder, thornyYazhenPowder,
             carbonPowder, denseCarbonPowder,
             originiumPowder, origocrustPowder, denseOriginiumPowder, denseOrigocrustPowder,
