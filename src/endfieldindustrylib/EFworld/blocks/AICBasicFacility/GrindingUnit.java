@@ -1,7 +1,8 @@
 package endfieldindustrylib.EFworld.blocks.AICBasicFacility;
 
 import endfieldindustrylib.EFcontents.EFitems;
-import mindustry.type.*;
+import mindustry.type.Category;
+import mindustry.type.ItemStack;
 
 public class GrindingUnit extends RectGenericAICBasicFacility {
     public GrindingUnit(String name, int width, int height) {
@@ -44,16 +45,16 @@ public class GrindingUnit extends RectGenericAICBasicFacility {
                 new ItemStack[]{ new ItemStack(EFitems.denseOrigocrustPowder, 1) },
                 120f
             ),
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.buckflowerPowder, 2), new ItemStack(EFitems.sandleafPowder, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.groundBuckflowerPowder, 1) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.citromePowder, 2), new ItemStack(EFitems.sandleafPowder, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.groundCitromePowder, 1) },
-                120f
-            )
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.buckflowerPowder, 2), new ItemStack(EFitems.sandleafPowder, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.groundBuckflowerPowder, 1) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.citromePowder, 2), new ItemStack(EFitems.sandleafPowder, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.groundCitromePowder, 1) },
+            //    120f
+            //)
         };
 
     }
