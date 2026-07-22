@@ -48,10 +48,10 @@ public class EFitems {
             basicPower, powerTransmission, powerGeneration, warehouseAccess,
             outdoorStorage,
             regionHub, originiumResearchLab, veinSourceArea, energyHighland, quarry,
-            regionHubII, originiumResearchLabII, veinSourceAreaII, energyHighlandII,
-            itemsCategory,
             itemsCategory;
     public static Item
+            // 战役关卡（II 阶地图标记）
+            regionHubII, originiumResearchLabII, veinSourceAreaII, energyHighlandII,
             // 工业产物
             carbon, stabilizedCarbon,
             origocrust, packedOrigocrust,
@@ -167,57 +167,7 @@ public class EFitems {
         // 消耗品
         industrialExplosive = new Item("industrial-explosive") {{color = Color.valueOf("ff9300");cost = 1;}};
 
-        // ===== 科技树标记物品（隐藏） =====
-        protocolCore = new Item("protocol-core") {{
-            color = Color.valueOf("a0a0a0");
-            cost = 1;
-            hidden = true;
-        }};
-        automatedIndustryComplex = new Item("automated-industry-complex") {{
-            color = Color.valueOf("7ec8e3");
-            cost = 1;
-            hidden = true;
-        }};
-        basicIndustryPlan = new Item("basic-industry-plan") {{
-            color = Color.valueOf("5ab0d8");
-            cost = 1;
-            hidden = true;
-        }};
-        basicIndustryPhase1 = new Item("basic-industry-phase1") {{
-            color = Color.valueOf("91d5e8");
-            cost = 1;
-            hidden = true;
-        }};
-        basicIndustryPhase2 = new Item("basic-industry-phase2") {{
-            color = Color.valueOf("b5e2f0");
-            cost = 1;
-            hidden = true;
-        }};
-        basicIndustryPhase3 = new Item("basic-industry-phase3") {{
-            color = Color.valueOf("d4f0f7");
-            cost = 1;
-            hidden = true;
-        }};
-        regionHub = new Item("region-hub") {{
-            color = Color.valueOf("d4b48c");
-            cost = 1;
-            hidden = true;
-        }};
-        originiumResearchLab = new Item("originium-research-lab") {{
-            color = Color.valueOf("c66322");
-            cost = 1;
-            hidden = true;
-        }};
-        veinSourceArea = new Item("vein-source-area") {{
-            color = Color.valueOf("4f7ebf");
-            cost = 1;
-            hidden = true;
-        }};
-        energyHighland = new Item("energy-highland") {{
-            color = Color.valueOf("f1c40f");
-            cost = 1;
-            hidden = true;
-        }};
+        // ===== 科技树标记物品（隐藏）- 战役关卡 =====
         regionHubII = new Item("region-hub-ii") {{
             color = Color.valueOf("c9a87c");
             cost = 1;
@@ -235,31 +185,6 @@ public class EFitems {
         }};
         energyHighlandII = new Item("energy-highland-ii") {{
             color = Color.valueOf("d4ac0d");
-            cost = 1;
-            hidden = true;
-        }};
-        quarry = new Item("quarry") {{
-            color = Color.valueOf("b5977a");
-            cost = 1;
-            hidden = true;
-        }};
-        itemsCategory = new Item("items-category") {{
-            color = Color.valueOf("2ecc71");
-            cost = 1;
-            hidden = true;
-        }};
-        basicMineralMining = new Item("basic-mineral-mining") {{
-            color = Color.valueOf("c66322");
-            cost = 1;
-            hidden = true;
-        }};
-        intermediateMineralMining = new Item("intermediate-mineral-mining") {{
-            color = Color.valueOf("a55fc4");
-            cost = 1;
-            hidden = true;
-        }};
-        advancedMineralMining = new Item("advanced-mineral-mining") {{
-            color = Color.valueOf("4f7ebf");
             cost = 1;
             hidden = true;
         }};
