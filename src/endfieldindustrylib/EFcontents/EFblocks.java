@@ -1,5 +1,7 @@
 package endfieldindustrylib.EFcontents;
 
+import endfieldindustrylib.EFcontents.EFenv.HarvestablePlant;
+import endfieldindustrylib.EFcontents.EFenv.OreStone;
 import endfieldindustrylib.EFworld.blocks.AICBasicFacility.FittingUnit;
 import endfieldindustrylib.EFworld.blocks.AICBasicFacility.GrindingUnit;
 import endfieldindustrylib.EFworld.blocks.AICBasicFacility.MouldingUnit;
@@ -20,9 +22,18 @@ import endfieldindustrylib.EFworld.blocks.AICTransport.Converger;
 import endfieldindustrylib.EFworld.blocks.AICTransport.ItemControlPort;
 import endfieldindustrylib.EFworld.blocks.AICTransport.Splitter;
 import endfieldindustrylib.EFworld.blocks.AICTransport.TransportBelt;
+import arc.graphics.Color;
+import mindustry.content.Blocks;
 import mindustry.type.Planet;
+import mindustry.world.blocks.environment.SteamVent;
+import mindustry.world.meta.Attribute;
 
 public class EFblocks {
+    // ===== 自定义环境属性（矿物喷口用） =====
+    public static Attribute originiumAttribute;
+    public static Attribute amethystAttribute;
+    public static Attribute ferriumAttribute;
+
     // ===== 物流运输 =====
     public static TransportBelt transportBelt;
     public static ItemControlPort itemControlPort;
@@ -51,9 +62,19 @@ public class EFblocks {
     public static ThermalBank thermalBank;
     //public static XiraniteRelay xiraniteRelay;        //息壤中继器
     //public static XiranitePylon xiranitePylon;        //息壤供电桩
+    public static SteamVent originiumVent;
+    public static SteamVent amethystVent;
+    public static SteamVent ferriumVent;
     // ===== 侵蚀结构（战役专属） =====
     public static ErosionCore erosionCore;
     public static ErosionWall erosionWall;
+    // ===== 矿化岩石 =====
+    public static OreStone originiumStone;
+    public static OreStone amethystStone;
+    public static OreStone ferriumStone;
+    // ===== 可采集植株 =====
+    public static HarvestablePlant aketinePlant;
+    public static HarvestablePlant sandleafPlant;
 
     public static void load() {
         // 注册矩形多块工厂所需的子方块
@@ -110,11 +131,47 @@ public class EFblocks {
         //xiraniteRelay.load();
         //xiranitePylon = new XiranitePylon("xiranite-pylon");        //息壤供电桩
         //xiranitePylon.load();
+        // 注册自定义环境属性
+        originiumAttribute = Attribute.add("originium");
+        amethystAttribute = Attribute.add("amethyst");
+        ferriumAttribute = Attribute.add("ferrium");
+        // 矿物喷口
+        originiumVent = new SteamVent("originium-ore"){{
+            parent = blendGroup = Blocks.stone;
+            attributes.set(originiumAttribute, 1f);
+            effectSpacing = Float.MAX_VALUE; // 关闭蒸汽粒子
+            emitLight = true;
+            lightRadius = 35f;
+            lightColor = Color.valueOf("ffe066"); // 黄光
+        }};
+        amethystVent = new SteamVent("amethyst-ore"){{
+            parent = blendGroup = Blocks.stone;
+            attributes.set(amethystAttribute, 1f);
+            effectSpacing = Float.MAX_VALUE;
+            emitLight = true;
+            lightRadius = 35f;
+            lightColor = Color.valueOf("c084fc"); // 紫光
+        }};
+        ferriumVent = new SteamVent("ferrium-ore"){{
+            parent = blendGroup = Blocks.stone;
+            attributes.set(ferriumAttribute, 1f);
+            effectSpacing = Float.MAX_VALUE;
+            emitLight = true;
+            lightRadius = 35f;
+            lightColor = Color.valueOf("7cb9f0"); // 蓝光
+        }};
         // 侵蚀结构（战役专属）
         erosionCore = new ErosionCore("erosion-core");
         erosionCore.load();
         erosionWall = new ErosionWall("erosion-wall");
         erosionWall.load();
+        // 矿化岩石
+        originiumStone = new OreStone("originium-stone", EFitems.originiumOre);
+        amethystStone = new OreStone("amethyst-stone", EFitems.amethystOre);
+        ferriumStone = new OreStone("ferrium-stone", EFitems.ferriumOre);
+        // 可采集植株
+        aketinePlant = new HarvestablePlant("aketine-plant", EFitems.aketine);
+        sandleafPlant = new HarvestablePlant("sandleaf-plant", EFitems.sandleaf);
     }
 
     /** 将所有方块注册到指定星球 */
@@ -136,5 +193,13 @@ public class EFblocks {
         electricPylon.shownPlanets.add(planet);
         relayTower.shownPlanets.add(planet);
         thermalBank.shownPlanets.add(planet);
+        originiumVent.shownPlanets.add(planet);
+        amethystVent.shownPlanets.add(planet);
+        ferriumVent.shownPlanets.add(planet);
+        originiumStone.shownPlanets.add(planet);
+        amethystStone.shownPlanets.add(planet);
+        ferriumStone.shownPlanets.add(planet);
+        aketinePlant.shownPlanets.add(planet);
+        sandleafPlant.shownPlanets.add(planet);
     }
 }

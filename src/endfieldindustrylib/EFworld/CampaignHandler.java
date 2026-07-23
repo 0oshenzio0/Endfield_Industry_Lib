@@ -1,6 +1,7 @@
 package endfieldindustrylib.EFworld;
 
 import arc.Events;
+import arc.util.Time;
 import static mindustry.Vars.state;
 import mindustry.content.Blocks;
 import mindustry.game.EventType.BlockBuildEndEvent;
@@ -12,7 +13,6 @@ import mindustry.game.EventType.WorldLoadEvent;
 import mindustry.game.MapObjectives.BuildCountObjective;
 import mindustry.game.MapObjectives.CoreItemObjective;
 import mindustry.game.MapObjectives.DestroyCoreObjective;
-import mindustry.game.MapObjectives.DestroyUnitsObjective;
 import mindustry.game.MapObjectives.FlagObjective;
 import mindustry.game.MapObjectives.TimerObjective;
 import mindustry.gen.Call;
@@ -87,21 +87,16 @@ public class CampaignHandler {
     //  公共入口：在每个 SectorPreset.rules{} 中调用
     // ===================================================================
 
-    /** 枢纽区 — 教程防御战（波次+炮塔引导） */
-    public static void regionHubRules(SectorPreset preset) {
+    /** 枢纽区 — 教程防御战（建双管炮→十五波） */
+    public static void theHubRules(SectorPreset preset) {
         state.rules.objectives.add(
-            new BuildCountObjective(Blocks.duo, 1)
-                .details("建造双管机枪来抵御敌人")
-                .child(new BuildCountObjective(Blocks.scatter, 1)
-                    .details("建造碎片散射炮对抗飞行敌人"))
-                .child(new DestroyUnitsObjective(50)
-                    .details("击败 50 个敌人"))
+            new BuildCountObjective(Blocks.duo, 2)
+                .details("建造两座双管炮来开始战斗")
         );
-        // 炮塔数量越多 → 敌人生成越快（由事件监听处理）
     }
 
     /** 枢纽区II — 工厂教程，收集资源通关 */
-    public static void regionHubIIRules(SectorPreset preset) {
+    public static void theHubIIRules(SectorPreset preset) {
         objectivesMode = true;
         // 按顺序收集：500 源矿 → 500 紫水晶纤维
         state.rules.objectives.add(
@@ -113,7 +108,7 @@ public class CampaignHandler {
     }
 
     /** 源石研究所 — 护送 + 防守（波次胜利 + 护送存活） */
-    public static void originiumResearchLabRules(SectorPreset preset) {
+    public static void originiumScienceParkRules(SectorPreset preset) {
         // 标记护送单位类型（由地图生成，需在 .msav 中放置塔塔）
         setupEscort(
             endfieldindustrylib.EFcontents.EFunits.tata,
@@ -127,7 +122,7 @@ public class CampaignHandler {
     }
 
     /** 源石研究所II — 产量达标 */
-    public static void originiumResearchLabIIRules(SectorPreset preset) {
+    public static void originiumScienceParkIIRules(SectorPreset preset) {
         objectivesMode = true;
         state.rules.objectives.add(
             new CoreItemObjective(endfieldindustrylib.EFcontents.EFitems.origocrust, 300)
@@ -140,7 +135,7 @@ public class CampaignHandler {
     }
 
     /** 矿脉园区 — 无核心护送穿越 */
-    public static void veinSourceAreaRules(SectorPreset preset) {
+    public static void originLodespringRules(SectorPreset preset) {
         objectivesMode = true;
         state.rules.attackMode = true;
         // 标记护送单位和目标坐标（需在地图中放置）
@@ -156,7 +151,7 @@ public class CampaignHandler {
     }
 
     /** 矿脉园区II — 破坏侵蚀核→最终Boss */
-    public static void veinSourceAreaIIRules(SectorPreset preset) {
+    public static void originLodespringIIRules(SectorPreset preset) {
         objectivesMode = true;
         state.rules.attackMode = true;
         // 使用 DestroyCoreObjective 检测所有敌方核心（侵蚀核用 CoreBlock 标记）
@@ -168,7 +163,7 @@ public class CampaignHandler {
     }
 
     /** 供能高地 — 限时护送 */
-    public static void energyHighlandRules(SectorPreset preset) {
+    public static void powerPlateauRules(SectorPreset preset) {
         objectivesMode = true;
         setupEscort(
             endfieldindustrylib.EFcontents.EFunits.tata,
@@ -183,7 +178,7 @@ public class CampaignHandler {
     }
 
     /** 供能高地II — 最终决战（摧毁炮台→Boss） */
-    public static void energyHighlandIIRules(SectorPreset preset) {
+    public static void powerPlateauIIRules(SectorPreset preset) {
         objectivesMode = true;
         state.rules.attackMode = true;
         // 四角炮台用 DestroyBlocksObjective（坐标需在地图中确定后填入）
@@ -216,34 +211,25 @@ public class CampaignHandler {
             }
         });
 
-        // ── 波次事件：regionHub 炮塔触波 ──
+        // ── 波次事件：用于后续扩展（如炮塔加成） ──
         Events.on(WaveEvent.class, event -> {
             if (!isCampaign()) return;
-
-            // 检查当前扇区名是否为 region-hub
-            String sectorName = state.rules.sector.preset != null
-                ? state.rules.sector.preset.name : "";
-            if (!"region-hub".equals(sectorName)) return;
-
-            // 根据炮塔数量增加本波敌人数：每座炮塔 +2 个额外敌人
-            int extra = turretCount * 2;
-            if (extra > 0 && state.wave <= 20) {
-                // 修改当前波次的生成规模（通过 spawner 的延迟生成）
-                state.rules.spawns.each(s -> {
-                    if (s.unitScaling > 0) {
-                        // 无法直接修改已注册的 spawnGroup，
-                        // 此处仅作统计标识，具体由地图处理器实现
-                    }
-                });
-            }
+            // 预留：此处可添加根据炮塔数量增加敌人规模等逻辑
         });
 
-        // ── 建筑建造事件：统计炮塔数量 ──
+        // ── 建筑建造事件：统计炮塔数量 + 触发 theHub 波次 ──
         Events.on(BlockBuildEndEvent.class, event -> {
             if (!isCampaign()) return;
             if (!event.breaking && event.tile != null && event.tile.block() != null
                 && event.tile.block().attacks) {
                 turretCount++;
+
+                // theHub：建成两座双管炮后恢复波次间隔
+                String name = state.rules.sector.preset != null
+                    ? state.rules.sector.preset.name : "";
+                if ("theHub".equals(name) && turretCount >= 2) {
+                    state.rules.waveSpacing = 2f * Time.toMinutes;
+                }
             }
         });
 
@@ -287,11 +273,11 @@ public class CampaignHandler {
                     // 到达目标区域 → 根据当前关卡设置对应的 objective flag
                     if (state.rules.sector.preset != null) {
                         String name = state.rules.sector.preset.name;
-                        if (name.contains("originium-research-lab") && !name.contains("II")) {
+                        if ("originiumSciencePark".equals(name)) {
                             state.rules.objectiveFlags.add("escort_safe");
-                        } else if (name.contains("vein-source-area") && !name.contains("II")) {
+                        } else if ("originLodespring".equals(name)) {
                             state.rules.objectiveFlags.add("escort_arrived");
-                        } else if (name.contains("energy-highland") && !name.contains("II")) {
+                        } else if ("powerPlateau".equals(name)) {
                             state.rules.objectiveFlags.add("ending_triggered");
                         }
                     }
