@@ -53,23 +53,23 @@ public class EFTechTree {
         orphanNode(grindingUnit, gateCost);
 
         // ==== 2. 配置每个科技树节点解锁的内容 ====
-        basicTransport.unlockables.add(transportBelt);
+        logisticsI.unlockables.add(transportBelt);
         itemAccessPort.unlockables.add(itemControlPort);
         beltSplitting.unlockables.add(splitter);
         beltBridging.unlockables.add(beltBridge);
         beltConverging.unlockables.add(converger);
-        basicRefining.unlockables.add(refiningUnit);
-        itemMoulding.unlockables.add(mouldingUnit);
-        basicShredding.unlockables.add(shreddingUnit);
-        partsManufacturing.unlockables.add(fittingUnit);
+        refineI.unlockables.add(refiningUnit);
+        materialMoulding.unlockables.add(mouldingUnit);
+        shreddingI.unlockables.add(shreddingUnit);
+        partsFitting.unlockables.add(fittingUnit);
         packagingTech.unlockables.add(packagingUnit);
-        basicPower.unlockables.add(electricPylon);
-        powerTransmission.unlockables.add(relayTower);
-        powerGeneration.unlockables.add(thermalBank);
-        outdoorStorage.unlockables.add(protocolStash);
-        grindingTech.unlockables.add(grindingUnit);
+        electricityI.unlockables.add(electricPylon);
+        powerRelay.unlockables.add(relayTower);
+        powerI.unlockables.add(thermalBank);
+        fieldStash.unlockables.add(protocolStash);
+        grinding.unlockables.add(grindingUnit);
         // 培植工艺一次性解锁采种机和种植机
-        cultivationTechnology.unlockables.addAll(seedPickingUnit, plantingUnit);
+        planting.unlockables.addAll(seedPickingUnit, plantingUnit);
 
         // ==== 3. 将所有方块注册到星球 ====
         EFblocks.registerToPlanet(planet);
@@ -77,18 +77,18 @@ public class EFTechTree {
         // ==== 4. 构建显示用科技树 ====
         planet.techTree = nodeRoot("taelos-II", planet, () -> {
             freeNode(automatedIndustryComplex, () -> {
-                freeNode(basicIndustryPlan, () -> {
-                    freeNode(basicIndustryPhase1, () -> {
-                        freeNode(basicIndustryPhase2, () -> {
-                            freeNode(basicIndustryPhase3, () -> {});
+                freeNode(basicAicPlan, () -> {
+                    freeNode(basicAicI, () -> {
+                        freeNode(basicAicII, () -> {
+                            freeNode(basicAicIII, () -> {});
                         });
                     });
-                    freeNode(basicMineralMining, () -> {
-                        freeNode(intermediateMineralMining, () -> {
-                            freeNode(advancedMineralMining, () -> {});
+                    freeNode(miningI, () -> {
+                        freeNode(miningII, () -> {
+                            freeNode(miningIII, () -> {});
                         });
                     });
-                    freeNode(basicTransport, () -> {
+                    freeNode(logisticsI, () -> {
                         freeNode(itemAccessPort, () -> {
                             freeNode(beltSplitting, () -> {
                                 freeNode(beltBridging, () -> {
@@ -97,36 +97,39 @@ public class EFTechTree {
                             });
                         });
                     });
-                    freeNode(basicRefining, () -> {
-                        freeNode(itemMoulding, () -> {
-                            freeNode(filler, () -> {
-                                freeNode(cultivationTechnology, () -> {
-                                    freeNode(grindingTech, () -> {});
+                    freeNode(refineI, () -> {
+                        freeNode(materialMoulding, () -> {
+                            freeNode(solidFilling, () -> {
+                                freeNode(planting, () -> {
+                                    freeNode(grinding, () -> {});
                                 });
                             });
                         });
                     });
-                    freeNode(basicShredding, () -> {
-                        freeNode(partsManufacturing, () -> {
+                    freeNode(shreddingI, () -> {
+                        freeNode(partsFitting, () -> {
                             freeNode(packagingTech, () -> {});
                         });
                     });
-                    freeNode(basicPower, () -> {
-                        freeNode(powerTransmission, () -> {
-                            freeNode(powerGeneration, () -> {
-                                freeNode(warehouseAccess, () -> {});
+                    freeNode(electricityI, () -> {
+                        freeNode(powerRelay, () -> {
+                            freeNode(powerI, () -> {
+                                freeNode(depotBus, () -> {});
                             });
                         });
                     });
-                    freeNode(outdoorStorage, () -> {});
+                    freeNode(fieldStash, () -> {});
                 });
             });
-            freeNode(regionHub, () -> {
-                freeNode(quarry, () -> {});
-                freeNode(originiumResearchLab, () -> {
-                    freeNode(veinSourceArea, () -> {
-                        freeNode(energyHighland, () -> {});
+            freeNode(valleyIv, () -> {
+                freeNode(theHub, () -> {
+                    freeNode(originiumSciencePark, () -> {
+                        freeNode(originLodespring, () -> {
+                            freeNode(powerPlateau, () -> {});
+                        });
                     });
+                    freeNode(valleyPass, () -> {});
+                    freeNode(aburreyQuarry, () -> {});
                 });
             });
             freeNode(itemsCategory, () -> {});
