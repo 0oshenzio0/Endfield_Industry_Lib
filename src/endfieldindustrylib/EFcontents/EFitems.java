@@ -39,15 +39,15 @@ public class EFitems {
     // ===== 科技树自定义节点 =====
     public static TechTreeNode
             protocolCore,
-            automatedIndustryComplex, basicIndustryPlan,
-            basicIndustryPhase1, basicIndustryPhase2, basicIndustryPhase3,
-            basicMineralMining, intermediateMineralMining, advancedMineralMining,
-            basicTransport, itemAccessPort, beltSplitting, beltBridging, beltConverging,
-            basicRefining, itemMoulding, filler, cultivationTechnology, grindingTech,
-            basicShredding, partsManufacturing, packagingTech,
-            basicPower, powerTransmission, powerGeneration, warehouseAccess,
-            outdoorStorage,
-            regionHub, originiumResearchLab, veinSourceArea, energyHighland, quarry,
+            automatedIndustryComplex, basicAicPlan,
+            basicAicI, basicAicII, basicAicIII,
+            miningI, miningII, miningIII,
+            logisticsI, itemAccessPort, beltSplitting, beltBridging, beltConverging,
+            refineI, materialMoulding, solidFilling, planting, grinding,
+            shreddingI, partsFitting, packagingTech,
+            electricityI, powerRelay, powerI, depotBus,
+            fieldStash,
+            valleyIv, theHub, originiumSciencePark, originLodespring, powerPlateau, aburreyQuarry, valleyPass,
             itemsCategory;
     public static Item
             // 工业产物
@@ -172,37 +172,39 @@ public class EFitems {
         // ===== 科技树自定义节点 =====
         protocolCore = new TechTreeNode("protocol-core") {{ color = Color.valueOf("a0a0a0"); }};
         automatedIndustryComplex = new TechTreeNode("automated-industry-complex") {{ color = Color.valueOf("7ec8e3"); }};
-        basicIndustryPlan = new TechTreeNode("basic-industry-plan") {{ color = Color.valueOf("5ab0d8"); }};
-        basicIndustryPhase1 = new TechTreeNode("basic-industry-phase1") {{ color = Color.valueOf("91d5e8"); }};
-        basicIndustryPhase2 = new TechTreeNode("basic-industry-phase2") {{ color = Color.valueOf("b5e2f0"); }};
-        basicIndustryPhase3 = new TechTreeNode("basic-industry-phase3") {{ color = Color.valueOf("d4f0f7"); }};
-        regionHub = new TechTreeNode("region-hub") {{ color = Color.valueOf("d4b48c"); }};
-        originiumResearchLab = new TechTreeNode("originium-research-lab") {{ color = Color.valueOf("c66322"); }};
-        veinSourceArea = new TechTreeNode("vein-source-area") {{ color = Color.valueOf("4f7ebf"); }};
-        energyHighland = new TechTreeNode("energy-highland") {{ color = Color.valueOf("f1c40f"); }};
-        quarry = new TechTreeNode("quarry") {{ color = Color.valueOf("b5977a"); }};
+        basicAicPlan = new TechTreeNode("basic-aic-plan") {{ color = Color.valueOf("5ab0d8"); }};
+        basicAicI = new TechTreeNode("basic-aic-i") {{ color = Color.valueOf("91d5e8"); }};
+        basicAicII = new TechTreeNode("basic-aic-ii") {{ color = Color.valueOf("b5e2f0"); }};
+        basicAicIII = new TechTreeNode("basic-aic-iii") {{ color = Color.valueOf("d4f0f7"); }};
+        valleyIv = new TechTreeNode("valley-iv") {{ color = Color.valueOf("8fcb9a"); }};
+        theHub = new TechTreeNode("the-hub") {{ color = Color.valueOf("d4b48c"); }};
+        originiumSciencePark = new TechTreeNode("originium-science-park") {{ color = Color.valueOf("c66322"); }};
+        originLodespring = new TechTreeNode("origin-lodespring") {{ color = Color.valueOf("4f7ebf"); }};
+        powerPlateau = new TechTreeNode("power-plateau") {{ color = Color.valueOf("f1c40f"); }};
+        aburreyQuarry = new TechTreeNode("aburrey-quarry") {{ color = Color.valueOf("b5977a"); }};
+        valleyPass = new TechTreeNode("valley-pass") {{ color = Color.valueOf("a8d5ba"); }};
         itemsCategory = new TechTreeNode("items-category") {{ color = Color.valueOf("2ecc71"); }};
-        basicMineralMining = new TechTreeNode("basic-mineral-mining") {{ color = Color.valueOf("c66322"); }};
-        intermediateMineralMining = new TechTreeNode("intermediate-mineral-mining") {{ color = Color.valueOf("a55fc4"); }};
-        advancedMineralMining = new TechTreeNode("advanced-mineral-mining") {{ color = Color.valueOf("4f7ebf"); }};
-        filler = new TechTreeNode("filler") {{ color = Color.valueOf("95a5a6"); }};
-        cultivationTechnology = new TechTreeNode("cultivation-technology") {{ color = Color.valueOf("27ae60"); }};
-        warehouseAccess = new TechTreeNode("warehouse-access") {{ color = Color.valueOf("7f8c8d"); }};
-        basicTransport = new TechTreeNode("basic-transport") {{ color = Color.valueOf("7f8c8d"); }};
-        itemAccessPort = new TechTreeNode("item-access-port") {{ color = Color.valueOf("95a5a6"); }};
+        miningI = new TechTreeNode("mining-i") {{ color = Color.valueOf("c66322"); }};
+        miningII = new TechTreeNode("mining-ii") {{ color = Color.valueOf("a55fc4"); }};
+        miningIII = new TechTreeNode("mining-iii") {{ color = Color.valueOf("4f7ebf"); }};
+        solidFilling = new TechTreeNode("solid-filling") {{ color = Color.valueOf("95a5a6"); }};
+        planting = new TechTreeNode("planting") {{ color = Color.valueOf("27ae60"); }};
+        depotBus = new TechTreeNode("depot-bus") {{ color = Color.valueOf("7f8c8d"); }};
+        logisticsI = new TechTreeNode("logistics-i") {{ color = Color.valueOf("7f8c8d"); }};
+        itemAccessPort = new TechTreeNode("item-control-port") {{ color = Color.valueOf("95a5a6"); }};
         beltSplitting = new TechTreeNode("belt-splitting") {{ color = Color.valueOf("aab7b8"); }};
         beltBridging = new TechTreeNode("belt-bridging") {{ color = Color.valueOf("bdc3c7"); }};
         beltConverging = new TechTreeNode("belt-converging") {{ color = Color.valueOf("d5dbdb"); }};
-        basicRefining = new TechTreeNode("basic-refining") {{ color = Color.valueOf("c0392b"); }};
-        itemMoulding = new TechTreeNode("item-moulding") {{ color = Color.valueOf("e74c3c"); }};
-        grindingTech = new TechTreeNode("grinding-tech") {{ color = Color.valueOf("ff9300"); }};
-        basicShredding = new TechTreeNode("basic-shredding") {{ color = Color.valueOf("8e44ad"); }};
-        partsManufacturing = new TechTreeNode("parts-manufacturing") {{ color = Color.valueOf("9b59b6"); }};
+        refineI = new TechTreeNode("refine-i") {{ color = Color.valueOf("c0392b"); }};
+        materialMoulding = new TechTreeNode("material-moulding") {{ color = Color.valueOf("e74c3c"); }};
+        grinding = new TechTreeNode("grinding") {{ color = Color.valueOf("ff9300"); }};
+        shreddingI = new TechTreeNode("shredding-i") {{ color = Color.valueOf("8e44ad"); }};
+        partsFitting = new TechTreeNode("parts-fitting") {{ color = Color.valueOf("9b59b6"); }};
         packagingTech = new TechTreeNode("packaging-tech") {{ color = Color.valueOf("a569bd"); }};
-        basicPower = new TechTreeNode("basic-power") {{ color = Color.valueOf("f39c12"); }};
-        powerTransmission = new TechTreeNode("power-transmission") {{ color = Color.valueOf("e67e22"); }};
-        powerGeneration = new TechTreeNode("power-generation") {{ color = Color.valueOf("d35400"); }};
-        outdoorStorage = new TechTreeNode("outdoor-storage") {{ color = Color.valueOf("2c3e50"); }};
+        electricityI = new TechTreeNode("electricity-i") {{ color = Color.valueOf("f39c12"); }};
+        powerRelay = new TechTreeNode("power-relay") {{ color = Color.valueOf("e67e22"); }};
+        powerI = new TechTreeNode("power-i") {{ color = Color.valueOf("d35400"); }};
+        fieldStash = new TechTreeNode("field-stash") {{ color = Color.valueOf("2c3e50"); }};
         researchGate = new Item("research-gate") {{ hidden = true; cost = 0; color = Color.clear; }};
 
         // ===== 收集所有物品到列表（用于批量注册） =====
