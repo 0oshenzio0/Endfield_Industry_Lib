@@ -21,18 +21,18 @@ import mindustry.world.meta.BuildVisibility;
 /**
  * 侵蚀核 — 侵蚀墙体的结构支撑核心。
  * <p>
- * 行为类似 Minecraft 的原木：为周围的 ErosionWall 提供结构支撑。
+ * 行为类似 Minecraft 的原木：为周围的 ActiveBlight 提供结构支撑。
  * 当核被摧毁时，相邻的墙体会失去支撑，开始凋零崩解。
  * <p>
  * 只有建造速度（{@link mindustry.type.UnitType#buildSpeed buildSpeed}）
  * ≥ {@link #MIN_BUILD_SPEED} 的单位才能通过拆除指令摧毁核。
  */
-public class ErosionCore extends Block {
+public class BlightCore extends Block {
 
     /** 拆除核所需的最低建造速度 */
     public static final float MIN_BUILD_SPEED = 3f;
 
-    public ErosionCore(String name) {
+    public BlightCore(String name) {
         super(name);
         update = true;
         solid = true;
@@ -48,7 +48,7 @@ public class ErosionCore extends Block {
         buildTime = 3600;
     }
 
-    public class ErosionCoreBuild extends Building {
+    public class BlightCoreBuild extends Building {
 
         @Override
         public void updateTile() {
@@ -104,7 +104,7 @@ public class ErosionCore extends Block {
             Seq<int[]> wallPositions = new Seq<>();
             for (int[] d : dirs) {
                 Building nb = nearby(d[0], d[1]);
-                if (nb != null && nb.block instanceof ErosionWall) {
+                if (nb != null && nb.block instanceof ActiveBlight) {
                     wallPositions.add(new int[]{nb.tileX(), nb.tileY()});
                 }
             }
@@ -121,8 +121,8 @@ public class ErosionCore extends Block {
                         // 核已完全拆除 → 级联重置所有相连墙体
                         for (int[] pos : wallPositions) {
                             Building b = world.build(pos[0], pos[1]);
-                            if (b != null && b.block instanceof ErosionWall) {
-                                ErosionWall.cascadeResetFrom(b);
+                            if (b != null && b.block instanceof ActiveBlight) {
+                                ActiveBlight.cascadeResetFrom(b);
                             }
                         }
                     } else {
@@ -177,8 +177,8 @@ public class ErosionCore extends Block {
             int[][] dirs = {{0,1},{0,-1},{-1,0},{1,0}};
             for (int[] d : dirs) {
                 Building nb = nearby(d[0], d[1]);
-                if (nb != null && nb.block instanceof ErosionWall) {
-                    ErosionWall.cascadeResetFrom(nb);
+                if (nb != null && nb.block instanceof ActiveBlight) {
+                    ActiveBlight.cascadeResetFrom(nb);
                 }
             }
         }

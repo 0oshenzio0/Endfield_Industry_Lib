@@ -17,12 +17,12 @@ import mindustry.world.meta.BuildVisibility;
  * 采用数值传播法：每个墙体记录到最近核的"步数"（dist），
  * 失去核支撑后全部相连墙体级联重置为 INF，开始凋零。
  */
-public class ErosionWall extends Block {
+public class ActiveBlight extends Block {
 
     /** 距离上限，大于此值视为不可达 */
     private static final int INF_DIST = 999;
 
-    public ErosionWall(String name) {
+    public ActiveBlight(String name) {
         super(name);
         update = true;
         solid = true;
@@ -42,18 +42,18 @@ public class ErosionWall extends Block {
     }
 
     /**
-     * 由 ErosionCore 调用：从被摧毁的核相邻的墙体出发，
-     * BFS 遍历所有相连的 ErosionWall，将其 dist 级联重置为 INF_DIST。
+     * 由 BlightCore 调用：从被摧毁的核相邻的墙体出发，
+     * BFS 遍历所有相连的 ActiveBlight，将其 dist 级联重置为 INF_DIST。
      */
     public static void cascadeResetFrom(Building start) {
-        if (!(start instanceof ErosionWallBuild)) return;
+        if (!(start instanceof ActiveBlightBuild)) return;
 
         Seq<Building> queue = new Seq<>();
         queue.add(start);
 
         while (queue.size > 0) {
             Building current = queue.pop();
-            if (!(current instanceof ErosionWallBuild wall)) continue;
+            if (!(current instanceof ActiveBlightBuild wall)) continue;
             if (wall.dist == INF_DIST) continue; // 已重置，跳过
 
             // 重置距离并强制下帧重新计算
@@ -64,7 +64,7 @@ public class ErosionWall extends Block {
             int[][] dirs = {{0,1},{0,-1},{-1,0},{1,0}};
             for (int[] d : dirs) {
                 Building nb = wall.nearby(d[0], d[1]);
-                if (nb instanceof ErosionWallBuild nbWall && nbWall.dist != INF_DIST) {
+                if (nb instanceof ActiveBlightBuild nbWall && nbWall.dist != INF_DIST) {
                     queue.add(nb);
                 }
             }
@@ -74,7 +74,7 @@ public class ErosionWall extends Block {
     // 距离每帧更新一次的频率（仅内部使用），暴露给 cascadeResetFrom
     private static final int UPDATE_INTERVAL = 5;
 
-    public class ErosionWallBuild extends Building {
+    public class ActiveBlightBuild extends Building {
         // 到最近侵蚀核的步数（四方向），INF_DIST 表示不可达
         private int dist = INF_DIST;
 
@@ -116,7 +116,7 @@ public class ErosionWall extends Block {
 
         /**
          * 计算到最近核的步数：遍历四邻，取邻居 dist + 1 的最小值；
-         * 若邻居是 ErosionCore 则直接返回 0。
+         * 若邻居是 BlightCore 则直接返回 0。
          */
         private int computeDistance() {
             int minNeighborDist = INF_DIST;
@@ -126,12 +126,12 @@ public class ErosionWall extends Block {
                 Building nb = nearby(d[0], d[1]);
                 if (nb == null) continue;
 
-                if (nb.block instanceof ErosionCore) {
+                if (nb.block instanceof BlightCore) {
                     return 0;
                 }
 
-                if (nb.block instanceof ErosionWall) {
-                    int candidate = ((ErosionWallBuild) nb).dist + 1;
+                if (nb.block instanceof ActiveBlight) {
+                    int candidate = ((ActiveBlightBuild) nb).dist + 1;
                     if (candidate < minNeighborDist) {
                         minNeighborDist = candidate;
                     }

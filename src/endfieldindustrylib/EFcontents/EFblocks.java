@@ -15,8 +15,8 @@ import endfieldindustrylib.EFworld.blocks.AICDepotAccess.ProtocolStash;
 import endfieldindustrylib.EFworld.blocks.AICPower.ElectricPylon;
 import endfieldindustrylib.EFworld.blocks.AICPower.RelayTower;
 import endfieldindustrylib.EFworld.blocks.AICPower.ThermalBank;
-import endfieldindustrylib.EFworld.blocks.AICErosion.ErosionCore;
-import endfieldindustrylib.EFworld.blocks.AICErosion.ErosionWall;
+import endfieldindustrylib.EFworld.blocks.AICErosion.BlightCore;
+import endfieldindustrylib.EFworld.blocks.AICErosion.ActiveBlight;
 import endfieldindustrylib.EFworld.blocks.AICTransport.BeltBridge;
 import endfieldindustrylib.EFworld.blocks.AICTransport.Converger;
 import endfieldindustrylib.EFworld.blocks.AICTransport.ItemControlPort;
@@ -62,12 +62,12 @@ public class EFblocks {
     public static ThermalBank thermalBank;
     //public static XiraniteRelay xiraniteRelay;        //息壤中继器
     //public static XiranitePylon xiranitePylon;        //息壤供电桩
-    public static SteamVent originiumVent;
-    public static SteamVent amethystVent;
-    public static SteamVent ferriumVent;
+    public static SteamVent originiumSpot;
+    public static SteamVent amethystSpot;
+    public static SteamVent ferriumSpot;
     // ===== 侵蚀结构（战役专属） =====
-    public static ErosionCore erosionCore;
-    public static ErosionWall erosionWall;
+    public static BlightCore blightCore;
+    public static ActiveBlight activeBlight;
     // ===== 矿化岩石 =====
     public static OreStone originiumStone;
     public static OreStone amethystStone;
@@ -136,7 +136,7 @@ public class EFblocks {
         amethystAttribute = Attribute.add("amethyst");
         ferriumAttribute = Attribute.add("ferrium");
         // 矿物喷口
-        originiumVent = new SteamVent("originium-ore"){{
+        originiumSpot = new SteamVent("originium-spot"){{
             parent = blendGroup = Blocks.stone;
             attributes.set(originiumAttribute, 1f);
             effectSpacing = Float.MAX_VALUE; // 关闭蒸汽粒子
@@ -144,7 +144,7 @@ public class EFblocks {
             lightRadius = 35f;
             lightColor = Color.valueOf("ffe066"); // 黄光
         }};
-        amethystVent = new SteamVent("amethyst-ore"){{
+        amethystSpot = new SteamVent("amethyst-spot"){{
             parent = blendGroup = Blocks.stone;
             attributes.set(amethystAttribute, 1f);
             effectSpacing = Float.MAX_VALUE;
@@ -152,7 +152,7 @@ public class EFblocks {
             lightRadius = 35f;
             lightColor = Color.valueOf("c084fc"); // 紫光
         }};
-        ferriumVent = new SteamVent("ferrium-ore"){{
+        ferriumSpot = new SteamVent("ferrium-spot"){{
             parent = blendGroup = Blocks.stone;
             attributes.set(ferriumAttribute, 1f);
             effectSpacing = Float.MAX_VALUE;
@@ -161,10 +161,10 @@ public class EFblocks {
             lightColor = Color.valueOf("7cb9f0"); // 蓝光
         }};
         // 侵蚀结构（战役专属）
-        erosionCore = new ErosionCore("erosion-core");
-        erosionCore.load();
-        erosionWall = new ErosionWall("erosion-wall");
-        erosionWall.load();
+        blightCore = new BlightCore("blight-core");
+        blightCore.load();
+        activeBlight = new ActiveBlight("active-blight");
+        activeBlight.load();
         // 矿化岩石
         originiumStone = new OreStone("originium-stone", EFitems.originiumOre);
         amethystStone = new OreStone("amethyst-stone", EFitems.amethystOre);
@@ -193,9 +193,9 @@ public class EFblocks {
         electricPylon.shownPlanets.add(planet);
         relayTower.shownPlanets.add(planet);
         thermalBank.shownPlanets.add(planet);
-        originiumVent.shownPlanets.add(planet);
-        amethystVent.shownPlanets.add(planet);
-        ferriumVent.shownPlanets.add(planet);
+        originiumSpot.shownPlanets.add(planet);
+        amethystSpot.shownPlanets.add(planet);
+        ferriumSpot.shownPlanets.add(planet);
         originiumStone.shownPlanets.add(planet);
         amethystStone.shownPlanets.add(planet);
         ferriumStone.shownPlanets.add(planet);
