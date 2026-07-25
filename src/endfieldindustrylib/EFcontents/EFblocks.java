@@ -12,6 +12,7 @@ import endfieldindustrylib.EFworld.blocks.AICBasicFacility.ShreddingUnit;
 import endfieldindustrylib.EFworld.blocks.AICDepotAccess.ProtocolStash;
 import endfieldindustrylib.EFworld.blocks.AICPower.*;
 import endfieldindustrylib.EFworld.blocks.AICTransport.*;
+import endfieldindustrylib.EFworld.blocks.AICTurret.*;
 import mindustry.type.Planet;
 
 public class EFblocks {
@@ -98,7 +99,10 @@ public class EFblocks {
         //xiraniteRelay = new XiraniteRelay("xiranite-relay");        //息壤中继器
         //xiraniteRelay.load();
         //xiranitePylon = new XiranitePylon("xiranite-pylon");        //息壤供电桩
-        //xiranitePylon.load();
+        //xiranitePylon.load(); 
+        // 战斗辅助
+        new GunTower("gun-tower").load();                              //铳械塔
+        new GrenadeTower("grenade-tower").load();    
     }
 
     /** 将所有方块注册到指定星球 */
