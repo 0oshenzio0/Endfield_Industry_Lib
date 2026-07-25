@@ -12,16 +12,9 @@ import endfieldindustrylib.EFworld.blocks.AICBasicFacility.RefiningUnit;
 import endfieldindustrylib.EFworld.blocks.AICBasicFacility.SeedPickingUnit;
 import endfieldindustrylib.EFworld.blocks.AICBasicFacility.ShreddingUnit;
 import endfieldindustrylib.EFworld.blocks.AICDepotAccess.ProtocolStash;
-import endfieldindustrylib.EFworld.blocks.AICPower.ElectricPylon;
-import endfieldindustrylib.EFworld.blocks.AICPower.RelayTower;
-import endfieldindustrylib.EFworld.blocks.AICPower.ThermalBank;
-import endfieldindustrylib.EFworld.blocks.AICErosion.BlightCore;
-import endfieldindustrylib.EFworld.blocks.AICErosion.ActiveBlight;
-import endfieldindustrylib.EFworld.blocks.AICTransport.BeltBridge;
-import endfieldindustrylib.EFworld.blocks.AICTransport.Converger;
-import endfieldindustrylib.EFworld.blocks.AICTransport.ItemControlPort;
-import endfieldindustrylib.EFworld.blocks.AICTransport.Splitter;
-import endfieldindustrylib.EFworld.blocks.AICTransport.TransportBelt;
+import endfieldindustrylib.EFworld.blocks.AICPower.*;
+import endfieldindustrylib.EFworld.blocks.AICTransport.*;
+import endfieldindustrylib.EFworld.blocks.AICTurret.*;
 import arc.graphics.Color;
 import mindustry.content.Blocks;
 import mindustry.type.Planet;
@@ -131,47 +124,6 @@ public class EFblocks {
         //xiraniteRelay.load();
         //xiranitePylon = new XiranitePylon("xiranite-pylon");        //息壤供电桩
         //xiranitePylon.load();
-        // 注册自定义环境属性
-        originiumAttribute = Attribute.add("originium");
-        amethystAttribute = Attribute.add("amethyst");
-        ferriumAttribute = Attribute.add("ferrium");
-        // 矿物喷口
-        originiumSpot = new SteamVent("originium-spot"){{
-            parent = blendGroup = Blocks.stone;
-            attributes.set(originiumAttribute, 1f);
-            effectSpacing = Float.MAX_VALUE; // 关闭蒸汽粒子
-            emitLight = true;
-            lightRadius = 35f;
-            lightColor = Color.valueOf("ffe066"); // 黄光
-        }};
-        amethystSpot = new SteamVent("amethyst-spot"){{
-            parent = blendGroup = Blocks.stone;
-            attributes.set(amethystAttribute, 1f);
-            effectSpacing = Float.MAX_VALUE;
-            emitLight = true;
-            lightRadius = 35f;
-            lightColor = Color.valueOf("c084fc"); // 紫光
-        }};
-        ferriumSpot = new SteamVent("ferrium-spot"){{
-            parent = blendGroup = Blocks.stone;
-            attributes.set(ferriumAttribute, 1f);
-            effectSpacing = Float.MAX_VALUE;
-            emitLight = true;
-            lightRadius = 35f;
-            lightColor = Color.valueOf("7cb9f0"); // 蓝光
-        }};
-        // 侵蚀结构（战役专属）
-        blightCore = new BlightCore("blight-core");
-        blightCore.load();
-        activeBlight = new ActiveBlight("active-blight");
-        activeBlight.load();
-        // 矿化岩石
-        originiumStone = new OreStone("originium-stone", EFitems.originiumOre);
-        amethystStone = new OreStone("amethyst-stone", EFitems.amethystOre);
-        ferriumStone = new OreStone("ferrium-stone", EFitems.ferriumOre);
-        // 可采集植株
-        aketinePlant = new HarvestablePlant("aketine-plant", EFitems.aketine);
-        sandleafPlant = new HarvestablePlant("sandleaf-plant", EFitems.sandleaf);
     }
 
     /** 将所有方块注册到指定星球 */
