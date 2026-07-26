@@ -47,6 +47,11 @@ public class EFitems {
             shreddingI, partsFitting, packagingTech,
             electricityI, powerRelay, powerI, depotBus,
             fieldStash,
+            gearingTech, pylonRelaying, relayRedistribution,
+            defenseI, areaDenialI,
+            customDefenseI, customDefenseII,
+            hostileControlI, hostileControlII,
+            pointDefenseI, areaDenialII,
             valleyIv, theHub, originiumSciencePark, originLodespring, powerPlateau, aburreyQuarry, valleyPass,
             itemsCategory;
     public static Item
@@ -205,6 +210,17 @@ public class EFitems {
         powerRelay = new TechTreeNode("power-relay") {{ color = Color.valueOf("e67e22"); }};
         powerI = new TechTreeNode("power-i") {{ color = Color.valueOf("d35400"); }};
         fieldStash = new TechTreeNode("field-stash") {{ color = Color.valueOf("2c3e50"); }};
+        defenseI = new TechTreeNode("defense-i") {{ color = Color.valueOf("e74c3c"); }};
+        areaDenialI = new TechTreeNode("area-denial-i") {{ color = Color.valueOf("c0392b"); }};
+        gearingTech = new TechTreeNode("gearing-tech") {{ color = Color.valueOf("9b59b6"); }};
+        pylonRelaying = new TechTreeNode("pylon-relaying") {{ color = Color.valueOf("f39c12"); }};
+        relayRedistribution = new TechTreeNode("relay-redistribution") {{ color = Color.valueOf("e67e22"); }};
+        customDefenseI = new TechTreeNode("custom-defense-i") {{ color = Color.valueOf("c0392b"); }};
+        customDefenseII = new TechTreeNode("custom-defense-ii") {{ color = Color.valueOf("e74c3c"); }};
+        hostileControlI = new TechTreeNode("hostile-control-i") {{ color = Color.valueOf("3498db"); }};
+        hostileControlII = new TechTreeNode("hostile-control-ii") {{ color = Color.valueOf("2980b9"); }};
+        pointDefenseI = new TechTreeNode("point-defense-i") {{ color = Color.valueOf("8e44ad"); }};
+        areaDenialII = new TechTreeNode("area-denial-ii") {{ color = Color.valueOf("d35400"); }};
         researchGate = new Item("research-gate") {{ hidden = true; cost = 0; color = Color.clear; }};
 
         // ===== 收集所有物品到列表（用于批量注册） =====
