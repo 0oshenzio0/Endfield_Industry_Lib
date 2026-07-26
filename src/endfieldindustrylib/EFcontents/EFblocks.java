@@ -47,6 +47,12 @@ public class EFblocks {
     // ===== 战斗辅助 =====
     public static GunTower gunTower;
     public static GrenadeTower grenadeTower;
+    public static LNTower lnTower;
+    public static HeavyGunTower heavyGunTower;
+    public static OmnidirectionalSonicTower omnidirectionalSonicTower;
+    public static BeamTower beamTower;
+    public static SurgeTower surgeTower;
+    public static SentryTower sentryTower;
 
     public static void load() {
         // 注册矩形多块工厂所需的子方块
@@ -108,6 +114,18 @@ public class EFblocks {
         gunTower.load();
         grenadeTower = new GrenadeTower("grenade-tower");                  //榴弹塔
         grenadeTower.load();
+        lnTower = new LNTower("ln-tower");                                 //液氮塔
+        lnTower.load();
+        heavyGunTower = new HeavyGunTower("heavy-gun-tower");              //扩装铳械塔
+        heavyGunTower.load();
+        omnidirectionalSonicTower = new OmnidirectionalSonicTower("omnidirectional-sonic-tower"); //全向声波塔
+        omnidirectionalSonicTower.load();
+        beamTower = new BeamTower("beam-tower");                           //射线塔
+        beamTower.load();
+        surgeTower = new SurgeTower("surge-tower");                        //电涌塔
+        surgeTower.load();
+        sentryTower = new SentryTower("sentry-tower");                     //哨戒塔
+        sentryTower.load();
     }
 
     /** 将所有方块注册到指定星球 */
