@@ -45,7 +45,7 @@ public class EFitems {
             shreddingI, partsFitting, packagingTech,
             electricityI, powerRelay, powerI, depotBus,
             fieldStash,
-            gearingTech, pylonRelaying, relayRedistribution,
+            pylonRelaying, relayRedistribution,
             defenseI, areaDenialI,
             customDefenseI, customDefenseII,
             hostileControlI, hostileControlII,

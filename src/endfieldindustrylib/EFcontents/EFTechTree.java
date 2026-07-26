@@ -5,6 +5,7 @@ import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import mindustry.content.TechTree.TechNode;
 import mindustry.game.Objectives.Objective;
+import mindustry.game.Objectives.Research;
 import mindustry.ctype.UnlockableContent;
 import mindustry.type.ItemStack;
 import mindustry.type.Planet;
@@ -52,38 +53,37 @@ public class EFTechTree {
         aburreyQuarry = new EFTechTreeNode("aburrey-quarry").color(Color.valueOf("b5977a")).free();
         valleyPass = new EFTechTreeNode("valley-pass").color(Color.valueOf("a8d5ba")).free();
         itemsCategory = new EFTechTreeNode("items-category").color(Color.valueOf("2ecc71")).free();
-        miningI = new EFTechTreeNode("mining-i").color(Color.valueOf("c66322")).free();
-        miningII = new EFTechTreeNode("mining-ii").color(Color.valueOf("a55fc4")).free();
-        miningIII = new EFTechTreeNode("mining-iii").color(Color.valueOf("4f7ebf")).free();
-        solidFilling = new EFTechTreeNode("solid-filling").color(Color.valueOf("95a5a6")).free();
-        planting = new EFTechTreeNode("planting").color(Color.valueOf("27ae60")).free().rewards(seedPickingUnit, plantingUnit);
-        depotBus = new EFTechTreeNode("depot-bus").color(Color.valueOf("7f8c8d")).free();
-        logisticsI = new EFTechTreeNode("logistics-i").color(Color.valueOf("7f8c8d")).free().rewards(transportBelt);
-        itemAccessPort = new EFTechTreeNode("item-control-port").color(Color.valueOf("95a5a6")).free().rewards(itemControlPort);
-        beltSplitting = new EFTechTreeNode("belt-splitting").color(Color.valueOf("aab7b8")).free().rewards(splitter);
-        beltBridging = new EFTechTreeNode("belt-bridging").color(Color.valueOf("bdc3c7")).free().rewards(beltBridge);
-        beltConverging = new EFTechTreeNode("belt-converging").color(Color.valueOf("d5dbdb")).free().rewards(converger);
-        refineI = new EFTechTreeNode("refine-i").color(Color.valueOf("c0392b")).free().rewards(refiningUnit);
-        materialMoulding = new EFTechTreeNode("material-moulding").color(Color.valueOf("e74c3c")).free().rewards(mouldingUnit);
-        grinding = new EFTechTreeNode("grinding").color(Color.valueOf("ff9300")).free().rewards(grindingUnit);
-        shreddingI = new EFTechTreeNode("shredding-i").color(Color.valueOf("8e44ad")).free().rewards(shreddingUnit);
-        partsFitting = new EFTechTreeNode("parts-fitting").color(Color.valueOf("9b59b6")).free().rewards(fittingUnit);
-        packagingTech = new EFTechTreeNode("packaging-tech").color(Color.valueOf("a569bd")).free().rewards(packagingUnit);
-        electricityI = new EFTechTreeNode("electricity-i").color(Color.valueOf("f39c12")).free().rewards(electricPylon);
-        powerRelay = new EFTechTreeNode("power-relay").color(Color.valueOf("e67e22")).free().rewards(relayTower);
-        powerI = new EFTechTreeNode("power-i").color(Color.valueOf("d35400")).free().rewards(thermalBank);
-        fieldStash = new EFTechTreeNode("field-stash").color(Color.valueOf("2c3e50")).free().rewards(protocolStash);
-        defenseI = new EFTechTreeNode("defense-i").color(Color.valueOf("e74c3c")).free().rewards(gunTower);
-        areaDenialI = new EFTechTreeNode("area-denial-i").color(Color.valueOf("c0392b")).free().rewards(grenadeTower);
-        gearingTech = new EFTechTreeNode("gearing-tech").color(Color.valueOf("9b59b6")).free();
-        pylonRelaying = new EFTechTreeNode("pylon-relaying").color(Color.valueOf("f39c12")).free();
-        relayRedistribution = new EFTechTreeNode("relay-redistribution").color(Color.valueOf("e67e22")).free();
-        customDefenseI = new EFTechTreeNode("custom-defense-i").color(Color.valueOf("c0392b")).free().rewards(heavyGunTower);
-        customDefenseII = new EFTechTreeNode("custom-defense-ii").color(Color.valueOf("e74c3c")).free().rewards(sentryTower);
-        hostileControlI = new EFTechTreeNode("hostile-control-i").color(Color.valueOf("3498db")).free().rewards(lnTower);
-        hostileControlII = new EFTechTreeNode("hostile-control-ii").color(Color.valueOf("2980b9")).free().rewards(omnidirectionalSonicTower);
-        pointDefenseI = new EFTechTreeNode("point-defense-i").color(Color.valueOf("8e44ad")).free().rewards(beamTower);
-        areaDenialII = new EFTechTreeNode("area-denial-ii").color(Color.valueOf("d35400")).free().rewards(surgeTower);
+        miningI = new EFTechTreeNode("mining-i").color(Color.valueOf("c66322")).free().objectives(new Research(basicAicI));
+        miningII = new EFTechTreeNode("mining-ii").color(Color.valueOf("a55fc4")).free().objectives(new Research(basicAicI));
+        miningIII = new EFTechTreeNode("mining-iii").color(Color.valueOf("4f7ebf")).free().objectives(new Research(basicAicIII));
+        solidFilling = new EFTechTreeNode("solid-filling").color(Color.valueOf("95a5a6")).free().objectives(new Research(basicAicII));
+        planting = new EFTechTreeNode("planting").color(Color.valueOf("27ae60")).free().rewards(seedPickingUnit, plantingUnit).objectives(new Research(basicAicII));
+        depotBus = new EFTechTreeNode("depot-bus").color(Color.valueOf("7f8c8d")).free().objectives(new Research(basicAicII));
+        logisticsI = new EFTechTreeNode("logistics-i").color(Color.valueOf("7f8c8d")).free().rewards(transportBelt).objectives(new Research(basicAicI));
+        itemAccessPort = new EFTechTreeNode("item-control-port").color(Color.valueOf("95a5a6")).free().rewards(itemControlPort).objectives(new Research(basicAicI));
+        beltSplitting = new EFTechTreeNode("belt-splitting").color(Color.valueOf("aab7b8")).free().rewards(splitter).objectives(new Research(basicAicII));
+        beltBridging = new EFTechTreeNode("belt-bridging").color(Color.valueOf("bdc3c7")).free().rewards(beltBridge).objectives(new Research(basicAicII));
+        beltConverging = new EFTechTreeNode("belt-converging").color(Color.valueOf("d5dbdb")).free().rewards(converger).objectives(new Research(basicAicIII));
+        refineI = new EFTechTreeNode("refine-i").color(Color.valueOf("c0392b")).free().rewards(refiningUnit).objectives(new Research(basicAicI));
+        materialMoulding = new EFTechTreeNode("material-moulding").color(Color.valueOf("e74c3c")).free().rewards(mouldingUnit).objectives(new Research(basicAicI));
+        grinding = new EFTechTreeNode("grinding").color(Color.valueOf("ff9300")).free().rewards(grindingUnit).objectives(new Research(basicAicIII));
+        shreddingI = new EFTechTreeNode("shredding-i").color(Color.valueOf("8e44ad")).free().rewards(shreddingUnit).objectives(new Research(basicAicI));
+        partsFitting = new EFTechTreeNode("parts-fitting").color(Color.valueOf("9b59b6")).free().rewards(fittingUnit).objectives(new Research(basicAicI));
+        packagingTech = new EFTechTreeNode("packaging-tech").color(Color.valueOf("a569bd")).free().rewards(packagingUnit).objectives(new Research(basicAicII));
+        electricityI = new EFTechTreeNode("electricity-i").color(Color.valueOf("f39c12")).free().rewards(electricPylon).objectives(new Research(basicAicI));
+        powerRelay = new EFTechTreeNode("power-relay").color(Color.valueOf("e67e22")).free().rewards(relayTower).objectives(new Research(basicAicI));
+        powerI = new EFTechTreeNode("power-i").color(Color.valueOf("d35400")).free().rewards(thermalBank).objectives(new Research(basicAicII));
+        fieldStash = new EFTechTreeNode("field-stash").color(Color.valueOf("2c3e50")).free().rewards(protocolStash).objectives(new Research(basicAicI));
+        defenseI = new EFTechTreeNode("defense-i").color(Color.valueOf("e74c3c")).free().rewards(gunTower).objectives(new Research(basicAicI));
+        areaDenialI = new EFTechTreeNode("area-denial-i").color(Color.valueOf("c0392b")).free().rewards(grenadeTower).objectives(new Research(basicAicII));
+        pylonRelaying = new EFTechTreeNode("pylon-relaying").color(Color.valueOf("f39c12")).free().objectives(new Research(basicAicII));
+        relayRedistribution = new EFTechTreeNode("relay-redistribution").color(Color.valueOf("e67e22")).free().objectives(new Research(basicAicIII));
+        customDefenseI = new EFTechTreeNode("custom-defense-i").color(Color.valueOf("c0392b")).free().rewards(heavyGunTower).objectives(new Research(basicAicIII));
+        customDefenseII = new EFTechTreeNode("custom-defense-ii").color(Color.valueOf("e74c3c")).free().rewards(sentryTower).objectives(new Research(basicAicIII));
+        hostileControlI = new EFTechTreeNode("hostile-control-i").color(Color.valueOf("3498db")).free().rewards(lnTower).objectives(new Research(basicAicII));
+        hostileControlII = new EFTechTreeNode("hostile-control-ii").color(Color.valueOf("2980b9")).free().rewards(omnidirectionalSonicTower).objectives(new Research(basicAicIII));
+        pointDefenseI = new EFTechTreeNode("point-defense-i").color(Color.valueOf("8e44ad")).free().rewards(beamTower).objectives(new Research(basicAicIII));
+        areaDenialII = new EFTechTreeNode("area-denial-ii").color(Color.valueOf("d35400")).free().rewards(surgeTower).objectives(new Research(basicAicIII));
 
         // ===== 发现关系 =====
     }
@@ -123,7 +123,6 @@ public class EFTechTree {
                         });
                     });
                     // Processing - Top row
-                    efNode(gearingTech, () -> {});
                     efNode(refineI, () -> {
                         efNode(materialMoulding, () -> {
                             efNode(solidFilling, () -> {
