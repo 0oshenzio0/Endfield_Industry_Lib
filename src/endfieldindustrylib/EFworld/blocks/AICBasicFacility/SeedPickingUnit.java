@@ -1,7 +1,8 @@
 package endfieldindustrylib.EFworld.blocks.AICBasicFacility;
 
 import endfieldindustrylib.EFcontents.EFitems;
-import mindustry.type.*;
+import mindustry.type.Category;
+import mindustry.type.ItemStack;
 
 public class SeedPickingUnit extends GenericAICBasicFacility {
 
@@ -20,16 +21,16 @@ public class SeedPickingUnit extends GenericAICBasicFacility {
         outputSlotDefs = new SlotDef[]{ new SlotDef(null) };
 
         recipes = new Recipe[]{
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.buckflower, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.buckflowerSeed, 2) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.citrome, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.citromeSeed, 2) },
-                120f
-            ),
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.buckflower, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.buckflowerSeed, 2) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.citrome, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.citromeSeed, 2) },
+            //    120f
+            //),
             new Recipe(
                 new ItemStack[]{ new ItemStack(EFitems.aketine, 1) },
                 new ItemStack[]{ new ItemStack(EFitems.aketineSeed, 2) },
@@ -40,26 +41,26 @@ public class SeedPickingUnit extends GenericAICBasicFacility {
                 new ItemStack[]{ new ItemStack(EFitems.sandleafSeed, 2) },
                 120f
             ),
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.tartpepper, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.tartpepperSeed, 2) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.reedRye, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.reedRyeSeed, 2) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.redjadeGinseng, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.redjadeGinsengSeed, 2) },
-                120f
-            ),
-            new Recipe(
-                new ItemStack[]{ new ItemStack(EFitems.amberRice, 1) },
-                new ItemStack[]{ new ItemStack(EFitems.amberRiceSeed, 2) },
-                120f
-            )
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.tartpepper, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.tartpepperSeed, 2) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.reedRye, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.reedRyeSeed, 2) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.redjadeGinseng, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.redjadeGinsengSeed, 2) },
+            //    120f
+            //),
+            //new Recipe(
+            //    new ItemStack[]{ new ItemStack(EFitems.amberRice, 1) },
+            //    new ItemStack[]{ new ItemStack(EFitems.amberRiceSeed, 2) },
+            //    120f
+            //)
         };
     }
 }

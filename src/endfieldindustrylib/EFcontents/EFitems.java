@@ -14,24 +14,24 @@ public class EFitems {
             // 矿物
             originiumOre, amethystOre, ferriumOre,
             // 植物
-            wood,
-            buckflower, firebuckle, buckflowerSeed,
-            citrome, umbraline, citromeSeed,
+            //wood,
+            //buckflower, firebuckle, buckflowerSeed,
+            //citrome, umbraline, citromeSeed,
             aketine, aketineSeed,
             sandleaf, sandleafSeed,
-            tartpepper, tartpepperSeed,
-            reedRye, reedRyeSeed,
-            jincao, fluffedJincao, jincaoSeed,
-            yazhen, thornyYazhen, yazhenSeed,
-            redjadeGinseng, redjadeGinsengSeed,
-            amberRice, amberRiceSeed,
+            //tartpepper, tartpepperSeed,
+            //reedRye, reedRyeSeed,
+            //jincao, fluffedJincao, jincaoSeed,
+            //yazhen, thornyYazhen, yazhenSeed,
+            //redjadeGinseng, redjadeGinsengSeed,
+            //amberRice, amberRiceSeed,
             // 粉末
-            buckflowerPowder, firebucklePowder, groundBuckflowerPowder,
-            citromePowder, citromix, groundCitromePowder,
+            //buckflowerPowder, firebucklePowder, groundBuckflowerPowder,
+            //citromePowder, citromix, groundCitromePowder,
             aketinePowder,
             sandleafPowder,
-            jincaoPowder, fluffedJincaoPowder,
-            yazhenPowder, thornyYazhenPowder,
+            //jincaoPowder, fluffedJincaoPowder,
+            //yazhenPowder, thornyYazhenPowder,
             carbonPowder, denseCarbonPowder,
             originiumPowder, origocrustPowder, denseOriginiumPowder, denseOrigocrustPowder,
             amethystPowder, crystonPowder,
@@ -39,20 +39,20 @@ public class EFitems {
     // ===== 科技树自定义节点 =====
     public static TechTreeNode
             protocolCore,
-            automatedIndustryComplex, basicIndustryPlan,
-            basicIndustryPhase1, basicIndustryPhase2, basicIndustryPhase3,
-            basicMineralMining, intermediateMineralMining, advancedMineralMining,
-            basicTransport, itemAccessPort, beltSplitting, beltBridging, beltConverging,
-            basicRefining, itemMoulding, filler, cultivationTechnology, grindingTech,
-            basicShredding, partsManufacturing, packagingTech,
-            basicPower, powerTransmission, powerGeneration, warehouseAccess,
-            outdoorStorage,
+            automatedIndustryComplex, basicAicPlan,
+            basicAicI, basicAicII, basicAicIII,
+            miningI, miningII, miningIII,
+            logisticsI, itemAccessPort, beltSplitting, beltBridging, beltConverging,
+            refineI, materialMoulding, solidFilling, planting, grinding,
+            shreddingI, partsFitting, packagingTech,
+            electricityI, powerRelay, powerI, depotBus,
+            fieldStash,
             gearingTech, pylonRelaying, relayRedistribution,
             defenseI, areaDenialI,
             customDefenseI, customDefenseII,
             hostileControlI, hostileControlII,
             pointDefenseI, areaDenialII,
-            regionHub, originiumResearchLab, veinSourceArea, energyHighland, quarry,
+            valleyIv, theHub, originiumSciencePark, originLodespring, powerPlateau, aburreyQuarry, valleyPass,
             itemsCategory;
     public static Item
             // 工业产物
@@ -65,9 +65,9 @@ public class EFitems {
             // 零件
             amethystPart, ferriumPart, steelPart, crystonPart,
             // 装备原件
-            amethystComponent, ferriumComponent, crystonComponent, xiraniteComponent,
+            //amethystComponent, ferriumComponent, crystonComponent, xiraniteComponent,
             // 瓶子
-            amethystBottle, crystonBottle, ferriumBottle, steelBottle,
+            //amethystBottle, crystonBottle, ferriumBottle, steelBottle,
             // 消耗品
             industrialExplosive;
     /** 隐藏的研究凭证，用于孤立科技节点的消耗 */
@@ -80,6 +80,7 @@ public class EFitems {
         ferriumOre = new Item("ferrium-ore") {{color = Color.valueOf("4f7ebf");hardness = 3;cost = 1;}};
 
         // 植物
+        /*
         wood = new Item("wood") {{cost = 1;}};
         buckflower = new Item("buckflower") {{color = Color.valueOf("d4a5a5");cost = 1;}};
         firebuckle = new Item("firebuckle") {{color = Color.valueOf("e67e22");cost = 1;}};
@@ -87,10 +88,12 @@ public class EFitems {
         citrome = new Item("citrome") {{color = Color.valueOf("f1c40f");cost = 1;}};
         umbraline = new Item("umbraline") {{color = Color.valueOf("2c3e50");cost = 1;}};
         citromeSeed = new Item("citrome-seed") {{color = Color.valueOf("7d3c98");cost = 1;}};
+        */
         aketine = new Item("aketine") {{color = Color.valueOf("27ae60");cost = 1;}};
         aketineSeed = new Item("aketine-seed") {{color = Color.valueOf("1e8449");cost = 1;}};
         sandleaf = new Item("sandleaf") {{color = Color.valueOf("f4d03f");cost = 1;}};
         sandleafSeed = new Item("sandleaf-seed") {{color = Color.valueOf("b7950b");cost = 1;}};
+        /*
         tartpepper = new Item("tartpepper") {{color = Color.valueOf("e74c3c");cost = 1;}};
         tartpepperSeed = new Item("tartpepper-seed") {{color = Color.valueOf("c0392b");cost = 1;}};
         reedRye = new Item("reed-rye") {{color = Color.valueOf("95a5a6");cost = 1;}};
@@ -105,20 +108,21 @@ public class EFitems {
         redjadeGinsengSeed = new Item("redjade-ginseng-seed") {{color = Color.valueOf("b5345e");cost = 1;}};
         amberRice = new Item("amber-rice") {{color = Color.valueOf("f6e58d");cost = 1;}};
         amberRiceSeed = new Item("amber-rice-seed") {{color = Color.valueOf("f1c40f");cost = 1;}};
+        */
 
         // 粉末
-        buckflowerPowder = new Item("buckflower-powder") {{color = Color.valueOf("e8c4c4");cost = 1;}};
-        firebucklePowder = new Item("firebuckle-powder") {{color = Color.valueOf("f5b041");cost = 1;}};
-        groundBuckflowerPowder = new Item("ground-buckflower-powder") {{color = Color.valueOf("d7b19d");cost = 1;}};
-        citromePowder = new Item("citrome-powder") {{color = Color.valueOf("f7dc6f");cost = 1;}};
-        citromix = new Item("citromix") {{color = Color.valueOf("f39c12");cost = 1;}};
-        groundCitromePowder = new Item("ground-citrome-powder") {{color = Color.valueOf("d4ac0d");cost = 1;}};
+        //buckflowerPowder = new Item("buckflower-powder") {{color = Color.valueOf("e8c4c4");cost = 1;}};
+        //firebucklePowder = new Item("firebuckle-powder") {{color = Color.valueOf("f5b041");cost = 1;}};
+        //groundBuckflowerPowder = new Item("ground-buckflower-powder") {{color = Color.valueOf("d7b19d");cost = 1;}};
+        //citromePowder = new Item("citrome-powder") {{color = Color.valueOf("f7dc6f");cost = 1;}};
+        //citromix = new Item("citromix") {{color = Color.valueOf("f39c12");cost = 1;}};
+        //groundCitromePowder = new Item("ground-citrome-powder") {{color = Color.valueOf("d4ac0d");cost = 1;}};
         aketinePowder = new Item("aketine-powder") {{color = Color.valueOf("82e0aa");cost = 1;}};
         sandleafPowder = new Item("sandleaf-powder") {{color = Color.valueOf("f7dc6f");cost = 1;}};
-        jincaoPowder = new Item("jincao-powder") {{color = Color.valueOf("a9dfbf");cost = 1;}};
-        fluffedJincaoPowder = new Item("fluffed-jincao-powder") {{color = Color.valueOf("f8c471");cost = 1;}};
-        yazhenPowder = new Item("yazhen-powder") {{color = Color.valueOf("a3e4d7");cost = 1;}};
-        thornyYazhenPowder = new Item("thorny-yazhen-powder") {{color = Color.valueOf("76d7c4");cost = 1;}};
+        //jincaoPowder = new Item("jincao-powder") {{color = Color.valueOf("a9dfbf");cost = 1;}};
+        //fluffedJincaoPowder = new Item("fluffed-jincao-powder") {{color = Color.valueOf("f8c471");cost = 1;}};
+        //yazhenPowder = new Item("yazhen-powder") {{color = Color.valueOf("a3e4d7");cost = 1;}};
+        //thornyYazhenPowder = new Item("thorny-yazhen-powder") {{color = Color.valueOf("76d7c4");cost = 1;}};
         carbonPowder = new Item("carbon-powder") {{color = Color.valueOf("5d6d7e");cost = 1;}};
         denseCarbonPowder = new Item("dense-carbon-powder") {{color = Color.valueOf("2e4053");cost = 1;}};
         originiumPowder = new Item("originium-powder") {{color = Color.valueOf("b03a2e");cost = 1;}};
@@ -156,16 +160,16 @@ public class EFitems {
         crystonPart = new Item("cryston-part") {{color = Color.valueOf("8e44ad");cost = 1;}};
 
         // 装备原件
-        amethystComponent = new Item("amethyst-component") {{color = Color.valueOf("9b59b6");cost = 1;}};
-        ferriumComponent = new Item("ferrium-component") {{color = Color.valueOf("3498db");cost = 1;}};
-        crystonComponent = new Item("cryston-component") {{color = Color.valueOf("8e44ad");cost = 1;}};
-        xiraniteComponent = new Item("xiranite-component") {{color = Color.valueOf("d4ac0d");cost = 1;}};
+        //amethystComponent = new Item("amethyst-component") {{color = Color.valueOf("9b59b6");cost = 1;}};
+        //ferriumComponent = new Item("ferrium-component") {{color = Color.valueOf("3498db");cost = 1;}};
+        //crystonComponent = new Item("cryston-component") {{color = Color.valueOf("8e44ad");cost = 1;}};
+        //xiraniteComponent = new Item("xiranite-component") {{color = Color.valueOf("d4ac0d");cost = 1;}};
 
         // 瓶子
-        amethystBottle = new Item("amethyst-bottle") {{color = Color.valueOf("c39bd3");cost = 1;}};
-        crystonBottle = new Item("cryston-bottle") {{color = Color.valueOf("a569bd");cost = 1;}};
-        ferriumBottle = new Item("ferrium-bottle") {{color = Color.valueOf("85c1e2");cost = 1;}};
-        steelBottle = new Item("steel-bottle") {{color = Color.valueOf("85c1e2");cost = 1;}};
+        //amethystBottle = new Item("amethyst-bottle") {{color = Color.valueOf("c39bd3");cost = 1;}};
+        //crystonBottle = new Item("cryston-bottle") {{color = Color.valueOf("a569bd");cost = 1;}};
+        //ferriumBottle = new Item("ferrium-bottle") {{color = Color.valueOf("85c1e2");cost = 1;}};
+        //steelBottle = new Item("steel-bottle") {{color = Color.valueOf("85c1e2");cost = 1;}};
 
         // 消耗品
         industrialExplosive = new Item("industrial-explosive") {{color = Color.valueOf("ff9300");cost = 1;}};
@@ -173,37 +177,39 @@ public class EFitems {
         // ===== 科技树自定义节点 =====
         protocolCore = new TechTreeNode("protocol-core") {{ color = Color.valueOf("a0a0a0"); }};
         automatedIndustryComplex = new TechTreeNode("automated-industry-complex") {{ color = Color.valueOf("7ec8e3"); }};
-        basicIndustryPlan = new TechTreeNode("basic-industry-plan") {{ color = Color.valueOf("5ab0d8"); }};
-        basicIndustryPhase1 = new TechTreeNode("basic-industry-phase1") {{ color = Color.valueOf("91d5e8"); }};
-        basicIndustryPhase2 = new TechTreeNode("basic-industry-phase2") {{ color = Color.valueOf("b5e2f0"); }};
-        basicIndustryPhase3 = new TechTreeNode("basic-industry-phase3") {{ color = Color.valueOf("d4f0f7"); }};
-        regionHub = new TechTreeNode("region-hub") {{ color = Color.valueOf("d4b48c"); }};
-        originiumResearchLab = new TechTreeNode("originium-research-lab") {{ color = Color.valueOf("c66322"); }};
-        veinSourceArea = new TechTreeNode("vein-source-area") {{ color = Color.valueOf("4f7ebf"); }};
-        energyHighland = new TechTreeNode("energy-highland") {{ color = Color.valueOf("f1c40f"); }};
-        quarry = new TechTreeNode("quarry") {{ color = Color.valueOf("b5977a"); }};
+        basicAicPlan = new TechTreeNode("basic-aic-plan") {{ color = Color.valueOf("5ab0d8"); }};
+        basicAicI = new TechTreeNode("basic-aic-i") {{ color = Color.valueOf("91d5e8"); }};
+        basicAicII = new TechTreeNode("basic-aic-ii") {{ color = Color.valueOf("b5e2f0"); }};
+        basicAicIII = new TechTreeNode("basic-aic-iii") {{ color = Color.valueOf("d4f0f7"); }};
+        valleyIv = new TechTreeNode("valley-iv") {{ color = Color.valueOf("8fcb9a"); }};
+        theHub = new TechTreeNode("the-hub") {{ color = Color.valueOf("d4b48c"); }};
+        originiumSciencePark = new TechTreeNode("originium-science-park") {{ color = Color.valueOf("c66322"); }};
+        originLodespring = new TechTreeNode("origin-lodespring") {{ color = Color.valueOf("4f7ebf"); }};
+        powerPlateau = new TechTreeNode("power-plateau") {{ color = Color.valueOf("f1c40f"); }};
+        aburreyQuarry = new TechTreeNode("aburrey-quarry") {{ color = Color.valueOf("b5977a"); }};
+        valleyPass = new TechTreeNode("valley-pass") {{ color = Color.valueOf("a8d5ba"); }};
         itemsCategory = new TechTreeNode("items-category") {{ color = Color.valueOf("2ecc71"); }};
-        basicMineralMining = new TechTreeNode("basic-mineral-mining") {{ color = Color.valueOf("c66322"); }};
-        intermediateMineralMining = new TechTreeNode("intermediate-mineral-mining") {{ color = Color.valueOf("a55fc4"); }};
-        advancedMineralMining = new TechTreeNode("advanced-mineral-mining") {{ color = Color.valueOf("4f7ebf"); }};
-        filler = new TechTreeNode("filler") {{ color = Color.valueOf("95a5a6"); }};
-        cultivationTechnology = new TechTreeNode("cultivation-technology") {{ color = Color.valueOf("27ae60"); }};
-        warehouseAccess = new TechTreeNode("warehouse-access") {{ color = Color.valueOf("7f8c8d"); }};
-        basicTransport = new TechTreeNode("basic-transport") {{ color = Color.valueOf("7f8c8d"); }};
-        itemAccessPort = new TechTreeNode("item-access-port") {{ color = Color.valueOf("95a5a6"); }};
+        miningI = new TechTreeNode("mining-i") {{ color = Color.valueOf("c66322"); }};
+        miningII = new TechTreeNode("mining-ii") {{ color = Color.valueOf("a55fc4"); }};
+        miningIII = new TechTreeNode("mining-iii") {{ color = Color.valueOf("4f7ebf"); }};
+        solidFilling = new TechTreeNode("solid-filling") {{ color = Color.valueOf("95a5a6"); }};
+        planting = new TechTreeNode("planting") {{ color = Color.valueOf("27ae60"); }};
+        depotBus = new TechTreeNode("depot-bus") {{ color = Color.valueOf("7f8c8d"); }};
+        logisticsI = new TechTreeNode("logistics-i") {{ color = Color.valueOf("7f8c8d"); }};
+        itemAccessPort = new TechTreeNode("item-control-port") {{ color = Color.valueOf("95a5a6"); }};
         beltSplitting = new TechTreeNode("belt-splitting") {{ color = Color.valueOf("aab7b8"); }};
         beltBridging = new TechTreeNode("belt-bridging") {{ color = Color.valueOf("bdc3c7"); }};
         beltConverging = new TechTreeNode("belt-converging") {{ color = Color.valueOf("d5dbdb"); }};
-        basicRefining = new TechTreeNode("basic-refining") {{ color = Color.valueOf("c0392b"); }};
-        itemMoulding = new TechTreeNode("item-moulding") {{ color = Color.valueOf("e74c3c"); }};
-        grindingTech = new TechTreeNode("grinding-tech") {{ color = Color.valueOf("ff9300"); }};
-        basicShredding = new TechTreeNode("basic-shredding") {{ color = Color.valueOf("8e44ad"); }};
-        partsManufacturing = new TechTreeNode("parts-manufacturing") {{ color = Color.valueOf("9b59b6"); }};
+        refineI = new TechTreeNode("refine-i") {{ color = Color.valueOf("c0392b"); }};
+        materialMoulding = new TechTreeNode("material-moulding") {{ color = Color.valueOf("e74c3c"); }};
+        grinding = new TechTreeNode("grinding") {{ color = Color.valueOf("ff9300"); }};
+        shreddingI = new TechTreeNode("shredding-i") {{ color = Color.valueOf("8e44ad"); }};
+        partsFitting = new TechTreeNode("parts-fitting") {{ color = Color.valueOf("9b59b6"); }};
         packagingTech = new TechTreeNode("packaging-tech") {{ color = Color.valueOf("a569bd"); }};
-        basicPower = new TechTreeNode("basic-power") {{ color = Color.valueOf("f39c12"); }};
-        powerTransmission = new TechTreeNode("power-transmission") {{ color = Color.valueOf("e67e22"); }};
-        powerGeneration = new TechTreeNode("power-generation") {{ color = Color.valueOf("d35400"); }};
-        outdoorStorage = new TechTreeNode("outdoor-storage") {{ color = Color.valueOf("2c3e50"); }};
+        electricityI = new TechTreeNode("electricity-i") {{ color = Color.valueOf("f39c12"); }};
+        powerRelay = new TechTreeNode("power-relay") {{ color = Color.valueOf("e67e22"); }};
+        powerI = new TechTreeNode("power-i") {{ color = Color.valueOf("d35400"); }};
+        fieldStash = new TechTreeNode("field-stash") {{ color = Color.valueOf("2c3e50"); }};
         defenseI = new TechTreeNode("defense-i") {{ color = Color.valueOf("e74c3c"); }};
         areaDenialI = new TechTreeNode("area-denial-i") {{ color = Color.valueOf("c0392b"); }};
         gearingTech = new TechTreeNode("gearing-tech") {{ color = Color.valueOf("9b59b6"); }};
@@ -222,23 +228,23 @@ public class EFitems {
             // 矿物
             originiumOre, amethystOre, ferriumOre,
             // 植物原料
-            wood,
-            buckflower, firebuckle, buckflowerSeed,
-            citrome, umbraline, citromeSeed,
+            //wood,
+            //buckflower, firebuckle, buckflowerSeed,
+            //citrome, umbraline, citromeSeed,
             aketine, aketineSeed,
             sandleaf, sandleafSeed,
-            tartpepper, tartpepperSeed,
-            reedRye, reedRyeSeed,
-            jincao, fluffedJincao, jincaoSeed,
-            yazhen, thornyYazhen, yazhenSeed,
-            redjadeGinseng, redjadeGinsengSeed,
-            amberRice, amberRiceSeed,
+            //tartpepper, tartpepperSeed,
+            //reedRye, reedRyeSeed,
+            //jincao, fluffedJincao, jincaoSeed,
+            //yazhen, thornyYazhen, yazhenSeed,
+            //redjadeGinseng, redjadeGinsengSeed,
+            //amberRice, amberRiceSeed,
             // 粉末
-            buckflowerPowder, firebucklePowder, groundBuckflowerPowder,
-            citromePowder, citromix, groundCitromePowder,
+            //buckflowerPowder, firebucklePowder, groundBuckflowerPowder,
+            //citromePowder, citromix, groundCitromePowder,
             aketinePowder, sandleafPowder,
-            jincaoPowder, fluffedJincaoPowder,
-            yazhenPowder, thornyYazhenPowder,
+            //jincaoPowder, fluffedJincaoPowder,
+            //yazhenPowder, thornyYazhenPowder,
             carbonPowder, denseCarbonPowder,
             originiumPowder, origocrustPowder, denseOriginiumPowder, denseOrigocrustPowder,
             amethystPowder, crystonPowder,
@@ -253,7 +259,7 @@ public class EFitems {
             // 零件
             amethystPart, ferriumPart, steelPart, crystonPart,
             // 瓶子
-            amethystBottle, crystonBottle, ferriumBottle, steelBottle,
+            //amethystBottle, crystonBottle, ferriumBottle, steelBottle,
             // 消耗品
             industrialExplosive
         );

@@ -55,23 +55,23 @@ public class EFTechTree {
         orphanNode(grenadeTower, gateCost);
 
         // ==== 2. 配置每个科技树节点解锁的内容 ====
-        basicTransport.unlockables.add(transportBelt);
+        logisticsI.unlockables.add(transportBelt);
         itemAccessPort.unlockables.add(itemControlPort);
         beltSplitting.unlockables.add(splitter);
         beltBridging.unlockables.add(beltBridge);
         beltConverging.unlockables.add(converger);
-        basicRefining.unlockables.add(refiningUnit);
-        itemMoulding.unlockables.add(mouldingUnit);
-        basicShredding.unlockables.add(shreddingUnit);
-        partsManufacturing.unlockables.add(fittingUnit);
+        refineI.unlockables.add(refiningUnit);
+        materialMoulding.unlockables.add(mouldingUnit);
+        shreddingI.unlockables.add(shreddingUnit);
+        partsFitting.unlockables.add(fittingUnit);
         packagingTech.unlockables.add(packagingUnit);
-        basicPower.unlockables.add(electricPylon);
-        powerTransmission.unlockables.add(relayTower);
-        powerGeneration.unlockables.add(thermalBank);
-        outdoorStorage.unlockables.add(protocolStash);
-        grindingTech.unlockables.add(grindingUnit);
+        electricityI.unlockables.add(electricPylon);
+        powerRelay.unlockables.add(relayTower);
+        powerI.unlockables.add(thermalBank);
+        fieldStash.unlockables.add(protocolStash);
+        grinding.unlockables.add(grindingUnit);
         // 培植工艺一次性解锁采种机和种植机
-        cultivationTechnology.unlockables.addAll(seedPickingUnit, plantingUnit);
+        planting.unlockables.addAll(seedPickingUnit, plantingUnit);
         defenseI.unlockables.add(gunTower);
         areaDenialI.unlockables.add(grenadeTower);
 
@@ -82,21 +82,21 @@ public class EFTechTree {
         planet.techTree = nodeRoot("taelos-II", planet, () -> {
             freeNode(automatedIndustryComplex, () -> {
                 // ===== Basic AIC Plan =====
-                freeNode(basicIndustryPlan, () -> {
+                freeNode(basicAicPlan, () -> {
                     // Phase markers
-                    freeNode(basicIndustryPhase1, () -> {
-                        freeNode(basicIndustryPhase2, () -> {
-                            freeNode(basicIndustryPhase3, () -> {});
+                    freeNode(basicAicI, () -> {
+                        freeNode(basicAicII, () -> {
+                            freeNode(basicAicIII, () -> {});
                         });
                     });
                     // Resourcing: Mining I → II → III
-                    freeNode(basicMineralMining, () -> {
-                        freeNode(intermediateMineralMining, () -> {
-                            freeNode(advancedMineralMining, () -> {});
+                    freeNode(miningI, () -> {
+                        freeNode(miningII, () -> {
+                            freeNode(miningIII, () -> {});
                         });
                     });
                     // Logistics
-                    freeNode(basicTransport, () -> {
+                    freeNode(logisticsI, () -> {
                         freeNode(itemAccessPort, () -> {
                             freeNode(beltSplitting, () -> {
                                 freeNode(beltBridging, () -> {
@@ -107,26 +107,26 @@ public class EFTechTree {
                     });
                     // Processing - Top row
                     freeNode(gearingTech, () -> {});
-                    freeNode(basicRefining, () -> {
-                        freeNode(itemMoulding, () -> {
-                            freeNode(filler, () -> {
-                                freeNode(cultivationTechnology, () -> {
-                                    freeNode(grindingTech, () -> {});
+                    freeNode(refineI, () -> {
+                        freeNode(materialMoulding, () -> {
+                            freeNode(solidFilling, () -> {
+                                freeNode(planting, () -> {
+                                    freeNode(grinding, () -> {});
                                 });
                             });
                         });
                     });
                     // Processing - Bottom row
-                    freeNode(basicShredding, () -> {
-                        freeNode(partsManufacturing, () -> {
+                    freeNode(shreddingI, () -> {
+                        freeNode(partsFitting, () -> {
                             freeNode(packagingTech, () -> {});
                         });
                     });
                     // Power
-                    freeNode(basicPower, () -> {
-                        freeNode(powerTransmission, () -> {
-                            freeNode(powerGeneration, () -> {
-                                freeNode(warehouseAccess, () -> {});
+                    freeNode(electricityI, () -> {
+                        freeNode(powerRelay, () -> {
+                            freeNode(powerI, () -> {
+                                freeNode(depotBus, () -> {});
                             });
                         });
                     });
@@ -145,16 +145,19 @@ public class EFTechTree {
                             freeNode(areaDenialII, () -> {});
                         });
                     });
-                    freeNode(outdoorStorage, () -> {});
+                    freeNode(fieldStash, () -> {});
                 });
             });
             // Regions
-            freeNode(regionHub, () -> {
-                freeNode(quarry, () -> {});
-                freeNode(originiumResearchLab, () -> {
-                    freeNode(veinSourceArea, () -> {
-                        freeNode(energyHighland, () -> {});
+            freeNode(valleyIv, () -> {
+                freeNode(theHub, () -> {
+                    freeNode(originiumSciencePark, () -> {
+                        freeNode(originLodespring, () -> {
+                            freeNode(powerPlateau, () -> {});
+                        });
                     });
+                    freeNode(valleyPass, () -> {});
+                    freeNode(aburreyQuarry, () -> {});
                 });
             });
             freeNode(itemsCategory, () -> {});
