@@ -44,6 +44,9 @@ public class EFblocks {
     public static ThermalBank thermalBank;
     //public static XiraniteRelay xiraniteRelay;        //息壤中继器
     //public static XiranitePylon xiranitePylon;        //息壤供电桩
+    // ===== 战斗辅助 =====
+    public static GunTower gunTower;
+    public static GrenadeTower grenadeTower;
 
     public static void load() {
         // 注册矩形多块工厂所需的子方块
@@ -101,8 +104,10 @@ public class EFblocks {
         //xiranitePylon = new XiranitePylon("xiranite-pylon");        //息壤供电桩
         //xiranitePylon.load(); 
         // 战斗辅助
-        new GunTower("gun-tower").load();                              //铳械塔
-        new GrenadeTower("grenade-tower").load();    
+        gunTower = new GunTower("gun-tower");                              //铳械塔
+        gunTower.load();
+        grenadeTower = new GrenadeTower("grenade-tower");                  //榴弹塔
+        grenadeTower.load();
     }
 
     /** 将所有方块注册到指定星球 */
@@ -124,5 +129,7 @@ public class EFblocks {
         electricPylon.shownPlanets.add(planet);
         relayTower.shownPlanets.add(planet);
         thermalBank.shownPlanets.add(planet);
+        gunTower.shownPlanets.add(planet);
+        grenadeTower.shownPlanets.add(planet);
     }
 }

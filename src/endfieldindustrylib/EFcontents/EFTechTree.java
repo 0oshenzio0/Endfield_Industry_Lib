@@ -51,6 +51,8 @@ public class EFTechTree {
         orphanNode(seedPickingUnit, gateCost);
         orphanNode(plantingUnit, gateCost);
         orphanNode(grindingUnit, gateCost);
+        orphanNode(gunTower, gateCost);
+        orphanNode(grenadeTower, gateCost);
 
         // ==== 2. 配置每个科技树节点解锁的内容 ====
         basicTransport.unlockables.add(transportBelt);
@@ -70,24 +72,30 @@ public class EFTechTree {
         grindingTech.unlockables.add(grindingUnit);
         // 培植工艺一次性解锁采种机和种植机
         cultivationTechnology.unlockables.addAll(seedPickingUnit, plantingUnit);
+        defenseI.unlockables.add(gunTower);
+        areaDenialI.unlockables.add(grenadeTower);
 
         // ==== 3. 将所有方块注册到星球 ====
         EFblocks.registerToPlanet(planet);
 
-        // ==== 4. 构建显示用科技树 ====
+        // ==== 4. 构建显示用科技树（AIC Factory Plan 结构）====
         planet.techTree = nodeRoot("taelos-II", planet, () -> {
             freeNode(automatedIndustryComplex, () -> {
+                // ===== Basic AIC Plan =====
                 freeNode(basicIndustryPlan, () -> {
+                    // Phase markers
                     freeNode(basicIndustryPhase1, () -> {
                         freeNode(basicIndustryPhase2, () -> {
                             freeNode(basicIndustryPhase3, () -> {});
                         });
                     });
+                    // Resourcing: Mining I → II → III
                     freeNode(basicMineralMining, () -> {
                         freeNode(intermediateMineralMining, () -> {
                             freeNode(advancedMineralMining, () -> {});
                         });
                     });
+                    // Logistics
                     freeNode(basicTransport, () -> {
                         freeNode(itemAccessPort, () -> {
                             freeNode(beltSplitting, () -> {
@@ -97,6 +105,8 @@ public class EFTechTree {
                             });
                         });
                     });
+                    // Processing - Top row
+                    freeNode(gearingTech, () -> {});
                     freeNode(basicRefining, () -> {
                         freeNode(itemMoulding, () -> {
                             freeNode(filler, () -> {
@@ -106,11 +116,13 @@ public class EFTechTree {
                             });
                         });
                     });
+                    // Processing - Bottom row
                     freeNode(basicShredding, () -> {
                         freeNode(partsManufacturing, () -> {
                             freeNode(packagingTech, () -> {});
                         });
                     });
+                    // Power
                     freeNode(basicPower, () -> {
                         freeNode(powerTransmission, () -> {
                             freeNode(powerGeneration, () -> {
@@ -118,9 +130,25 @@ public class EFTechTree {
                             });
                         });
                     });
+                    freeNode(pylonRelaying, () -> {});
+                    freeNode(relayRedistribution, () -> {});
+                    // Combat
+                    freeNode(defenseI, () -> {
+                        freeNode(areaDenialI, () -> {
+                            freeNode(hostileControlI, () -> {
+                                freeNode(hostileControlII, () -> {});
+                            });
+                            freeNode(customDefenseI, () -> {
+                                freeNode(customDefenseII, () -> {});
+                                freeNode(pointDefenseI, () -> {});
+                            });
+                            freeNode(areaDenialII, () -> {});
+                        });
+                    });
                     freeNode(outdoorStorage, () -> {});
                 });
             });
+            // Regions
             freeNode(regionHub, () -> {
                 freeNode(quarry, () -> {});
                 freeNode(originiumResearchLab, () -> {
