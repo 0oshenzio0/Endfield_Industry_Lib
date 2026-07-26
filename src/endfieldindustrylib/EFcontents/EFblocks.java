@@ -149,5 +149,11 @@ public class EFblocks {
         thermalBank.shownPlanets.add(planet);
         gunTower.shownPlanets.add(planet);
         grenadeTower.shownPlanets.add(planet);
+        lnTower.shownPlanets.add(planet);
+        heavyGunTower.shownPlanets.add(planet);
+        omnidirectionalSonicTower.shownPlanets.add(planet);
+        beamTower.shownPlanets.add(planet);
+        surgeTower.shownPlanets.add(planet);
+        sentryTower.shownPlanets.add(planet);
     }
 }

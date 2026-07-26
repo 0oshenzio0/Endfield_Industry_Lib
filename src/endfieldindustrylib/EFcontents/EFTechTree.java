@@ -53,6 +53,12 @@ public class EFTechTree {
         orphanNode(grindingUnit, gateCost);
         orphanNode(gunTower, gateCost);
         orphanNode(grenadeTower, gateCost);
+        orphanNode(lnTower, gateCost);
+        orphanNode(heavyGunTower, gateCost);
+        orphanNode(omnidirectionalSonicTower, gateCost);
+        orphanNode(beamTower, gateCost);
+        orphanNode(surgeTower, gateCost);
+        orphanNode(sentryTower, gateCost);
 
         // ==== 2. 配置每个科技树节点解锁的内容 ====
         logisticsI.unlockables.add(transportBelt);
@@ -74,6 +80,12 @@ public class EFTechTree {
         planting.unlockables.addAll(seedPickingUnit, plantingUnit);
         defenseI.unlockables.add(gunTower);
         areaDenialI.unlockables.add(grenadeTower);
+        hostileControlI.unlockables.add(lnTower);
+        hostileControlII.unlockables.add(omnidirectionalSonicTower);
+        customDefenseI.unlockables.add(heavyGunTower);
+        customDefenseII.unlockables.add(sentryTower);
+        pointDefenseI.unlockables.add(beamTower);
+        areaDenialII.unlockables.add(surgeTower);
 
         // ==== 3. 将所有方块注册到星球 ====
         EFblocks.registerToPlanet(planet);
