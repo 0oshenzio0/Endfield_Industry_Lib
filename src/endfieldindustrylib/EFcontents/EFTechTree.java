@@ -1,6 +1,10 @@
 package endfieldindustrylib.EFcontents;
 
+import arc.graphics.Color;
+import arc.struct.ObjectSet;
+import arc.struct.Seq;
 import mindustry.content.TechTree.TechNode;
+import mindustry.game.Objectives.Objective;
 import mindustry.ctype.UnlockableContent;
 import mindustry.type.ItemStack;
 import mindustry.type.Planet;
@@ -11,171 +15,200 @@ import static mindustry.content.TechTree.*;
 
 /**
  * 塔卫二 (taelos-II) 科技树。
- * 使用 TechTreeNode 自定义节点，支持：
- * - 节点名称和描述（bundle 文件配置）
- * - 节点花费（研究消耗）
- * - 解锁关联的多个内容（unlockables）
+ *
+ * 使用 EFTechTreeNode（extends StatusEffect）作为节点配置，
+ * 嵌套 lambda 表达树结构，efNode() helper 内联完成：
+ *   ① 为 rewards 创建孤立 TechNode（gate 去重）
+ *   ② 从 settings 恢复 discovered 状态
+ *   ③ 组装 objectives + cost → 创建显示 TechNode
  */
 public class EFTechTree {
 
-    private static TechNode freeNode(UnlockableContent content, Runnable children) {
-        TechNode n = node(content, new ItemStack[0], children);
-        n.objectives.clear();
-        return n;
+    /** 孤立节点去重 */
+    private static final ObjectSet<UnlockableContent> gateCreated = new ObjectSet<>();
+    /** 隐藏的研究凭证 */
+    private static ItemStack[] gateCost;
+
+    // ================================================================
+    //  节点初始化（需在 EFblocks.load() 之后调用）
+    // ================================================================
+
+    /**
+     * 创建所有 EFTechTreeNode 实例并配置发现关系。
+     * 必须在 EFblocks.load() 之后调用（确保 .rewards() 引用的 block 非 null）。
+     */
+    public static void initNodes() {
+        protocolCore = new EFTechTreeNode("protocol-core").color(Color.valueOf("a0a0a0")).free();
+        automatedIndustryComplex = new EFTechTreeNode("automated-industry-complex").color(Color.valueOf("7ec8e3")).free();
+        basicAicPlan = new EFTechTreeNode("basic-aic-plan").color(Color.valueOf("5ab0d8")).free();
+        basicAicI = new EFTechTreeNode("basic-aic-i").color(Color.valueOf("91d5e8")).free();
+        basicAicII = new EFTechTreeNode("basic-aic-ii").color(Color.valueOf("b5e2f0")).free();
+        basicAicIII = new EFTechTreeNode("basic-aic-iii").color(Color.valueOf("d4f0f7")).free();
+        valleyIv = new EFTechTreeNode("valley-iv").color(Color.valueOf("8fcb9a")).free();
+        theHub = new EFTechTreeNode("the-hub").color(Color.valueOf("d4b48c")).free();
+        originiumSciencePark = new EFTechTreeNode("originium-science-park").color(Color.valueOf("c66322")).free();
+        originLodespring = new EFTechTreeNode("origin-lodespring").color(Color.valueOf("4f7ebf")).free();
+        powerPlateau = new EFTechTreeNode("power-plateau").color(Color.valueOf("f1c40f")).free();
+        aburreyQuarry = new EFTechTreeNode("aburrey-quarry").color(Color.valueOf("b5977a")).free();
+        valleyPass = new EFTechTreeNode("valley-pass").color(Color.valueOf("a8d5ba")).free();
+        itemsCategory = new EFTechTreeNode("items-category").color(Color.valueOf("2ecc71")).free();
+        miningI = new EFTechTreeNode("mining-i").color(Color.valueOf("c66322")).free();
+        miningII = new EFTechTreeNode("mining-ii").color(Color.valueOf("a55fc4")).free();
+        miningIII = new EFTechTreeNode("mining-iii").color(Color.valueOf("4f7ebf")).free();
+        solidFilling = new EFTechTreeNode("solid-filling").color(Color.valueOf("95a5a6")).free();
+        planting = new EFTechTreeNode("planting").color(Color.valueOf("27ae60")).free().rewards(seedPickingUnit, plantingUnit);
+        depotBus = new EFTechTreeNode("depot-bus").color(Color.valueOf("7f8c8d")).free();
+        logisticsI = new EFTechTreeNode("logistics-i").color(Color.valueOf("7f8c8d")).free().rewards(transportBelt);
+        itemAccessPort = new EFTechTreeNode("item-control-port").color(Color.valueOf("95a5a6")).free().rewards(itemControlPort);
+        beltSplitting = new EFTechTreeNode("belt-splitting").color(Color.valueOf("aab7b8")).free().rewards(splitter);
+        beltBridging = new EFTechTreeNode("belt-bridging").color(Color.valueOf("bdc3c7")).free().rewards(beltBridge);
+        beltConverging = new EFTechTreeNode("belt-converging").color(Color.valueOf("d5dbdb")).free().rewards(converger);
+        refineI = new EFTechTreeNode("refine-i").color(Color.valueOf("c0392b")).free().rewards(refiningUnit);
+        materialMoulding = new EFTechTreeNode("material-moulding").color(Color.valueOf("e74c3c")).free().rewards(mouldingUnit);
+        grinding = new EFTechTreeNode("grinding").color(Color.valueOf("ff9300")).free().rewards(grindingUnit);
+        shreddingI = new EFTechTreeNode("shredding-i").color(Color.valueOf("8e44ad")).free().rewards(shreddingUnit);
+        partsFitting = new EFTechTreeNode("parts-fitting").color(Color.valueOf("9b59b6")).free().rewards(fittingUnit);
+        packagingTech = new EFTechTreeNode("packaging-tech").color(Color.valueOf("a569bd")).free().rewards(packagingUnit);
+        electricityI = new EFTechTreeNode("electricity-i").color(Color.valueOf("f39c12")).free().rewards(electricPylon);
+        powerRelay = new EFTechTreeNode("power-relay").color(Color.valueOf("e67e22")).free().rewards(relayTower);
+        powerI = new EFTechTreeNode("power-i").color(Color.valueOf("d35400")).free().rewards(thermalBank);
+        fieldStash = new EFTechTreeNode("field-stash").color(Color.valueOf("2c3e50")).free().rewards(protocolStash);
+        defenseI = new EFTechTreeNode("defense-i").color(Color.valueOf("e74c3c")).free().rewards(gunTower);
+        areaDenialI = new EFTechTreeNode("area-denial-i").color(Color.valueOf("c0392b")).free().rewards(grenadeTower);
+        gearingTech = new EFTechTreeNode("gearing-tech").color(Color.valueOf("9b59b6")).free();
+        pylonRelaying = new EFTechTreeNode("pylon-relaying").color(Color.valueOf("f39c12")).free();
+        relayRedistribution = new EFTechTreeNode("relay-redistribution").color(Color.valueOf("e67e22")).free();
+        customDefenseI = new EFTechTreeNode("custom-defense-i").color(Color.valueOf("c0392b")).free().rewards(heavyGunTower);
+        customDefenseII = new EFTechTreeNode("custom-defense-ii").color(Color.valueOf("e74c3c")).free().rewards(sentryTower);
+        hostileControlI = new EFTechTreeNode("hostile-control-i").color(Color.valueOf("3498db")).free().rewards(lnTower);
+        hostileControlII = new EFTechTreeNode("hostile-control-ii").color(Color.valueOf("2980b9")).free().rewards(omnidirectionalSonicTower);
+        pointDefenseI = new EFTechTreeNode("point-defense-i").color(Color.valueOf("8e44ad")).free().rewards(beamTower);
+        areaDenialII = new EFTechTreeNode("area-denial-ii").color(Color.valueOf("d35400")).free().rewards(surgeTower);
+
+        // ===== 发现关系 =====
     }
 
-    private static TechNode orphanNode(UnlockableContent content, ItemStack[] requirements) {
-        TechNode n = new TechNode(null, content, requirements);
-        n.objectives.clear();
-        return n;
-    }
+    // ================================================================
+    //  主入口
+    // ================================================================
 
     public static void load(Planet planet) {
-        // ==== 1. 为所有方块创建孤立科技节点 ====
-        // 消耗 1 个隐藏研究凭证，只能通过 TechTreeNode.onUnlock → quietUnlock 解锁
-        ItemStack[] gateCost = ItemStack.with(EFitems.researchGate, 1);
-        orphanNode(transportBelt, gateCost);
-        orphanNode(itemControlPort, gateCost);
-        orphanNode(splitter, gateCost);
-        orphanNode(beltBridge, gateCost);
-        orphanNode(converger, gateCost);
-        orphanNode(refiningUnit, gateCost);
-        orphanNode(mouldingUnit, gateCost);
-        orphanNode(shreddingUnit, gateCost);
-        orphanNode(fittingUnit, gateCost);
-        orphanNode(packagingUnit, gateCost);
-        orphanNode(electricPylon, gateCost);
-        orphanNode(relayTower, gateCost);
-        orphanNode(thermalBank, gateCost);
-        orphanNode(protocolStash, gateCost);
-        orphanNode(seedPickingUnit, gateCost);
-        orphanNode(plantingUnit, gateCost);
-        orphanNode(grindingUnit, gateCost);
-        orphanNode(gunTower, gateCost);
-        orphanNode(grenadeTower, gateCost);
-        orphanNode(lnTower, gateCost);
-        orphanNode(heavyGunTower, gateCost);
-        orphanNode(omnidirectionalSonicTower, gateCost);
-        orphanNode(beamTower, gateCost);
-        orphanNode(surgeTower, gateCost);
-        orphanNode(sentryTower, gateCost);
+        gateCost = ItemStack.with(EFitems.researchGate, 1);
+        gateCreated.clear();
 
-        // ==== 2. 配置每个科技树节点解锁的内容 ====
-        logisticsI.unlockables.add(transportBelt);
-        itemAccessPort.unlockables.add(itemControlPort);
-        beltSplitting.unlockables.add(splitter);
-        beltBridging.unlockables.add(beltBridge);
-        beltConverging.unlockables.add(converger);
-        refineI.unlockables.add(refiningUnit);
-        materialMoulding.unlockables.add(mouldingUnit);
-        shreddingI.unlockables.add(shreddingUnit);
-        partsFitting.unlockables.add(fittingUnit);
-        packagingTech.unlockables.add(packagingUnit);
-        electricityI.unlockables.add(electricPylon);
-        powerRelay.unlockables.add(relayTower);
-        powerI.unlockables.add(thermalBank);
-        fieldStash.unlockables.add(protocolStash);
-        grinding.unlockables.add(grindingUnit);
-        // 培植工艺一次性解锁采种机和种植机
-        planting.unlockables.addAll(seedPickingUnit, plantingUnit);
-        defenseI.unlockables.add(gunTower);
-        areaDenialI.unlockables.add(grenadeTower);
-        hostileControlI.unlockables.add(lnTower);
-        hostileControlII.unlockables.add(omnidirectionalSonicTower);
-        customDefenseI.unlockables.add(heavyGunTower);
-        customDefenseII.unlockables.add(sentryTower);
-        pointDefenseI.unlockables.add(beamTower);
-        areaDenialII.unlockables.add(surgeTower);
-
-        // ==== 3. 将所有方块注册到星球 ====
-        EFblocks.registerToPlanet(planet);
-
-        // ==== 4. 构建显示用科技树（AIC Factory Plan 结构）====
         planet.techTree = nodeRoot("taelos-II", planet, () -> {
-            freeNode(automatedIndustryComplex, () -> {
+            efNode(automatedIndustryComplex, () -> {
                 // ===== Basic AIC Plan =====
-                freeNode(basicAicPlan, () -> {
+                efNode(basicAicPlan, () -> {
                     // Phase markers
-                    freeNode(basicAicI, () -> {
-                        freeNode(basicAicII, () -> {
-                            freeNode(basicAicIII, () -> {});
+                    efNode(basicAicI, () -> {
+                        efNode(basicAicII, () -> {
+                            efNode(basicAicIII, () -> {});
                         });
                     });
                     // Resourcing: Mining I → II → III
-                    freeNode(miningI, () -> {
-                        freeNode(miningII, () -> {
-                            freeNode(miningIII, () -> {});
+                    efNode(miningI, () -> {
+                        efNode(miningII, () -> {
+                            efNode(miningIII, () -> {});
                         });
                     });
                     // Logistics
-                    freeNode(logisticsI, () -> {
-                        freeNode(itemAccessPort, () -> {
-                            freeNode(beltSplitting, () -> {
-                                freeNode(beltBridging, () -> {
-                                    freeNode(beltConverging, () -> {});
+                    efNode(logisticsI, () -> {
+                        efNode(itemAccessPort, () -> {
+                            efNode(beltSplitting, () -> {
+                                efNode(beltBridging, () -> {
+                                    efNode(beltConverging, () -> {});
                                 });
                             });
                         });
                     });
                     // Processing - Top row
-                    freeNode(gearingTech, () -> {});
-                    freeNode(refineI, () -> {
-                        freeNode(materialMoulding, () -> {
-                            freeNode(solidFilling, () -> {
-                                freeNode(planting, () -> {
-                                    freeNode(grinding, () -> {});
+                    efNode(gearingTech, () -> {});
+                    efNode(refineI, () -> {
+                        efNode(materialMoulding, () -> {
+                            efNode(solidFilling, () -> {
+                                efNode(planting, () -> {
+                                    efNode(grinding, () -> {});
                                 });
                             });
                         });
                     });
                     // Processing - Bottom row
-                    freeNode(shreddingI, () -> {
-                        freeNode(partsFitting, () -> {
-                            freeNode(packagingTech, () -> {});
+                    efNode(shreddingI, () -> {
+                        efNode(partsFitting, () -> {
+                            efNode(packagingTech, () -> {});
                         });
                     });
                     // Power
-                    freeNode(electricityI, () -> {
-                        freeNode(powerRelay, () -> {
-                            freeNode(powerI, () -> {
-                                freeNode(depotBus, () -> {});
+                    efNode(electricityI, () -> {
+                        efNode(powerRelay, () -> {
+                            efNode(powerI, () -> {
+                                efNode(depotBus, () -> {});
                             });
                         });
                     });
-                    freeNode(pylonRelaying, () -> {});
-                    freeNode(relayRedistribution, () -> {});
+                    efNode(pylonRelaying, () -> {});
+                    efNode(relayRedistribution, () -> {});
                     // Combat
-                    freeNode(defenseI, () -> {
-                        freeNode(areaDenialI, () -> {
-                            freeNode(hostileControlI, () -> {
-                                freeNode(hostileControlII, () -> {});
+                    efNode(defenseI, () -> {
+                        efNode(areaDenialI, () -> {
+                            efNode(hostileControlI, () -> {
+                                efNode(hostileControlII, () -> {});
                             });
-                            freeNode(customDefenseI, () -> {
-                                freeNode(customDefenseII, () -> {});
-                                freeNode(pointDefenseI, () -> {});
+                            efNode(customDefenseI, () -> {
+                                efNode(customDefenseII, () -> {});
+                                efNode(pointDefenseI, () -> {});
                             });
-                            freeNode(areaDenialII, () -> {});
+                            efNode(areaDenialII, () -> {});
                         });
                     });
-                    freeNode(fieldStash, () -> {});
+                    efNode(fieldStash, () -> {});
                 });
             });
             // Regions
-            freeNode(valleyIv, () -> {
-                freeNode(theHub, () -> {
-                    freeNode(originiumSciencePark, () -> {
-                        freeNode(originLodespring, () -> {
-                            freeNode(powerPlateau, () -> {});
+            efNode(valleyIv, () -> {
+                efNode(theHub, () -> {
+                    efNode(originiumSciencePark, () -> {
+                        efNode(originLodespring, () -> {
+                            efNode(powerPlateau, () -> {});
                         });
                     });
-                    freeNode(valleyPass, () -> {});
-                    freeNode(aburreyQuarry, () -> {});
+                    efNode(valleyPass, () -> {});
+                    efNode(aburreyQuarry, () -> {});
                 });
             });
-            freeNode(itemsCategory, () -> {});
+            efNode(itemsCategory, () -> {});
         });
 
         planet.techTree.planet = planet;
+        EFblocks.registerToPlanet(planet);
         EFitems.registerToPlanet(planet);
+    }
+
+    // ================================================================
+    //  efNode helper：配置节点 → Mindustry TechNode
+    // ================================================================
+
+    /**
+     * 将一个 EFTechTreeNode 配置转换为 Mindustry TechNode。
+     * 内联完成 gate 创建、objectives 组装。
+     */
+    private static TechNode efNode(EFTechTreeNode config, Runnable children) {
+        // ① 为 rewards 创建孤立 TechNode
+        for (var content : config.rewards) {
+            if (gateCreated.add(content)) {
+                TechNode n = new TechNode(null, content, gateCost);
+                n.objectives.clear();
+            }
+        }
+
+        // ② 组装 objectives 和 cost
+        ItemStack[] cost = (config.researchCost == null || config.researchCost.length == 0)
+            ? ItemStack.empty : config.researchCost;
+
+        Seq<Objective> objectives = new Seq<>(config.unlockObjectives);
+
+        // ③ 创建显示 TechNode
+        return node(config, cost, objectives, children);
     }
 }
