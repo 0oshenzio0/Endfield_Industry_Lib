@@ -13,6 +13,7 @@ public class GunTower extends ItemTurret {
 
         requirements(Category.turret, ItemStack.with(EFitems.origocrust, 10));
 
+        alwaysUnlocked = true;
         size = 2;
         range = 240f;
         reload = 120f;

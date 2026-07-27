@@ -15,6 +15,7 @@ public class GrenadeTower extends ItemTurret {
 
         requirements(Category.turret, ItemStack.with(EFitems.origocrust, 15));
 
+        alwaysUnlocked = true;
         consumePower(5f);
 
         size = 2;

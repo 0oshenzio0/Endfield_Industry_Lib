@@ -1,5 +1,6 @@
 package endfieldindustrylib.EFcontents.EFenv;
 
+import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
 import mindustry.type.Category;
@@ -23,10 +24,13 @@ public class HarvestablePlant extends Block {
         breakable = true;
         health = 40;
         size = 1;
+        forceTeam = Team.derelict;          // 恒为废墟阵营
+        allowDerelictRepair = false; 
+        drawTeamOverlay = false; 
         buildVisibility = BuildVisibility.editorOnly;
         // 建造成本 = 掉落物品，拆毁时自动返还
         requirements(Category.defense, ItemStack.with(dropItem, 5));
-        buildTime = 10;
+        buildTime = 20;
     }
 
     public class HarvestablePlantBuild extends Building {

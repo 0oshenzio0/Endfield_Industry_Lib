@@ -1,5 +1,6 @@
 package endfieldindustrylib.EFcontents.EFenv;
 
+import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
 import mindustry.type.Category;
@@ -25,6 +26,9 @@ public class OreStone extends Block {
         health = 400;
         size = 1;
         buildVisibility = BuildVisibility.editorOnly;
+        forceTeam = Team.derelict;          // 恒为废墟阵营
+        allowDerelictRepair = false;        // 不可修复
+        drawTeamOverlay = false;            // 不绘制阵营色带
         // 建造成本 = 25 个矿石，拆毁时按返还比例退回
         requirements(Category.defense, ItemStack.with(dropItem, 50));
         // 拆除时间：100% 速度 25s

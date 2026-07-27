@@ -5,8 +5,6 @@ import arc.struct.Seq;
 import mindustry.type.Item;
 import mindustry.type.Planet;
 
-import endfieldindustrylib.EFcontents.TechTreeNode;
-
 public class EFitems {
     /** 所有注册物品列表，用于批量注册到星球 */
     public static Seq<Item> allItems = new Seq<>();
