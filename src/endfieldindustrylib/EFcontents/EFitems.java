@@ -53,8 +53,6 @@ public class EFitems {
             valleyIv, theHub, originiumSciencePark, originLodespring, powerPlateau, aburreyQuarry, valleyPass,
             itemsCategory;
     public static Item
-            // 战役关卡（II 阶地图标记）
-            regionHubII, originiumResearchLabII, veinSourceAreaII, energyHighlandII,
             // 工业产物
             carbon, stabilizedCarbon,
             origocrust, packedOrigocrust,
@@ -202,7 +200,6 @@ public class EFitems {
             originiumPowder, origocrustPowder, denseOriginiumPowder, denseOrigocrustPowder,
             amethystPowder, crystonPowder,
             ferriumPowder, denseFerriumPowder,
-            regionHubII, originiumResearchLabII, veinSourceAreaII, energyHighlandII,
             // 工业产物
             carbon, stabilizedCarbon,
             origocrust, packedOrigocrust,

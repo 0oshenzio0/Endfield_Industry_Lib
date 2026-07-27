@@ -91,7 +91,7 @@ public class EFplanets {
             allowLaunchLoadout = true;
             allowSectorInvasion = true;
             clearSectorOnLose = true;
-            defaultCore = EFblocks.aicCore;
+            defaultCore = Blocks.coreShard;
 
             // —— 生态：温带含氧地球化环境 ——
             defaultEnv = Env.terrestrial | Env.oxygen | Env.groundWater;
