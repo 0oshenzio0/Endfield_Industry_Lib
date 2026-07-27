@@ -95,7 +95,20 @@ public class EFTechTreeNode extends StatusEffect {
             fullIcon = iconContent.fullIcon;
             uiIcon = iconContent.uiIcon;
         } else {
-            super.loadIcon();
+            // 自动从 sprites/eftechtree/{rawName}.png 查找
+            // rawName = name 去掉模组前缀
+            String modPrefix = minfo.mod != null ? minfo.mod.name + "-" : "";
+            String rawName = name;
+            if (rawName.startsWith(modPrefix)) {
+                rawName = rawName.substring(modPrefix.length());
+            }
+            var region = Core.atlas.find("eftechtree/" + rawName);
+            if (region.found()) {
+                fullIcon = region;
+                uiIcon = region;
+            } else {
+                super.loadIcon();
+            }
         }
     }
 
