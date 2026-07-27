@@ -110,7 +110,7 @@ A：如果你使用的是 Android 版，那么这是正常的。目前还没有�
 
 ### 其它
 
-- 感谢来自`Gaster`（我的一个朋友）的部分贴图
+- 感谢来自`Gaster`（我的一个朋友）的部分贴图和代码
 - ~~`README.md`部分照抄了我的另一个仓库的README~~
 - `README.md`参考了部分开源项目
 - `README.md`使用了 [shields.io](https://shields.io/) 提供的内容

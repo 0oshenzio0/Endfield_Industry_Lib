@@ -15,6 +15,7 @@ public class GunTower extends ItemTurret {
 
         requirements(Category.turret, ItemStack.with(EFitems.origocrust, 10));
 
+        alwaysUnlocked = true;
         size = 2;
         range = 120f;       // 最大攻击/索敌范围（游戏单位，8 ≈ 1 格）
         reload = 120f;      // 装填间隔（游戏帧数，120 ticks = 2 秒，60 ticks/秒）

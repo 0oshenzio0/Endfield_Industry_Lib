@@ -1,9 +1,12 @@
 package endfieldindustrylib;
 
+import endfieldindustrylib.EFcontents.EFTechTree;
 import endfieldindustrylib.EFcontents.EFblocks;
 import endfieldindustrylib.EFcontents.EFitems;
 import endfieldindustrylib.EFcontents.EFplanets;
-import endfieldindustrylib.EFcontents.EFTechTree;
+import endfieldindustrylib.EFcontents.EFsectorPresets;
+import endfieldindustrylib.EFcontents.EFunits;
+import endfieldindustrylib.EFworld.CampaignHandler;
 
 public class Lib extends mindustry.mod.Mod {
 
@@ -15,6 +18,12 @@ public class Lib extends mindustry.mod.Mod {
         // planet (塔卫二)
         EFplanets.loadContents();
 
+        // sector presets (战役关卡)
+        EFsectorPresets.load();
+
+        // unit (塔塔)
+        EFunits.load();
+
         // block
         EFblocks.load();
 
@@ -23,5 +32,11 @@ public class Lib extends mindustry.mod.Mod {
 
         // tech tree: 构建显示树
         EFTechTree.load(EFplanets.taelosII);
+    }
+
+    @Override
+    public void init() {
+        // 注册战役自定义事件监听器
+        CampaignHandler.init();
     }
 }
