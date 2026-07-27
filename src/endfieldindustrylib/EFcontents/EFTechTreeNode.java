@@ -1,7 +1,6 @@
 package endfieldindustrylib.EFcontents;
 
 import arc.Core;
-import arc.Core;
 import arc.graphics.Color;
 import arc.struct.Seq;
 import mindustry.ctype.UnlockableContent;
@@ -97,6 +96,16 @@ public class EFTechTreeNode extends StatusEffect {
             uiIcon = iconContent.uiIcon;
         } else {
             super.loadIcon();
+        }
+    }
+
+    @Override
+    public void load() {
+        super.load();
+        // 覆写 localizedName：优先使用 eftechtree.{name}.name
+        String efName = Core.bundle.get("eftechtree." + name + ".name", "\u0000");
+        if (!"\u0000".equals(efName)) {
+            this.localizedName = efName;
         }
     }
 
