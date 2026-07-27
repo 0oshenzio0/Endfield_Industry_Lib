@@ -3,29 +3,15 @@ package endfieldindustrylib.EFcontents;
 import arc.graphics.Color;
 import endfieldindustrylib.EFcontents.EFenv.HarvestablePlant;
 import endfieldindustrylib.EFcontents.EFenv.OreStone;
-import endfieldindustrylib.EFworld.blocks.AICBasicFacility.FittingUnit;
-import endfieldindustrylib.EFworld.blocks.AICBasicFacility.GrindingUnit;
-import endfieldindustrylib.EFworld.blocks.AICBasicFacility.MouldingUnit;
-import endfieldindustrylib.EFworld.blocks.AICBasicFacility.PackagingUnit;
-import endfieldindustrylib.EFworld.blocks.AICBasicFacility.PlantingUnit;
-import endfieldindustrylib.EFworld.blocks.AICBasicFacility.RectGenericAICBasicFacility;
-import endfieldindustrylib.EFworld.blocks.AICBasicFacility.RefiningUnit;
-import endfieldindustrylib.EFworld.blocks.AICBasicFacility.SeedPickingUnit;
-import endfieldindustrylib.EFworld.blocks.AICBasicFacility.ShreddingUnit;
+import endfieldindustrylib.EFworld.blocks.AICBasicFacility.*;
 import endfieldindustrylib.EFworld.blocks.AICDepotAccess.ProtocolStash;
 import endfieldindustrylib.EFworld.blocks.AICErosion.ActiveBlight;
 import endfieldindustrylib.EFworld.blocks.AICErosion.BlightCore;
-import endfieldindustrylib.EFworld.blocks.AICCore.AICCore;
 import endfieldindustrylib.EFworld.blocks.AICPower.ElectricPylon;
 import endfieldindustrylib.EFworld.blocks.AICPower.RelayTower;
 import endfieldindustrylib.EFworld.blocks.AICPower.ThermalBank;
-import endfieldindustrylib.EFworld.blocks.AICTransport.BeltBridge;
-import endfieldindustrylib.EFworld.blocks.AICTransport.Converger;
-import endfieldindustrylib.EFworld.blocks.AICTransport.ItemControlPort;
-import endfieldindustrylib.EFworld.blocks.AICTransport.Splitter;
-import endfieldindustrylib.EFworld.blocks.AICTransport.TransportBelt;
-import endfieldindustrylib.EFworld.blocks.AICTurret.GrenadeTower;
-import endfieldindustrylib.EFworld.blocks.AICTurret.GunTower;
+import endfieldindustrylib.EFworld.blocks.AICTransport.*;
+import endfieldindustrylib.EFworld.blocks.AICTurret.*;
 import endfieldindustrylib.EFworld.blocks.AICExtraction.VentDrill;
 import mindustry.content.Blocks;
 import mindustry.type.Planet;
@@ -66,6 +52,15 @@ public class EFblocks {
     public static ThermalBank thermalBank;
     //public static XiraniteRelay xiraniteRelay;        //息壤中继器
     //public static XiranitePylon xiranitePylon;        //息壤供电桩
+    // ===== 战斗辅助 =====
+    public static GunTower gunTower;
+    public static GrenadeTower grenadeTower;
+    public static LNTower lnTower;
+    public static HeavyGunTower heavyGunTower;
+    public static OmnidirectionalSonicTower omnidirectionalSonicTower;
+    public static BeamTower beamTower;
+    public static SurgeTower surgeTower;
+    public static SentryTower sentryTower;
     public static SteamVent originiumSpot;
     public static SteamVent amethystSpot;
     public static SteamVent ferriumSpot;
@@ -79,9 +74,6 @@ public class EFblocks {
     // ===== 可采集植株 =====
     public static HarvestablePlant aketinePlant;
     public static HarvestablePlant sandleafPlant;
-    // ===== 炮塔 =====
-    public static GunTower gunTower;
-    public static GrenadeTower grenadeTower;
     // ===== 喷口矿机 =====
     public static VentDrill originiumVentDrill;
     public static VentDrill amethystVentDrill;
@@ -141,7 +133,24 @@ public class EFblocks {
         //xiraniteRelay = new XiraniteRelay("xiranite-relay");        //息壤中继器
         //xiraniteRelay.load();
         //xiranitePylon = new XiranitePylon("xiranite-pylon");        //息壤供电桩
-        //xiranitePylon.load();
+        //xiranitePylon.load(); 
+        // 战斗辅助
+        gunTower = new GunTower("gun-tower");                              //铳械塔
+        gunTower.load();
+        grenadeTower = new GrenadeTower("grenade-tower");                  //榴弹塔
+        grenadeTower.load();
+        lnTower = new LNTower("ln-tower");                                 //液氮塔
+        lnTower.load();
+        heavyGunTower = new HeavyGunTower("heavy-gun-tower");              //扩装铳械塔
+        heavyGunTower.load();
+        omnidirectionalSonicTower = new OmnidirectionalSonicTower("omnidirectional-sonic-tower"); //全向声波塔
+        omnidirectionalSonicTower.load();
+        beamTower = new BeamTower("beam-tower");                           //射线塔
+        beamTower.load();
+        surgeTower = new SurgeTower("surge-tower");                        //电涌塔
+        surgeTower.load();
+        sentryTower = new SentryTower("sentry-tower");                     //哨戒塔
+        sentryTower.load();
          originiumAttribute = Attribute.add("originium");
         amethystAttribute = Attribute.add("amethyst");
         ferriumAttribute = Attribute.add("ferrium");
@@ -187,11 +196,6 @@ public class EFblocks {
         // 可采集植株
         aketinePlant = new HarvestablePlant("aketine-plant", EFitems.aketine);
         sandleafPlant = new HarvestablePlant("sandleaf-plant", EFitems.sandleaf);
-        // 炮塔
-        gunTower = new GunTower("gun-tower");
-        gunTower.load();
-        grenadeTower = new GrenadeTower("grenade-tower");
-        grenadeTower.load();
         // 喷口矿机（等级 1: 仅源矿 | 等级 2: 源矿+紫水晶 | 等级 3: 全部）
         originiumVentDrill = new VentDrill("originium-vent-drill") {{
             mineLevel = 1;
@@ -229,6 +233,14 @@ public class EFblocks {
         electricPylon.shownPlanets.add(planet);
         relayTower.shownPlanets.add(planet);
         thermalBank.shownPlanets.add(planet);
+        gunTower.shownPlanets.add(planet);
+        grenadeTower.shownPlanets.add(planet);
+        lnTower.shownPlanets.add(planet);
+        heavyGunTower.shownPlanets.add(planet);
+        omnidirectionalSonicTower.shownPlanets.add(planet);
+        beamTower.shownPlanets.add(planet);
+        surgeTower.shownPlanets.add(planet);
+        sentryTower.shownPlanets.add(planet);
         originiumSpot.shownPlanets.add(planet);
         amethystSpot.shownPlanets.add(planet);
         ferriumSpot.shownPlanets.add(planet);
@@ -237,8 +249,6 @@ public class EFblocks {
         ferriumStone.shownPlanets.add(planet);
         aketinePlant.shownPlanets.add(planet);
         sandleafPlant.shownPlanets.add(planet);
-        gunTower.shownPlanets.add(planet);
-        grenadeTower.shownPlanets.add(planet);
         originiumVentDrill.shownPlanets.add(planet);
         amethystVentDrill.shownPlanets.add(planet);
         ferriumVentDrill.shownPlanets.add(planet);

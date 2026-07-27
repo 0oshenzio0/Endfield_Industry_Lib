@@ -27,7 +27,10 @@ public class Lib extends mindustry.mod.Mod {
         // block
         EFblocks.load();
 
-        // tech tree (需在物品和方块都加载完成后)
+        // tech tree: 初始化节点（需在 blocks 之后）
+        EFTechTree.initNodes();
+
+        // tech tree: 构建显示树
         EFTechTree.load(EFplanets.taelosII);
     }
 
