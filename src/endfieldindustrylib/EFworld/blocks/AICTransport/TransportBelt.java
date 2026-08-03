@@ -11,17 +11,21 @@ import arc.struct.PQueue;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Structs;
+import arc.util.Time;
+import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfieldindustrylib.EFworld.blocks.AICBasicFacility.GenericAICBasicFacility;
 import endfieldindustrylib.EFworld.blocks.AICBasicFacility.RectGenericAICBasicFacility;
 import mindustry.Vars;
+import static mindustry.Vars.itemSize;
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.gen.Teamc;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.input.Binding;
 import mindustry.type.Category;
@@ -41,6 +45,8 @@ public class TransportBelt extends Conveyor {
     private static boolean configuring = false;
     private static int configStartX, configStartY;
     private static int configSourceX = -1, configSourceY = -1; // 起点建筑的坐标
+    private static Building configSourceBuild;   // 配置模式的源建筑引用（用于检测取消选择）
+    private static boolean configSourceSelected; // 源建筑是否处于选中状态
     private static boolean previewActive = false;
     private static int lastSelectPlansSize = 0;
 
@@ -57,7 +63,7 @@ public class TransportBelt extends Conveyor {
     // ============================================================
     private static final java.util.HashMap<Long, Integer> pendingInputDir = new java.util.HashMap<>();
 
-    private static long key(int x, int y) {
+    private long key(int x, int y) {
         return (long)x << 32 | (y & 0xFFFFFFFFL);
     }
 
@@ -89,6 +95,39 @@ public class TransportBelt extends Conveyor {
         category = Category.distribution;
         requirements(Category.distribution, ItemStack.with());
     }
+
+    // ============================================================
+    // 8 帧动画：重载 regions 为 7 种混合类型 × 8 帧
+    // ============================================================
+    @Override
+    public void load(){
+        super.load();
+        // 父类按 4 帧加载，这里改为 8 帧（命名与父类一致：name-混合-帧，0 起始）
+        regions = new TextureRegion[7][8];
+        for(int i = 0; i < regions.length; i++){
+            for(int j = 0; j < regions[i].length; j++){
+                regions[i][j] = Core.atlas.find(name + "-" + i + "-" + j);
+            }
+        }
+    }
+
+    // ============================================================
+    // blends 适配：仅允许在设施输出面连接
+    // ============================================================
+    /*@Override
+    public boolean blends(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock){
+        // 若邻接方块是 AIC 设施，仅当传送带位于设施输出面时才混合
+        if (otherblock instanceof GenericAICBasicFacility) {
+            Building otherBuild = world.tile(otherx, othery) != null ? world.tile(otherx, othery).build : null;
+            if (otherBuild != null) {
+                int dirToConveyor = Tile.relativeTo(otherx, othery, tile.x, tile.y);
+                return GenericAICBasicFacility.isOutputFace(otherBuild, dirToConveyor);
+            }
+            return false;
+        }
+        return (otherblock.outputsItems() || (lookingAt(tile, rotation, otherx, othery, otherblock) && otherblock.hasItems))
+            && lookingAtEither(tile, rotation, otherx, othery, otherrot, otherblock);
+    }*/
 
     // ============================================================
     // 修正终点格的旋转：始终使用路径方向，而非终点建筑的旋转
@@ -124,7 +163,7 @@ public class TransportBelt extends Conveyor {
     // ============================================================
     // A* 寻路
     // ============================================================
-    private static Seq<Tile> pathfind(int sx, int sy, int ex, int ey) {
+    private Seq<Tile> pathfind(int sx, int sy, int ex, int ey) {
         Tiles tiles = world.tiles;
 
         Tile start = tiles.getn(sx, sy);
@@ -168,7 +207,7 @@ public class TransportBelt extends Conveyor {
                     // 弯道传送带（输入方向与输出方向不成直线）视为不可通过
                     passable = (belt.inputDir + 2) % 4 == belt.rotation;
                 } else {
-                    passable = child.build == null && !child.floor().isDeep();
+                    passable = child.build == null && child.floor() != null && !child.floor().isDeep();
                 }
 
                 if (passable && !closed.get(child.x, child.y)) {
@@ -210,138 +249,68 @@ public class TransportBelt extends Conveyor {
         return aStarOut;
     }
 
-    // ============================================================
-    // 计算矩形工厂的边界
-    // ============================================================
-    private static void rectBounds(RectGenericAICBasicFacility block, Building build,
-                                   int[] out) {
-        boolean rotated = build.rotation % 2 != 0;
-        int w = rotated ? block.rectHeight : block.rectWidth;
-        int h = rotated ? block.rectWidth : block.rectHeight;
-        out[0] = build.tileX() - (w % 2 == 0 ? w / 2 - 1 : w / 2);
-        out[1] = build.tileX() + (w % 2 == 0 ? w / 2 : w / 2);
-        out[2] = build.tileY() - (h % 2 == 0 ? h / 2 - 1 : h / 2);
-        out[3] = build.tileY() + (h % 2 == 0 ? h / 2 : h / 2);
+
+    private static Building resolveMaster(Building source) {
+        if (source instanceof RectGenericAICBasicFacility.RectChildBlock.RectChildBuild child) {
+            return child.master != null ? child.master : source;
+        }
+        return source;
     }
 
-    // ============================================================
-    // canOutputTo: 建筑 src 能否向 beltTile 输出物品
-    // ============================================================
-    private static boolean canOutputTo(Building src, Tile beltTile) {
-        if (src == null || beltTile == null) return false;
-
-        // RectChildBuild -> 转发到 master
-        if (src instanceof RectGenericAICBasicFacility.RectChildBlock.RectChildBuild) {
-            Building master = ((RectGenericAICBasicFacility.RectChildBlock.RectChildBuild) src).master;
-            return master != null && canOutputTo(master, beltTile);
-        }
-
-        // RectBuild: 检查 beltTile 是否在建筑输出排上
-        if (src instanceof RectGenericAICBasicFacility.RectBuild) {
-            RectGenericAICBasicFacility b = (RectGenericAICBasicFacility) src.block;
-            int[] bounds = new int[4];
-            rectBounds(b, src, bounds);
-            int rot = src.rotation;
-            int checkX = 0, checkY = 0;
-            switch (rot) {
-                case 0: checkX = bounds[1] + 1; break;
-                case 1: checkY = bounds[3] + 1; break;
-                case 2: checkX = bounds[0] - 1; break;
-                case 3: checkY = bounds[2] - 1; break;
+    private boolean canOutputTo(Building source, Tile target) {
+        if (source == null || target == null) return false;
+        source = resolveMaster(source);
+        if (source.block instanceof GenericAICBasicFacility && source instanceof GenericAICBasicFacility.GenericAICBasicFacilityBuild build) {
+            // 使用输出格子列表：目标必须位于某个输出格
+            for (Point2 pos : build.canoutputtile) {
+                if (build.worldTileFor(pos) == target) return true;
             }
-            if (rot % 2 == 0) {
-                return beltTile.x == checkX && beltTile.y >= bounds[2] && beltTile.y <= bounds[3];
-            } else {
-                return beltTile.y == checkY && beltTile.x >= bounds[0] && beltTile.x <= bounds[1];
-            }
+            return false;
+        } else {
+            // 原版方块：检查能否输出物品 + 目标格是否相邻
+            if (!source.block.outputsItems() || !source.block.hasItems) return false;
+            int half = source.block.size / 2;
+            int minX = source.tileX() - (source.block.size % 2 == 0 ? half - 1 : half);
+            int maxX = source.tileX() + half;
+            int minY = source.tileY() - (source.block.size % 2 == 0 ? half - 1 : half);
+            int maxY = source.tileY() + half;
+            return (target.x >= minX && target.x <= maxX && (target.y == minY - 1 || target.y == maxY + 1))
+                || (target.y >= minY && target.y <= maxY && (target.x == minX - 1 || target.x == maxX + 1));
         }
-
-        // 通用方向检查：beltTile 在 src 的输出方向上
-        if (src instanceof GenericAICBasicFacility.GenericAICBasicFacilityBuild
-            || src instanceof TransportBeltBuild || src.block.outputsItems()) {
-            int dx = beltTile.x - src.tile.x;
-            int dy = beltTile.y - src.tile.y;
-            int expectedRot = -1;
-            if (dx > 0) expectedRot = 0;  // 右
-            else if (dx < 0) expectedRot = 2;  // 左
-            else if (dy > 0) expectedRot = 1;  // 下
-            else if (dy < 0) expectedRot = 3;  // 上
-            if (expectedRot < 0) return false;
-
-            // 特定类型的额外方向检查
-            if (src instanceof TransportBeltBuild) {
-                return expectedRot == ((TransportBeltBuild) src).rotation;
-            }
-            return expectedRot == src.rotation;
-        }
-
-        return false;
     }
 
-    // ============================================================
-    // canAcceptFrom: beltTile 处的传送带能否向建筑 tgt 输出
-    // ============================================================
-    private static boolean canAcceptFrom(Building tgt, Tile beltTile) {
-        if (tgt == null || beltTile == null) return false;
-
-        if (tgt instanceof RectGenericAICBasicFacility.RectChildBlock.RectChildBuild) {
-            Building master = ((RectGenericAICBasicFacility.RectChildBlock.RectChildBuild) tgt).master;
-            return master != null && canAcceptFrom(master, beltTile);
-        }
-
-        if (tgt instanceof RectGenericAICBasicFacility.RectBuild) {
-            RectGenericAICBasicFacility b = (RectGenericAICBasicFacility) tgt.block;
-            int[] bounds = new int[4];
-            rectBounds(b, tgt, bounds);
-            int inDir = (tgt.rotation + 2) % 4;
-            int checkX = 0, checkY = 0;
-            switch (inDir) {
-                case 0: checkX = bounds[1] + 1; break;
-                case 1: checkY = bounds[3] + 1; break;
-                case 2: checkX = bounds[0] - 1; break;
-                case 3: checkY = bounds[2] - 1; break;
+    private boolean canAcceptFrom(Building source, Tile target) {
+        if (source == null || target == null) return false;
+        source = resolveMaster(source);
+        if (source.block instanceof GenericAICBasicFacility && source instanceof GenericAICBasicFacility.GenericAICBasicFacilityBuild build) {
+            // 使用输入格子列表：目标必须位于某个输入格
+            for (Point2 pos : build.caninputtile) {
+                if (build.worldTileFor(pos) == target) return true;
             }
-            if (inDir % 2 == 0) {
-                return beltTile.x == checkX && beltTile.y >= bounds[2] && beltTile.y <= bounds[3];
-            } else {
-                return beltTile.y == checkY && beltTile.x >= bounds[0] && beltTile.x <= bounds[1];
-            }
+            return false;
+        } else {
+            // 原版方块：检查能否接受物品 + 目标格是否相邻
+            if (!source.block.hasItems) return false;
+            int half = source.block.size / 2;
+            int minX = source.tileX() - (source.block.size % 2 == 0 ? half - 1 : half);
+            int maxX = source.tileX() + half;
+            int minY = source.tileY() - (source.block.size % 2 == 0 ? half - 1 : half);
+            int maxY = source.tileY() + half;
+            return (target.x >= minX && target.x <= maxX && (target.y == minY - 1 || target.y == maxY + 1))
+                || (target.y >= minY && target.y <= maxY && (target.x == minX - 1 || target.x == maxX + 1));
         }
-
-        // 通用方向检查：beltTile 在 tgt 的输入方向上
-        if (tgt instanceof GenericAICBasicFacility.GenericAICBasicFacilityBuild
-            || tgt instanceof TransportBeltBuild || (tgt.block.hasItems && tgt.block.acceptsItems)) {
-            int dx = beltTile.x - tgt.tile.x;
-            int dy = beltTile.y - tgt.tile.y;
-            int expectedDir = -1;
-            if (dx > 0) expectedDir = 0;
-            else if (dx < 0) expectedDir = 2;
-            else if (dy > 0) expectedDir = 1;
-            else if (dy < 0) expectedDir = 3;
-            if (expectedDir < 0) return false;
-
-            if (tgt instanceof TransportBeltBuild) {
-                return expectedDir == ((TransportBeltBuild) tgt).inputDir;
-            }
-            // 建筑的输入方向是旋转的反方向
-            return expectedDir == (tgt.rotation + 2) % 4;
-        }
-
-        return false;
     }
-
     // ============================================================
     // findEffectiveStart / findEffectiveEnd
     // ============================================================
-    private static StartResult findEffectiveStart(Tile clicked) {
+    private StartResult findEffectiveStart(Tile clicked) {
         if (clicked == null) return null;
-
         if (clicked.build != null) {
             for (Point2 p : Geometry.d4) {
                 Tile neighbor = world.tile(clicked.x + p.x, clicked.y + p.y);
                 if (neighbor == null || neighbor.build != null) continue;
-                if (canOutputTo(clicked.build, neighbor)) {
-                    return new StartResult(neighbor);
+                     if (canOutputTo(clicked.build, neighbor)) {
+                        return new StartResult(neighbor);
                 }
             }
         } else {
@@ -356,7 +325,7 @@ public class TransportBelt extends Conveyor {
         return null;
     }
 
-    private static EndResult findEffectiveEnd(Tile clicked) {
+    private EndResult findEffectiveEnd(Tile clicked) {
         if (clicked == null) return null;
 
         if (clicked.build != null) {
@@ -374,7 +343,7 @@ public class TransportBelt extends Conveyor {
     }
 
     // 查找可以向指定 beltTile 输出物品的源建筑
-    private static Tile findSourceBuilding(Tile beltTile) {
+    private Tile findSourceBuilding(Tile beltTile) {
         if (beltTile == null) return null;
         for (Point2 p : Geometry.d4) {
             Tile neighbor = world.tile(beltTile.x + p.x, beltTile.y + p.y);
@@ -386,25 +355,66 @@ public class TransportBelt extends Conveyor {
     }
 
     // ============================================================
+    // 配置模式：关闭与取消选择检测
+    // ============================================================
+    private static void closeConfig() {
+        configuring = false;
+        previewActive = false;
+        configStartX = -1;
+        configStartY = -1;
+        configSourceX = -1;
+        configSourceY = -1;
+        configSourceBuild = null;
+        configSourceSelected = false;
+    }
+
+    /** 启动配置时记录源建筑并尝试选中，用于后续检测其被取消选择 */
+    private static void selectSourceBuilding(Tile sourceTile) {
+        Building srcBuild = sourceTile != null && sourceTile.build != null ? resolveMaster(sourceTile.build) : null;
+        configSourceBuild = srcBuild;
+        configSourceSelected = false;
+        if (srcBuild != null) {
+            // 若源建筑尚未被选中，则尝试选中它（显示其配置面板），使“取消选择”可被检测
+            if (Vars.control.input.config.getSelected() != srcBuild) {
+                Vars.control.input.config.showConfig(srcBuild);
+            }
+            configSourceSelected = Vars.control.input.config.getSelected() == srcBuild;
+        }
+    }
+
+    /** 检测源建筑是否被取消选择（选择其他建筑或取消选择），是则关闭配置模式并返回 true */
+    private static boolean shouldCloseConfig() {
+        if (!configuring) return false;
+        if (configSourceSelected && configSourceBuild != null) {
+            // 当前选中的建筑不再是源建筑（变成其他建筑或已取消选择）→ 关闭
+            if (Vars.control.input.config.getSelected() != configSourceBuild) {
+                closeConfig();
+                return true;
+            }
+        } else if (Core.input.keyTap(Binding.deselect)) {
+            // 回退：源建筑无法通过选中状态检测时，仍支持右键关闭
+            closeConfig();
+            return true;
+        }
+        return false;
+    }
+
+    // ============================================================
     // changePlacementPath: Desktop 状态机 + 路径替换
     // ============================================================
     @Override
     public void changePlacementPath(Seq<Point2> points, int rotation) {
         if (points.isEmpty()) return;
 
-        // 拦截右键取消配置模式：changePlacementPath 在输入处理阶段运行，
-        // 在此处处理可以阻止游戏引擎随后取消建筑选择
-        if (Core.input.keyTap(Binding.deselect)) {
-            if (configuring) {
-                configuring = false;
-                previewActive = false;
-                configStartX = -1;
-                configStartY = -1;
-                configSourceX = -1;
-                configSourceY = -1;
-            }
+        // 切换方块时关闭配置模式
+        if (Vars.control.input.block != this) {
+            closeConfig();
             points.clear();
-            Vars.control.input.block = this;
+            return;
+        }
+        // 检测源建筑被取消选择（选择其他建筑或取消选择）后关闭配置模式
+        if (shouldCloseConfig()) {
+            points.clear();
             return;
         }
 
@@ -426,6 +436,8 @@ public class TransportBelt extends Conveyor {
                     Tile source = findSourceBuilding(s.tile);
                     configSourceX = source != null ? source.x : -1;
                     configSourceY = source != null ? source.y : -1;
+                    // 记录并选中源建筑，用于检测取消选择
+                    selectSourceBuilding(source);
                     configuring = true;
                     previewActive = true;
                 }
@@ -461,8 +473,8 @@ public class TransportBelt extends Conveyor {
                         for (Tile t : path) {
                             points.add(new Point2(t.x, t.y));
                         }
-                        configuring = false;
-                        previewActive = false;
+                        Vars.control.input.config.hideConfig();
+                        closeConfig();
                         return;
                     }
                 }
@@ -502,6 +514,11 @@ public class TransportBelt extends Conveyor {
         Tile hover = world.tile(x, y);
         if (hover == null) return;
 
+        // 检测源建筑被取消选择（选择其他建筑或取消选择）后关闭配置模式
+        if (shouldCloseConfig()) {
+            return;
+        }
+
         // Mobile 点击检测
         int curSize = Vars.control.input.selectPlans.size;
         if (curSize > lastSelectPlansSize) {
@@ -519,6 +536,8 @@ public class TransportBelt extends Conveyor {
                     Tile source = findSourceBuilding(s.tile);
                     configSourceX = source != null ? source.x : -1;
                     configSourceY = source != null ? source.y : -1;
+                    // 记录并选中源建筑，用于检测取消选择
+                    selectSourceBuilding(source);
                     configuring = true;
                     previewActive = true;
                 }
@@ -557,8 +576,8 @@ public class TransportBelt extends Conveyor {
                             Vars.control.input.selectPlans.add(
                                 new BuildPlan(t.x, t.y, rot, this, null));
                         }
-                        configuring = false;
-                        previewActive = false;
+                        Vars.control.input.config.hideConfig();
+                        closeConfig();
                         return;
                     }
                 }
@@ -610,6 +629,9 @@ public class TransportBelt extends Conveyor {
                     Draw.rect(pr, t.worldx(), t.worldy(), pw, ph, prot);
                 }
                 Draw.reset();
+            } else if (e != null) {
+                // 终点有效但路径不可达
+                drawPlaceText("无效终点", x, y, false);
             }
         } else if (!configuring) {
             StartResult s = findEffectiveStart(hover);
@@ -626,23 +648,12 @@ public class TransportBelt extends Conveyor {
         if (configuring && previewActive && findEffectiveEnd(hover) == null) {
             drawPlaceText("无效终点", x, y, false);
         }
-
-        // drawPlace 中右键取消作为兜底
-        if (configuring && Core.input.keyTap(Binding.deselect)) {
-            configuring = false;
-            previewActive = false;
-            configStartX = -1;
-            configStartY = -1;
-            configSourceX = -1;
-            configSourceY = -1;
-            Vars.control.input.block = this;
-        }
     }
 
     // ============================================================
     // 预览纹理辅助
     // ============================================================
-    private static int previewBlendRegion(Seq<Tile> path, int idx) {
+    private int previewBlendRegion(Seq<Tile> path, int idx) {
         Tile me = path.get(idx);
         int connMask = 0;
         for (int d = 0; d < 4; d++) {
@@ -665,7 +676,7 @@ public class TransportBelt extends Conveyor {
         return 1; // 弯道
     }
 
-    private static float previewRotation(Seq<Tile> path, int idx) {
+    private float previewRotation(Seq<Tile> path, int idx) {
         Tile me = path.get(idx);
         Tile next = idx < path.size - 1 ? path.get(idx + 1) : (idx > 0 ? path.get(idx - 1) : null);
         if (next == null) return 0;
@@ -832,6 +843,43 @@ public class TransportBelt extends Conveyor {
             }
 
             noSleep();
+        }
+
+        @Override
+        public void draw(){
+            // 8 帧动画：帧号取模 8
+            int frame = enabled && clogHeat <= 0.5f ? (int)(((Time.time * speed * 8f * timeScale * efficiency)) % 8) : 0;
+
+            // 绘制指向本传送带的额外混合段
+            Draw.z(Layer.blockUnder);
+            for(int i = 0; i < 4; i++){
+                if((blending & (1 << i)) != 0){
+                    int dir = rotation - i;
+                    float rot = i == 0 ? rotation * 90 : (dir) * 90;
+
+                    Draw.rect(sliced(regions[0][frame], i != 0 ? SliceMode.bottom : SliceMode.top), x + Geometry.d4x(dir) * tilesize * 0.75f, y + Geometry.d4y(dir) * tilesize * 0.75f, rot);
+                }
+            }
+
+            Draw.z(Layer.block - 0.2f);
+            Draw.rect(regions[blendbits][frame], x, y, tilesize * blendsclx, tilesize * blendscly, rotation * 90);
+
+            // 绘制传送带上的物品
+            Draw.z(Layer.block - 0.1f);
+            float layer = Layer.block - 0.1f, wwidth = world.unitWidth(), wheight = world.unitHeight(), scaling = 0.01f;
+
+            for(int i = 0; i < len; i++){
+                Item item = ids[i];
+                Tmp.v1.trns(rotation * 90, tilesize, 0);
+                Tmp.v2.trns(rotation * 90, -tilesize / 2f, xs[i] * tilesize / 2f);
+
+                float
+                ix = (x + Tmp.v1.x * ys[i] + Tmp.v2.x),
+                iy = (y + Tmp.v1.y * ys[i] + Tmp.v2.y);
+
+                Draw.z(layer + (ix / wwidth + iy / wheight) * scaling);
+                Draw.rect(item.fullIcon, ix, iy, itemSize, itemSize);
+            }
         }
 
         @Override
