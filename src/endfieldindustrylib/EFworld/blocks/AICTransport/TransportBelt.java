@@ -36,12 +36,12 @@ import mindustry.type.ItemStack;
 import mindustry.world.Edges;
 import mindustry.world.Tile;
 import mindustry.world.Tiles;
+import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.blocks.distribution.Duct;
 import mindustry.world.blocks.distribution.StackConveyor;
-import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.environment.StaticTree;
-import mindustry.world.blocks.defense.Wall;
+import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.meta.BlockGroup;
 
 public class TransportBelt extends Conveyor {
@@ -54,6 +54,9 @@ public class TransportBelt extends Conveyor {
     private static int configSourceX = -1, configSourceY = -1; // 起点建筑的坐标
     private static boolean previewActive = false;
     private static int lastSelectPlansSize = 0;
+    // 二次点击“完成”手势进行中：从按下到松开的帧内保持路径不被清空/篡改，
+    // 避免松开帧光标轻微移动导致引擎误提交或路径丢失
+    private static boolean completing = false;
 
     // ============================================================
     // A* 寻路：静态复用资源
@@ -124,6 +127,11 @@ public class TransportBelt extends Conveyor {
                 // 只要当前选择建造的不是本传送带就关闭配置模式
                 if(Vars.control.input.block != this){
                     closeConfig();
+                    completing = false;
+                }
+                // 兜底：左键已松开（引擎已在本帧或上一帧完成 linePlans 提交）时结束“完成手势”
+                if(!Core.input.keyDown(Binding.select)){
+                    completing = false;
                 }
             });
         }
@@ -418,6 +426,7 @@ public class TransportBelt extends Conveyor {
         // 切换方块（右下角选择其他建筑或取消选择）时关闭配置模式
         if (Vars.control.input.block != this) {
             closeConfig();
+            completing = false;
             points.clear();
             return;
         }
@@ -428,8 +437,19 @@ public class TransportBelt extends Conveyor {
         boolean keyDown = Core.input.keyDown(Binding.select);
         boolean validFirst = world.tile(first.x, first.y) != null;
 
+        // 二次点击“完成”手势进行中：路径已写入 points，保持原样直到松开左键由引擎提交。
+        // 此处返回可防止拖动/光标抖动时底部 points.clear() 清空路径，或误触发布防/预览分支。
+        if (completing) {
+            if (keyTap) {
+                // 新一轮点击开始，说明上一轮完成手势已结束
+                completing = false;
+            } else {
+                return;
+            }
+        }
+
         if (!configuring && keyDown) {
-            // 首次左键按下时启动配置
+            // 首次左键按下时启动配置（布防起点）
             Tile ft = validFirst ? world.tile(first.x, first.y) : null;
             if (ft != null) {
                 StartResult s = findEffectiveStart(ft);
@@ -452,7 +472,8 @@ public class TransportBelt extends Conveyor {
             return;
         }
 
-        if (keyTap && validFirst) {
+        if (configuring && keyTap && validFirst) {
+            // 二次点击：计算最终路径写入 points，松开时由引擎提交
             Tile lt = world.tile(last.x, last.y);
             if (lt != null) {
                 EndResult e = findEffectiveEnd(lt);
@@ -475,6 +496,7 @@ public class TransportBelt extends Conveyor {
                         for (Tile t : path) {
                             points.add(new Point2(t.x, t.y));
                         }
+                        completing = true;
                         closeConfig();
                         return;
                     }
@@ -484,22 +506,8 @@ public class TransportBelt extends Conveyor {
             return;
         }
 
-        if (!keyDown) {
-            Tile lt = world.tile(last.x, last.y);
-            EndResult ee = lt != null ? findEffectiveEnd(lt) : null;
-            int px = ee != null ? ee.tile.x : last.x;
-            int py = ee != null ? ee.tile.y : last.y;
-            Seq<Tile> preview = pathfind(configStartX, configStartY, px, py);
-            points.clear();
-            if (!preview.isEmpty()) {
-                for (Tile t : preview) {
-                    points.add(new Point2(t.x, t.y));
-                }
-            }
-            previewActive = true;
-            return;
-        }
-
+        // 其余情况（拖动中、非完成手势的松开帧等）一律清空 points：
+        // 预览统一由 drawPlace 负责，避免引擎在松开帧把预览误当作实际放置提交
         points.clear();
     }
 
@@ -519,7 +527,10 @@ public class TransportBelt extends Conveyor {
         int curSize = Vars.control.input.selectPlans.size;
         if (curSize > lastSelectPlansSize) {
             lastSelectPlansSize = curSize;
-            if (curSize > 0) {
+            // 只接管“本次点击刚产生、且位于光标格的本传送带计划”；
+            // 已完成但尚未确认的路径计划位于队列中，不能误删
+            BuildPlan tapPlan = curSize > 0 ? Vars.control.input.selectPlans.peek() : null;
+            if (tapPlan != null && tapPlan.block == this && tapPlan.x == x && tapPlan.y == y) {
                 Vars.control.input.selectPlans.remove(curSize - 1);
             }
 
@@ -571,10 +582,12 @@ public class TransportBelt extends Conveyor {
                                 new BuildPlan(t.x, t.y, rot, this, null));
                         }
                         closeConfig();
-                        return;
                     }
                 }
             }
+            // 关键：把计数器同步到处理后的实际大小（移除了点击计划、可能加入了路径计划），
+            // 否则下一次点击会因为“大小未再增长”而被误判为普通帧，计划会残留并被引擎提交
+            lastSelectPlansSize = Vars.control.input.selectPlans.size;
         } else {
             lastSelectPlansSize = curSize;
         }
