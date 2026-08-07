@@ -70,6 +70,8 @@ public class TransportBelt extends Conveyor {
     // 路径方向缓存：建造时由路径方向设定的输入方向
     // ============================================================
     private static final java.util.HashMap<Long, Integer> pendingInputDir = new java.util.HashMap<>();
+    // 玩家在末端指定的目标格（二次点击所在建筑的格子）：单格路径/末格的传送带朝向它
+    private static int pendingEndBuildX = -1, pendingEndBuildY = -1;
 
     private long key(int x, int y) {
         return (long)x << 32 | (y & 0xFFFFFFFFL);
@@ -161,11 +163,30 @@ public class TransportBelt extends Conveyor {
     @Override
     public void handlePlacementLine(Seq<BuildPlan> plans){
         super.handlePlacementLine(plans);
-        if(plans.size >= 2){
+        if(plans.size == 1){
+            // 起点=终点（单格路径）：朝向可接收的建筑；否则朝向源建筑反侧
+            BuildPlan only = plans.first();
+            Tile onlyTile = world.tile(only.x, only.y);
+            if(onlyTile != null){
+                int rot = singleTileRotation(onlyTile);
+                if(rot != -1){
+                    only.rotation = rot;
+                }
+            }
+        } else if(plans.size >= 2){
             BuildPlan last = plans.peek();
             // 检查最后一格是否邻接可接受物品的建筑
             Tile lastTile = world.tile(last.x, last.y);
             if(lastTile != null){
+                // 优先指向玩家指定的末端目标建筑
+                Tile end = world.tile(pendingEndBuildX, pendingEndBuildY);
+                if(end != null && end.build != null && canAcceptFrom(end.build, lastTile)){
+                    int toEnd = lastTile.relativeTo(end.x, end.y);
+                    if(toEnd != -1){
+                        last.rotation = toEnd;
+                        return;
+                    }
+                }
                 for(Point2 p : Geometry.d4){
                     Tile neighbor = world.tile(lastTile.x + p.x, lastTile.y + p.y);
                     if(neighbor != null && neighbor.build != null && canAcceptFrom(neighbor.build, lastTile)){
@@ -403,6 +424,30 @@ public class TransportBelt extends Conveyor {
         return null;
     }
 
+    // 单格路径（起点=终点）的朝向：优先指向玩家指定的末端建筑，
+    // 其次指向可接收物品的建筑，最后指向源建筑的反侧（即物品应有的输出方向），避免使用随机的默认旋转
+    private int singleTileRotation(Tile tile) {
+        if (tile == null) return -1;
+        // 1) 玩家指定的末端目标建筑
+        Tile end = world.tile(pendingEndBuildX, pendingEndBuildY);
+        if (end != null && end.build != null && canAcceptFrom(end.build, tile)) {
+            int r = tile.relativeTo(end.x, end.y);
+            if (r != -1) return r;
+        }
+        // 2) 任意可接收物品的邻接建筑
+        for (Point2 p : Geometry.d4) {
+            Tile neighbor = world.tile(tile.x + p.x, tile.y + p.y);
+            if (neighbor != null && neighbor.build != null && canAcceptFrom(neighbor.build, tile)) {
+                int r = tile.relativeTo(neighbor.x, neighbor.y);
+                if (r != -1) return r;
+            }
+        }
+        // 3) 源建筑反侧（输入方向的对面）
+        Integer inDir = pendingInputDir.get(key(tile.x, tile.y));
+        if (inDir != null) return (inDir + 2) % 4;
+        return -1;
+    }
+
     // ============================================================
     // 配置模式：关闭与取消选择检测
     // ============================================================
@@ -460,6 +505,9 @@ public class TransportBelt extends Conveyor {
                     Tile source = findSourceBuilding(s.tile);
                     configSourceX = source != null ? source.x : -1;
                     configSourceY = source != null ? source.y : -1;
+                    // 新的路线：清除上一次残留的末端目标建筑
+                    pendingEndBuildX = -1;
+                    pendingEndBuildY = -1;
                     configuring = true;
                     previewActive = true;
                 }
@@ -478,6 +526,9 @@ public class TransportBelt extends Conveyor {
             if (lt != null) {
                 EndResult e = findEffectiveEnd(lt);
                 if (e != null) {
+                    // 记录玩家指定的末端目标：二次点击所在建筑的格子（注意多格建筑用被点的格，而非建筑中心）
+                    pendingEndBuildX = lt.build != null ? lt.x : -1;
+                    pendingEndBuildY = lt.build != null ? lt.y : -1;
                     Seq<Tile> path = pathfind(configStartX, configStartY, e.tile.x, e.tile.y);
                     if (!path.isEmpty()) {
                         points.clear();
@@ -543,12 +594,18 @@ public class TransportBelt extends Conveyor {
                     Tile source = findSourceBuilding(s.tile);
                     configSourceX = source != null ? source.x : -1;
                     configSourceY = source != null ? source.y : -1;
+                    // 新的路线：清除上一次残留的末端目标建筑
+                    pendingEndBuildX = -1;
+                    pendingEndBuildY = -1;
                     configuring = true;
                     previewActive = true;
                 }
             } else {
                 EndResult e = findEffectiveEnd(hover);
                 if (e != null) {
+                    // 记录玩家指定的末端目标：二次点击所在建筑的格子（注意多格建筑用被点的格，而非建筑中心）
+                    pendingEndBuildX = hover.build != null ? hover.x : -1;
+                    pendingEndBuildY = hover.build != null ? hover.y : -1;
                     Seq<Tile> path = pathfind(configStartX, configStartY, e.tile.x, e.tile.y);
                     if (!path.isEmpty()) {
                         for (int i = 0; i < path.size; i++) {
@@ -563,6 +620,10 @@ public class TransportBelt extends Conveyor {
                                 int rel;
                                 if(hover.build != null){
                                     rel = t.relativeTo(hover.x, hover.y);
+                                } else if(i == 0){
+                                    // 起点=终点（单格路径）：朝向可接收的建筑，否则朝向源建筑反侧
+                                    rel = singleTileRotation(t);
+                                    if(rel == -1) rel = 0;
                                 } else {
                                     rel = path.get(i - 1).relativeTo(t.x, t.y);
                                 }
@@ -722,6 +783,9 @@ public class TransportBelt extends Conveyor {
             Integer dir = pendingInputDir.remove(k);
             // 输入方向严格由路径计算缓存决定，永不从 rotation 推导
             inputDir = dir != null ? dir : 0;
+            // 末端目标建筑仅用于本次放置的朝向，消费后清除
+            pendingEndBuildX = -1;
+            pendingEndBuildY = -1;
         }
 
         @Override
